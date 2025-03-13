@@ -128,6 +128,13 @@ export default function Home() {
           >
             {loading ? "Loading..." : "Deploy"}
           </button>
+          <button
+            disabled={loading}
+            onClick={() => handleSubmit("/api/audit")}
+            className="bg-yellow-600 text-white px-4 py-2 ml-20"
+          >
+            {loading ? "Loading..." : "Audit"}
+          </button>
         </div>
         <br />
         <div className="mt-4">
