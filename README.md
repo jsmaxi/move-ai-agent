@@ -62,3 +62,19 @@ aptos move deploy
 [Output Example](OUTPUT.md)
 
 ---
+
+## RAG
+
+jsDelivr free CDN: https://www.jsdelivr.com/?docs=gh
+
+example file: https://cdn.jsdelivr.net/gh/jsmaxi/llm-embeddings/test.txt
+
+LLM Embeddings (public): https://github.com/jsmaxi/llm-embeddings
+
+Set environment variables (API keys) in .env file, according to .env.example
+
+Obtain ANTHROPIC_API_KEY from https://console.anthropic.com/ (Claude)
+
+Obtain OPENAI_API_KEY from https://platform.openai.com/ (OpenAI)
+
+---

@@ -3,6 +3,7 @@ import { useState } from "react";
 export default function Home() {
   const [moveCode, setMoveCode] = useState("");
   const [tomlManifest, setTomlManifest] = useState("");
+  const [promptText, setPromptText] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -38,6 +39,40 @@ export default function Home() {
     }
   };
 
+  const handleRAG = async (action: string) => {
+    setLoading(true);
+    setOutput("");
+
+    if (!promptText) {
+      alert("Please provide prompt text.");
+      setLoading(false);
+      return;
+    }
+
+    const query = promptText;
+
+    try {
+      const response = await fetch(action, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setOutput(data.output);
+      } else {
+        console.error("Error:", data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <h1 className="my-4">Compile Move Code with Aptos CLI</h1>
@@ -54,7 +89,6 @@ export default function Home() {
             rows={10}
             cols={50}
             placeholder="Paste your contract.Move code here"
-            required
           />
         </div>
         <div className="mt-4">
@@ -69,7 +103,6 @@ export default function Home() {
             rows={5}
             cols={50}
             placeholder="Paste your Move.toml manifest here"
-            required
           />
         </div>
         <br />
@@ -94,6 +127,31 @@ export default function Home() {
             className="bg-red-600 text-white px-4 py-2 ml-20"
           >
             {loading ? "Loading..." : "Deploy"}
+          </button>
+        </div>
+        <br />
+        <div className="mt-4">
+          <label htmlFor="prompt" className="mr-4">
+            AI Prompt:
+          </label>
+          <textarea
+            id="prompt"
+            className="bg-blue-600 ml-1"
+            value={promptText}
+            onChange={(e) => setPromptText(e.target.value)}
+            rows={3}
+            cols={50}
+            placeholder="Enter your prompt here"
+          />
+        </div>
+        <br />
+        <div className="flex justify-start">
+          <button
+            disabled={loading}
+            onClick={() => handleRAG("/api/llmrag")}
+            className="bg-orange-600 text-white px-4 py-2 ml-20"
+          >
+            {loading ? "Loading..." : "RAG CodeGen"}
           </button>
         </div>
       </form>
