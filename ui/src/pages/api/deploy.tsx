@@ -117,9 +117,15 @@ async function runCommand(command: string, args: Array<string>, cwd: string) {
     });
 
     // Handle command completion
-    child.on("close", (code) => {
+    child.on("close", (code, signal) => {
       if (code === 0) {
         resolve(stdall); // Command succeeded
+      } else if (code === null) {
+        reject(
+          new Error(
+            `Command terminated by signal: ${signal}. Output: ${stdall}`
+          )
+        );
       } else {
         reject(
           new Error(

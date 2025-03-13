@@ -63,9 +63,15 @@ export default async function handler(
 
     // Wait for the command to finish
     await new Promise((resolve, reject) => {
-      child.on("close", (code) => {
+      child.on("close", (code, signal) => {
         if (code === 0) {
           resolve("Command completed successfully");
+        } else if (code === null) {
+          reject(
+            new Error(
+              `Command terminated by signal: ${signal}. Output: ${stdall}`
+            )
+          );
         } else {
           reject(
             new Error(`Command failed with code ${code}. Output: ${stdall}`)
