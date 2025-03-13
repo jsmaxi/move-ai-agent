@@ -39,7 +39,7 @@ export default async function handler(
     fs.writeFileSync(moveFilePath, moveCode);
     fs.writeFileSync(tomlFilePath, tomlManifest);
 
-    const child = spawn("aptos", ["move", "compile", "--package-dir", tempDir]);
+    const child = spawn("aptos", ["move", "prove", "--package-dir", tempDir]);
 
     let stdout = "";
     let stderr = "";

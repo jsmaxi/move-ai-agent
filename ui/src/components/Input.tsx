@@ -6,9 +6,9 @@ export default function Home() {
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const handleSubmit = async (action: string) => {
     setLoading(true);
+    setOutput("");
 
     if (!moveCode || !tomlManifest) {
       alert("Please provide both contract.Move code and Move.toml manifest.");
@@ -17,7 +17,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch("/api/compile", {
+      const response = await fetch(action, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export default function Home() {
   return (
     <div>
       <h1 className="my-4">Compile Move Code with Aptos CLI</h1>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           <label htmlFor="moveCode" className="mr-4">
             contract.Move Code:
@@ -75,18 +75,32 @@ export default function Home() {
         <br />
         <div className="flex justify-start">
           <button
-            type="submit"
             disabled={loading}
+            onClick={() => handleSubmit("/api/compile")}
             className="bg-gray-600 text-white px-4 py-2 ml-20"
           >
-            {loading ? "Compiling..." : "Compile"}
+            {loading ? "Loading..." : "Compile"}
+          </button>
+          <button
+            disabled={loading}
+            onClick={() => handleSubmit("/api/prove")}
+            className="bg-indigo-600 text-white px-4 py-2 ml-20"
+          >
+            {loading ? "Loading..." : "Prove"}
+          </button>
+          <button
+            disabled={loading}
+            onClick={() => handleSubmit("/api/deploy")}
+            className="bg-red-600 text-white px-4 py-2 ml-20"
+          >
+            {loading ? "Loading..." : "Deploy"}
           </button>
         </div>
       </form>
 
       {output && (
         <div>
-          <h2>Compilation Output:</h2>
+          <h2>Command Output:</h2>
           <pre>{output}</pre>
         </div>
       )}
