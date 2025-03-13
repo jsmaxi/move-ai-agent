@@ -1,14 +1,15 @@
-# Use the official Node.js image as the base
-FROM node:18
+# Use this image as the base
+FROM ubuntu:latest
 
 # Install Aptos CLI
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl python3
 RUN curl -fsSL https://aptos.dev/scripts/install_cli.py | python3
 # Set the PATH environment variable for Aptos CLI
 ENV PATH="/root/.local/bin:${PATH}"
-# Prover and version checks
-RUN aptos update prover-dependencies
+# Version check
 RUN aptos --version
+# Prover dependencies
+RUN aptos update prover-dependencies
 
 # Set the working directory
 WORKDIR /ui
