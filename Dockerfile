@@ -11,11 +11,11 @@ RUN aptos --version
 WORKDIR /ui
 
 # Copy package.json and install dependencies
-COPY package.json package-lock.json ./
+COPY ui/package.json ui/package-lock.json ./
 RUN npm install
 
 # Copy the rest of the application code
-COPY . .
+COPY ./ui/ .
 
 # Build the Next.js app
 RUN npm run build
