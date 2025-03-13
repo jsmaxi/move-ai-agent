@@ -2,7 +2,10 @@
 FROM ubuntu:latest
 
 # Install Aptos CLI
-RUN apt-get update && apt-get install -y curl python3 nodejs
+RUN apt-get update && apt-get install -y curl python3 nodejs npm
+RUN node --version
+RUN npm --version
+RUN python3 --version
 RUN curl -fsSL https://aptos.dev/scripts/install_cli.py | python3
 # Set the PATH environment variable for Aptos CLI
 ENV PATH="/root/.local/bin:${PATH}"
