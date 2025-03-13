@@ -6,6 +6,7 @@ Setup environment variables by .env.example
 cd kit
 npm install
 node index.js
+node llm.js
 ```
 
 ---
