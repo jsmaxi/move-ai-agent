@@ -13,6 +13,11 @@ ENV PATH="/root/.local/bin:${PATH}"
 RUN aptos --version
 # Prover dependencies
 RUN aptos update prover-dependencies
+# Set the environment variables
+ENV BOOGIE_EXE=/root/.local/bin/boogie
+ENV Z3_EXE=/root/.local/bin/z3
+# Check if they are set
+RUN echo "Boogie path: $BOOGIE_EXE" && echo "Z3 path: $Z3_EXE"
 
 # Set the working directory
 WORKDIR /ui

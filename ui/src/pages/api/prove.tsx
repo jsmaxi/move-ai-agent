@@ -39,6 +39,8 @@ export default async function handler(
     fs.writeFileSync(moveFilePath, moveCode);
     fs.writeFileSync(tomlFilePath, tomlManifest);
 
+    console.log("Running `aptos move prove`...");
+
     const child = spawn("aptos", ["move", "prove", "--package-dir", tempDir]);
 
     let stdout = "";
@@ -75,10 +77,10 @@ export default async function handler(
     // Return the compilation output
     res.status(200).json({ output: stdall });
   } catch (error: any) {
-    console.error("Error:", error);
+    console.error("Prove Error.", error);
     res
       .status(500)
-      .json({ message: "Failed to compile Move code", error: error?.message });
+      .json({ message: "Failed to prove Move code", error: error?.message });
   } finally {
     // Clean up: Delete the temporary files
     if (fs.existsSync(tempDir)) {

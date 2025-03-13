@@ -64,10 +64,10 @@ export default async function handler(
     // Return the deployment output
     res.status(200).json({ output: deployOutput });
   } catch (error: any) {
-    console.error("Error:", error);
+    console.error("Deploy Error.", error);
     res
       .status(500)
-      .json({ message: "Failed to compile Move code", error: error?.message });
+      .json({ message: "Failed to deploy Move code", error: error?.message });
   } finally {
     // Clean up: Delete the temporary files
     if (fs.existsSync(tempDir)) {
