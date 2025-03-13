@@ -1,4 +1,4 @@
-# Move AI Agent
+# Aptos PlayLab AI
 
 ## Quick Start
 
@@ -11,6 +11,8 @@ npm run dev
 ```
 
 Open: http://localhost:3000/
+
+Setup environment variables by .env.example
 
 ---
 
