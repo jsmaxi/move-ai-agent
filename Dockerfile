@@ -4,6 +4,9 @@ FROM node:18
 # Install Aptos CLI
 RUN apt-get update && apt-get install -y curl
 RUN curl -fsSL https://aptos.dev/scripts/install_cli.py | python3
+# Set the PATH environment variable for Aptos CLI
+ENV PATH="/root/.local/bin:${PATH}"
+# Prover and version checks
 RUN aptos update prover-dependencies
 RUN aptos --version
 
