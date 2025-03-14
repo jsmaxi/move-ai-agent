@@ -1,0 +1,16 @@
+{
+    "sections": [
+      {
+        "title": "Introduction",
+        "content": "Move Agent Kit is a comprehensive toolkit designed to simplify AI agents' interactions with Move-based blockchains..."
+      },
+      {
+        "title": "Key Features",
+        "content": "Token Operations: Transfer tokens, mint new tokens, burn existing tokens..."
+      },
+      {
+        "title": "Installation",
+        "content": "### Using NPM\n```bash\nnpm install move-agent-kit\n```\n### From Source\n```bash\ngit clone https://github.com/Metamove/move-agent-kit\ncd move-agent-kit\nnpm i\n```"
+      }
+    ]
+  }

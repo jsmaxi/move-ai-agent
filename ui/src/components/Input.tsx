@@ -75,7 +75,7 @@ export default function Home() {
 
   return (
     <div>
-      <h1 className="my-4">Compile Move Code with Aptos CLI</h1>
+      <h1 className="my-4">Move Code Manager With Aptos CLI</h1>
       <form>
         <div>
           <label htmlFor="moveCode" className="mr-4">
@@ -139,7 +139,7 @@ export default function Home() {
         <br />
         <div className="mt-4">
           <label htmlFor="prompt" className="mr-4">
-            AI Prompt:
+            Move CodeGen Prompt:
           </label>
           <textarea
             id="prompt"
