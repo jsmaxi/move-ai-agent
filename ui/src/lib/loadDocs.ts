@@ -19,7 +19,7 @@ interface DocsData {
 let cachedVectorStore: MemoryVectorStore | null = null;
 
 // Load the documentation from a local file
-const docsFilePath = path.join(process.cwd(), 'data', 'docs.json');
+const docsFilePath = path.join(process.cwd(), 'data', 'docs2.json');
 
 export async function loadAndProcessDocs(): Promise<MemoryVectorStore> {
   // Check if the vector store is already cached

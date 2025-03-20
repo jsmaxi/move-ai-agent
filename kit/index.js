@@ -7,10 +7,7 @@ import {
   PrivateKey,
   PrivateKeyVariants,
 } from "@aptos-labs/ts-sdk";
-import {
-  AgentRuntime,
-  /*createAptosTools,*/ LocalSigner,
-} from "move-agent-kit";
+import { AgentRuntime, LocalSigner } from "move-agent-kit";
 
 try {
   console.log("Is Mainnet:", process.env.IS_MAINNET);
@@ -39,12 +36,6 @@ try {
   });
 
   const signer = new LocalSigner(account, netw);
-
-  // const agent = new AgentRuntime(signer, aptos, {
-  //   PANORA_API_KEY: process.env.PANORA_API_KEY, // optional
-  //   OPENAI_API_KEY: process.env.OPENAI_API_KEY, // optional
-  // });
-  // const tools = createAptosTools(agent);
 
   const agent = new AgentRuntime(signer, aptos);
 

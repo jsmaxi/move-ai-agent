@@ -33,7 +33,7 @@ const model = new ChatAnthropic({
 });
 
 const prompt = PromptTemplate.fromTemplate(`
-  You are a programming assistant. Your task is to generate code based on the following documentation:
+  You are a programming assistant. Your task is to generate javascript code based on the following documentation and javascript examples:
   
   {documentation}
   
