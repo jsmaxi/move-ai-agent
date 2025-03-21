@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Move AI Agent",
-  description: "Move AI Agent",
+  title: "PlayLab",
+  description: "PlayLab",
 };
 
 export default function RootLayout({

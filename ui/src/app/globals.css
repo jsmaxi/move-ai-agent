@@ -345,6 +345,7 @@
   .gradient-text {
     @apply bg-lab-gradient bg-clip-text text-transparent;
   }
+  
 
   [data-theme="cyberpunk"] .gradient-text {
     background: linear-gradient(90deg, #FF00FF, #00FFFF);
@@ -352,18 +353,46 @@
   }
 
   [data-theme="matrix"] .gradient-text {
-    background: linear-gradient(90deg, #00FF00, #00AA00);
+    background: linear-gradient(90deg, #01613c, rgb(32, 196, 128));
     @apply bg-clip-text text-transparent;
   }
 
   [data-theme="midnight"] .gradient-text {
-    background: linear-gradient(90deg, #4080FF, #8040FF);
+    background: linear-gradient(90deg, #6200d3, #cdb5fc);
     @apply bg-clip-text text-transparent;
   }
   
   [data-theme="light"] .gradient-text {
-    background: linear-gradient(90deg, #F59E0B, #10B981);
+    background: linear-gradient(90deg, #e76800, #10B981);
     @apply bg-clip-text text-transparent;
+  }
+
+  [data-theme="cyberpunk"] .header-lab {
+    background: #b24fd6;
+  }
+
+  [data-theme="cyberpunk"] .text-muted-foreground {
+    color: white;
+  }
+
+  [data-theme="matrix"] .text-muted-foreground {
+    color: white;
+  }
+
+  [data-theme="light"] .text-muted-foreground {
+    color: white;
+  }
+
+  [data-theme="matrix"] .header-lab {
+    background: linear-gradient(90deg, #00FF00, #00AA00);
+  }
+
+  [data-theme="midnight"] .header-lab {
+    background: linear-gradient(90deg, #4080FF, #8040FF);
+  }
+  
+  [data-theme="light"] .header-lab {
+    background: linear-gradient(90deg, #F59E0B, #10B981);
   }
   
   .shimmer {

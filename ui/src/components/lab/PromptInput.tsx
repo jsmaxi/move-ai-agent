@@ -2,7 +2,7 @@ import React, { useState, useRef, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Beaker, Code, Send, Upload, X, FileText } from "lucide-react";
+import { Beaker, Code, ArrowRight, Upload, X, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -173,7 +173,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
         <TabsContent value="contract" className="space-y-4 mt-0">
           <div className="space-y-2">
             <Textarea
-              placeholder="Describe the smart contract you want to create... (e.g., 'Create a token with transfer capabilities')"
+              placeholder="Describe the smart contract you want to create... (e.g., 'Create a hello world contract')"
               className="min-h-[120px] resize-y"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -251,7 +251,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
             <>Processing...</>
           ) : (
             <>
-              <Send className="h-4 w-4 mr-2" />
+              <ArrowRight className="h-4 w-4 mr-2" />
               <span>Submit</span>
             </>
           )}

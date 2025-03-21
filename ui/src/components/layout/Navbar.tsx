@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const handleConnect = () => {
     // Simulate wallet connection
-    setWalletAddress("0x1a2b3c4d5e6f7g8h9i0j");
+    setWalletAddress("0x1234567890123456789");
     setIsConnected(true);
   };
 
@@ -37,7 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md border-b border-lab-border bg-white/70">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-md border-b border-lab-border bg-white/70 header-lab">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           {isMobile && (
@@ -60,7 +60,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 Aptos <span className="gradient-text">PlayLab</span>
               </span>
               <span className="text-xs text-muted-foreground -mt-1">
-                Build & Deploy
+                Experiment, create, and innovate with AI assistance.
               </span>
             </div>
           </div>

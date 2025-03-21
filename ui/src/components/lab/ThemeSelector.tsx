@@ -15,7 +15,7 @@ interface ThemeSelectorProps {
 }
 
 const themes: { value: ThemeType; label: string; color: string }[] = [
-  { value: "default", label: "Default", color: "bg-primary" },
+  { value: "default", label: "Default", color: "bg-gray-300" },
   { value: "cyberpunk", label: "Cyberpunk", color: "bg-fuchsia-500" },
   { value: "matrix", label: "Matrix", color: "bg-green-500" },
   { value: "midnight", label: "Midnight", color: "bg-blue-500" },

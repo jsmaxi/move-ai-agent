@@ -47,7 +47,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
             <div className="absolute right-0 mt-2 w-56 glass-card p-3 shadow-xl z-10 animate-fade-in-up">
               <div className="mb-3">
                 <p className="text-xs text-muted-foreground">Connected to</p>
-                <p className="text-sm font-medium">Aptos Testnet</p>
+                <p className="text-sm font-medium">Aptos Devnet</p>
               </div>
 
               <div className="mb-3">

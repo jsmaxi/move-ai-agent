@@ -17,6 +17,7 @@ import {
   Play,
   Search,
   ExternalLink,
+  CheckCircle,
 } from "lucide-react";
 import {
   CodeFile,
@@ -44,7 +45,7 @@ interface CodeDisplayProps {
   ) => void;
 }
 
-type ContractStatus = "none" | "compiled" | "deployed" | "audited";
+type ContractStatus = "none" | "compiled" | "deployed" | "audited" | "proved";
 
 const CodeDisplay: React.FC<CodeDisplayProps> = ({
   files,
@@ -98,12 +99,12 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
   const activeFile = files.find((file) => file.name === activeTab) || files[0];
 
   const handleContractAction = (
-    action: "findBugs" | "compile" | "deploy" | "prove"
+    action: "findBugs" | "compile" | "deploy" | "prove" | "prove"
   ) => {
+    console.log(action);
     if (onContractAction) {
       onContractAction(action);
     }
-
     if (action === "compile") {
       setContractStatus("compiled");
       toast.success("Contract successfully compiled");
@@ -112,7 +113,10 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
       toast.success("Contract successfully deployed");
     } else if (action === "findBugs") {
       setContractStatus("audited");
-      toast.success("Contract successfully audited - no bugs found");
+      toast.success("Contract successfully audited");
+    } else if (action === "prove") {
+      setContractStatus("proved");
+      toast.success("Contract successfully proved");
     }
   };
 
@@ -314,6 +318,10 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
               <span className="text-sm flex items-center gap-1 text-blue-600">
                 <Upload className="h-3.5 w-3.5" /> Deployed
               </span>
+            ) : contractStatus === "proved" ? (
+              <span className="text-sm flex items-center gap-1 text-orange-600">
+                <CheckCircle className="h-3.5 w-3.5" /> Proved
+              </span>
             ) : (
               <span className="text-sm flex items-center gap-1 text-purple-600">
                 <ShieldCheck className="h-3.5 w-3.5" /> Audited
@@ -331,7 +339,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
             className="text-xs h-7 bg-red-50 text-red-700 hover:bg-red-100 border-red-200"
             onClick={() => handleContractAction("findBugs")}
           >
-            <Bug className="h-3.5 w-3.5 mr-1" /> Find Bugs (0.3 APT)
+            <Bug className="h-3.5 w-3.5 mr-1" /> Audit (0.3 APT)
           </Button>
 
           <Button
