@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import RAGBotDialog from "@/components/lab/RAGBotDialog";
 import { HistoryItem } from "@/types/history";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Github } from "lucide-react";
+import { AlertTriangle, Github, BugIcon } from "lucide-react";
 import { AGENT_TEMPLATES, CONTRACT_TEMPLATES } from "@/lib/templates";
 
 const DEMO_CONTRACT_FILES: CodeFile[] = CONTRACT_TEMPLATES["fungible-token"];
@@ -219,15 +219,21 @@ const Index = () => {
   return (
     <MainLayout onHistoryItemClick={handleHistoryItemClick}>
       <div className="space-y-6">
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <PromptInput
-            onSubmit={handlePromptSubmit}
-            isGenerating={isGenerating}
-            onPromptTypeChange={handlePromptTypeChange}
-            onTemplateSelect={handleTemplateSelect}
-          />
+        <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 auto-rows-auto">
+          <div className="h-auto lg:col-span-2">
+            <PromptInput
+              onSubmit={handlePromptSubmit}
+              isGenerating={isGenerating}
+              onPromptTypeChange={handlePromptTypeChange}
+              onTemplateSelect={handleTemplateSelect}
+            />
+            <br></br>
+            <section>
+              <Terminal logs={logs} onClear={clearLogs} />
+            </section>
+          </div>
 
-          <div className="h-[500px]">
+          <div className="min-h-[300px] h-auto lg:col-span-3">
             <CodeDisplay
               files={generatedFiles}
               defaultExpandedFile={
@@ -244,13 +250,6 @@ const Index = () => {
           </div>
         </section>
 
-        <section className="w-1/2">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-medium">Logs</h2>
-          </div>
-          <Terminal logs={logs} onClear={clearLogs} />
-        </section>
-
         <section className="flex justify-center gap-4 mt-8">
           <Button
             variant="outline"
@@ -262,7 +261,7 @@ const Index = () => {
               )
             }
           >
-            <Github className="mr-2 h-4 w-4" /> Report an Issue
+            <BugIcon className="mr-2 h-4 w-4" /> Report an Issue
           </Button>
           <Button
             variant="outline"

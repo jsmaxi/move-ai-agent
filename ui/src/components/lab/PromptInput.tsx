@@ -156,7 +156,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
         value={promptType}
         onValueChange={handlePromptTypeChange}
       >
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-col xl:flex-row items-center justify-between mb-2">
           <h2 className="text-lg font-medium">AI Prompt</h2>
           <TabsList>
             <TabsTrigger value="contract" className="flex items-center gap-2">
@@ -185,7 +185,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
         <TabsContent value="agent" className="space-y-4 mt-0">
           <div className="space-y-2">
             <Textarea
-              placeholder="Describe the Move Agent you want to create... (e.g., 'Create an agent that monitors token transfers')"
+              placeholder="Describe the Move Agent you want to create... (e.g., 'Create an agent that transfers token')"
               className="min-h-[120px] resize-y"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
