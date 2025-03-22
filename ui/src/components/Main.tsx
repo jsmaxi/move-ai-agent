@@ -299,6 +299,8 @@ const Index = () => {
           addLog("Generated Aptos smart contract code", "success");
         } else {
           console.log("Error:", data.message);
+          addLog(data?.message, "error");
+          addLog(data?.error, "error");
           toast.error("An error occurred! Please check console for details.");
         }
       } else {
