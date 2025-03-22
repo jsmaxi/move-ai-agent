@@ -28,7 +28,8 @@ export default async function handler(
     const prompt = `
       You are Aptos Move smart contract developer and security expert.
 
-      Audit provided Aptos Move smart contract code. Ensure the code is compatible with the Aptos blockchain and follows best practices.
+      Audit provided Aptos move smart contract code and toml manifest code. 
+      Ensure the code is compatible with the Aptos blockchain and follows best practices.
 
       Move smart contract code:
       ${moveCode}

@@ -64,6 +64,7 @@ export default async function handler(
       Ensure the code is compatible with the Aptos blockchain and follows best practices.
       Return both, contract.move smart contract code and Move.toml manifest code. 
       Avoid any additional text, details, suggestions or instructions.
+      Avoid unresolved addresses in Move.toml manifest.
       Make sure that output is properly escaped JSON string, adhering to this format:
         {
             \"contract\": \"move contract code\",
@@ -95,6 +96,7 @@ export default async function handler(
         Ensure the code is compatible with the Aptos blockchain and follows best practices.
         Return both, contract.move smart contract code and Move.toml manifest code. 
         Avoid any additional text, details, suggestions or instructions.
+        Avoid unresolved addresses in Move.toml manifest.
         Make sure that output is properly escaped JSON string, adhering to this format:
             {
                 \"contract\": \"move contract code\",

@@ -77,9 +77,9 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
       </div>
 
       {!isCollapsed && (
-        <div className="flex h-[150px]">
+        <div className="flex h-[200px]">
           <ResizablePanelGroup direction="vertical" className="flex-1">
-            <ResizablePanel maxSize={150} defaultSize={150} minSize={150}>
+            <ResizablePanel maxSize={200} defaultSize={200} minSize={200}>
               <div
                 ref={terminalRef}
                 className="relative h-full overflow-y-auto"

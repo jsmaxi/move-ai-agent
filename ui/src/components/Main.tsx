@@ -22,6 +22,7 @@ const Index = () => {
   const [isCodeFullscreen, setIsCodeFullscreen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRagBotOpen, setIsRagBotOpen] = useState(false);
+  const [isActionInProgress, setIsActionInProgress] = useState(false);
   const [promptType, setPromptType] = useState<"contract" | "agent">(
     "contract"
   );
@@ -82,7 +83,7 @@ const Index = () => {
     );
   };
 
-  const handleContractAction = (
+  const handleContractAction = async (
     action: "findBugs" | "compile" | "deploy" | "prove"
   ) => {
     const actionCosts = {
@@ -95,34 +96,124 @@ const Index = () => {
     const cost = actionCosts[action];
     const actionName = action.charAt(0).toUpperCase() + action.slice(1);
 
-    addLog(`Performing ${actionName} action...`, "info");
+    addLog(
+      `Performing ${
+        actionName === "FindBugs" ? "Audit" : actionName
+      } action...`,
+      "info"
+    );
 
-    setTimeout(() => {
-      addLog(
-        `${actionName} completed successfully. Cost: ${cost} APT`,
-        "success"
-      );
+    // addLog(
+    //   `${actionName} completed successfully. Cost: ${cost} APT`,
+    //   "success"
+    // );
 
+    try {
+      setIsActionInProgress(true);
       if (action === "findBugs") {
-        addLog("No critical bugs found in the contract", "success");
-        addLog(
-          "Security check: All validations are properly implemented",
-          "info"
-        );
+        const moveCode = generatedFiles[0]?.content;
+        const tomlManifest = generatedFiles[1]?.content;
+
+        const response = await fetch("/api/audit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ moveCode, tomlManifest }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("audited");
+          console.log(data.output);
+          addLog(data.output, "warning");
+          addLog("Audited", "success");
+        } else {
+          console.log("Error:", data.message);
+          addLog(data.message, "error");
+          addLog(data.error, "error");
+          toast.error("An error occurred! Please check console for details.");
+        }
       } else if (action === "compile") {
-        addLog("Contract successfully compiled", "success");
-        addLog("Bytecode size: 2.4KB", "info");
+        const moveCode = generatedFiles[0]?.content;
+        const tomlManifest = generatedFiles[1]?.content;
+
+        const response = await fetch("/api/compile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ moveCode, tomlManifest }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("compiled");
+          console.log(data.output);
+          addLog(data.output, "warning");
+          addLog("Compile executed", "success");
+        } else {
+          console.log("Error:", data.message);
+          addLog(data.message, "error");
+          addLog(data.error, "error");
+          toast.error("An error occurred! Please check console for details.");
+        }
       } else if (action === "deploy") {
-        addLog(
-          "Contract deployed to testnet address: 0x1a2b3c4d5e6f...",
-          "success"
-        );
-        addLog("Transaction hash: 0xabcdef1234567890...", "info");
+        const moveCode = generatedFiles[0]?.content;
+        const tomlManifest = generatedFiles[1]?.content;
+
+        const response = await fetch("/api/deploy", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ moveCode, tomlManifest }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("deploy");
+          console.log(data.output);
+          addLog(data.output, "warning");
+          addLog("Deploy executed", "success");
+        } else {
+          console.log("Error:", data.message);
+          addLog(data.message, "error");
+          addLog(data.error, "error");
+          toast.error("An error occurred! Please check console for details.");
+        }
       } else if (action === "prove") {
-        addLog("Formal verification successful", "success");
-        addLog("All assertions proved correctly", "info");
+        const moveCode = generatedFiles[0]?.content;
+        const tomlManifest = generatedFiles[1]?.content;
+
+        const response = await fetch("/api/prove", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ moveCode, tomlManifest }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("proved");
+          console.log(data.output);
+          addLog(data.output, "info");
+          addLog("Prove executed", "success");
+        } else {
+          console.log("Error:", data.message);
+          addLog(data.message, "error");
+          addLog(data.error, "error");
+          toast.error("An error occurred! Please check console for details.");
+        }
       }
-    }, 1500);
+    } finally {
+      setIsActionInProgress(false);
+    }
   };
 
   const handleTemplateSelect = (
@@ -274,6 +365,7 @@ const Index = () => {
               onEditFile={handleEditFile}
               promptType={promptType}
               onContractAction={handleContractAction}
+              isActionInProgress={isActionInProgress}
             />
           </div>
         </section>

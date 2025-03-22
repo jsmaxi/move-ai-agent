@@ -44,7 +44,8 @@ interface CodeDisplayProps {
   promptType: "contract" | "agent";
   onContractAction?: (
     action: "findBugs" | "compile" | "deploy" | "prove"
-  ) => void;
+  ) => Promise<void>;
+  isActionInProgress?: boolean;
 }
 
 type ContractStatus = "none" | "compiled" | "deployed" | "audited" | "proved";
@@ -59,6 +60,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
   onEditFile,
   promptType,
   onContractAction,
+  isActionInProgress,
 }) => {
   const [activeTab, setActiveTab] = useState<string>(
     defaultExpandedFile && files.find((f) => f.name === defaultExpandedFile)
@@ -100,25 +102,21 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
 
   const activeFile = files.find((file) => file.name === activeTab) || files[0];
 
-  const handleContractAction = (
+  const handleContractAction = async (
     action: "findBugs" | "compile" | "deploy" | "prove" | "prove"
   ) => {
     console.log(action);
     if (onContractAction) {
-      onContractAction(action);
+      await onContractAction(action);
     }
     if (action === "compile") {
       setContractStatus("compiled");
-      toast.success("Contract successfully compiled");
     } else if (action === "deploy") {
       setContractStatus("deployed");
-      toast.success("Contract successfully deployed");
     } else if (action === "findBugs") {
       setContractStatus("audited");
-      toast.success("Contract successfully audited");
     } else if (action === "prove") {
       setContractStatus("proved");
-      toast.success("Contract successfully proved");
     }
   };
 
@@ -216,6 +214,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
               variant="ghost"
               size="icon"
               onClick={handleDelete}
+              disabled={isActionInProgress}
               title="Delete file"
             >
               <Trash className="h-4 w-4" />
@@ -226,6 +225,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
               variant="ghost"
               size="icon"
               onClick={handleStartRename}
+              disabled={isActionInProgress}
               title="Rename file"
             >
               <FileEdit className="h-4 w-4" />
@@ -236,6 +236,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
               variant="ghost"
               size="icon"
               onClick={handleStartEdit}
+              disabled={isActionInProgress}
               title="Edit file"
             >
               <Edit className="h-4 w-4" />
@@ -321,11 +322,11 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
                 <Upload className="h-3.5 w-3.5" /> Deployed
               </span>
             ) : contractStatus === "proved" ? (
-              <span className="text-sm flex items-center gap-1 text-orange-600">
+              <span className="text-sm flex items-center gap-1 text-purple-600">
                 <CheckCircle className="h-3.5 w-3.5" /> Proved
               </span>
             ) : (
-              <span className="text-sm flex items-center gap-1 text-purple-600">
+              <span className="text-sm flex items-center gap-1 text-red-600">
                 <ShieldCheck className="h-3.5 w-3.5" /> Audited
               </span>
             )}
@@ -339,6 +340,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
             variant="outline"
             size="sm"
             className="text-xs h-7 bg-red-50 text-red-700 hover:bg-red-100 border-red-200"
+            disabled={isActionInProgress}
             onClick={() => handleContractAction("findBugs")}
           >
             <Bug className="h-3.5 w-3.5 mr-1" /> Audit (0.3 APT)
@@ -348,6 +350,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
             variant="outline"
             size="sm"
             className="text-xs h-7 bg-green-50 text-green-700 hover:bg-green-100 border-green-200"
+            disabled={isActionInProgress}
             onClick={() => handleContractAction("compile")}
           >
             <Play className="h-3.5 w-3.5 mr-1" /> Compile (0.1 APT)
@@ -357,6 +360,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
             variant="outline"
             size="sm"
             className="text-xs h-7 bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200"
+            disabled={isActionInProgress}
             onClick={() => handleContractAction("deploy")}
           >
             <Upload className="h-3.5 w-3.5 mr-1" /> Deploy (0.2 APT)
@@ -366,6 +370,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
             variant="outline"
             size="sm"
             className="text-xs h-7 bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200"
+            disabled={isActionInProgress}
             onClick={() => handleContractAction("prove")}
           >
             <Search className="h-3.5 w-3.5 mr-1" /> Prove (0.1 APT)
