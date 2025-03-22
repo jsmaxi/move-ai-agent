@@ -18,6 +18,8 @@ ENV BOOGIE_EXE=/root/.local/bin/boogie
 ENV Z3_EXE=/root/.local/bin/z3
 # Check if they are set
 RUN echo "Boogie path: $BOOGIE_EXE" && echo "Z3 path: $Z3_EXE"
+# Init
+RUN aptos init --profile default --network devnet
 
 # Set the working directory
 WORKDIR /ui
