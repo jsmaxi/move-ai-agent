@@ -11,6 +11,7 @@ import { HistoryItem } from "@/types/history";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Github, BugIcon } from "lucide-react";
 import { AGENT_TEMPLATES, CONTRACT_TEMPLATES } from "@/lib/templates";
+import { GeneratedCode } from "@/types/generatedCode";
 
 const DEMO_CONTRACT_FILES: CodeFile[] = CONTRACT_TEMPLATES["fungible-token"];
 const DEMO_AGENT_FILES: CodeFile[] = AGENT_TEMPLATES["transfer-monitor"];
@@ -159,15 +160,56 @@ const Index = () => {
     );
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
       if (type === "contract") {
-        const templateIds = Object.keys(CONTRACT_TEMPLATES);
-        const randomTemplateId =
-          templateIds[Math.floor(Math.random() * templateIds.length)];
-        setGeneratedFiles(CONTRACT_TEMPLATES[randomTemplateId]);
-        addLog("Generated Aptos contract code", "success");
-        addLog(`Contract type: ${randomTemplateId}`, "info");
+        // const templateIds = Object.keys(CONTRACT_TEMPLATES);
+        // const randomTemplateId =
+        //   templateIds[Math.floor(Math.random() * templateIds.length)];
+        // setGeneratedFiles(CONTRACT_TEMPLATES[randomTemplateId]);
+        // addLog("Generated Aptos contract code", "success");
+        // addLog(`Contract type: ${randomTemplateId}`, "info");
+        const txt = prompt;
+        const ctx = context;
+
+        const response = await fetch("/api/gencode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ txt, ctx }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("response ok");
+          const code = data.output;
+          console.log(JSON.stringify(code));
+
+          console.log("parsing...");
+          const parsedData: GeneratedCode = JSON.parse(code);
+          console.log("parsed");
+          console.log(parsedData);
+
+          const contractFile: CodeFile = {
+            name: "contract.move",
+            language: "move",
+            content: parsedData?.contract,
+          };
+
+          const manifestFile: CodeFile = {
+            name: "Move.toml",
+            language: "toml",
+            content: parsedData?.manifest,
+          };
+
+          console.log("generated");
+          setGeneratedFiles([contractFile, manifestFile]);
+          addLog("Generated Aptos smart contract code", "success");
+        } else {
+          console.log("Error:", data.message);
+          toast.error("An error occurred! Please check console for details.");
+        }
       } else {
         const templateIds = Object.keys(AGENT_TEMPLATES);
         const randomTemplateId =

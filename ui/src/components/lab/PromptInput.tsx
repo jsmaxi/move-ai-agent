@@ -106,6 +106,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
   };
 
   const handleSubmit = async () => {
+    console.log("Submit prompt");
     if (!prompt.trim()) return;
     await onSubmit(prompt, context, promptType);
   };
@@ -174,7 +175,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
           <div className="space-y-2">
             <Textarea
               placeholder="Describe the smart contract you want to create... (e.g., 'Create a hello world contract')"
-              className="min-h-[120px] resize-y"
+              className="min-h-[120px] resize-y max-h-[350px]"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               disabled={isGenerating}
@@ -186,7 +187,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
           <div className="space-y-2">
             <Textarea
               placeholder="Describe the Move Agent you want to create... (e.g., 'Create an agent that transfers token')"
-              className="min-h-[120px] resize-y"
+              className="min-h-[120px] resize-y max-h-[350px]"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               disabled={isGenerating}
@@ -201,7 +202,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
           ref={fileInputRef}
           className="hidden"
           onChange={handleFileChange}
-          accept=".txt,.js,.jsx,.ts,.tsx,.move,.toml"
+          accept=".txt,.move,.toml"
         />
 
         {contextFile ? (
@@ -248,11 +249,11 @@ const PromptInput: React.FC<PromptInputProps> = ({
           className="bg-lab-blue hover:bg-lab-blue/90 text-white"
         >
           {isGenerating ? (
-            <>Processing...</>
+            <>Generating...</>
           ) : (
             <>
               <ArrowRight className="h-4 w-4 mr-2" />
-              <span>Submit</span>
+              <span>Generate</span>
             </>
           )}
         </Button>
