@@ -109,6 +109,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
     if (onContractAction) {
       await onContractAction(action);
     }
+    console.log("set status of action");
     if (action === "compile") {
       setContractStatus("compiled");
     } else if (action === "deploy") {
