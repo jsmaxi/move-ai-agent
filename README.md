@@ -4,6 +4,8 @@
 
 Experiment, create, and innovate with AI assistance.
 
+UI: https://move-ai-agent-production.up.railway.app/
+
 ## Quick Start
 
 Run:
@@ -32,7 +34,7 @@ https://metamove.gitbook.io/move-agent-kit
 
 ---
 
-## Contract Example:
+## Contract Actions Example
 
 Install Aptos CLI: https://aptos.dev/en/build/cli
 
