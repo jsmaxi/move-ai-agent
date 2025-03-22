@@ -29,15 +29,6 @@ const Index = () => {
     setGeneratedFiles(
       promptType === "contract" ? DEMO_CONTRACT_FILES : DEMO_AGENT_FILES
     );
-
-    if (logs.length === 0) {
-      addLog(
-        `Ready to generate ${
-          promptType === "contract" ? "Aptos smart contract" : "Move Agent Kit"
-        } code...`,
-        "info"
-      );
-    }
   }, [promptType]);
 
   const addLog = (message: string, type: LogEntry["type"] = "info") => {
@@ -51,13 +42,8 @@ const Index = () => {
   };
 
   const clearLogs = () => {
+    console.log("Clearing logs...");
     setLogs([]);
-    addLog(
-      `Ready to generate ${
-        promptType === "contract" ? "Aptos smart contract" : "Move Agent Kit"
-      } code...`,
-      "info"
-    );
   };
 
   const handleDeleteFile = (fileName: string) => {

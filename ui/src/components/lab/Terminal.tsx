@@ -20,7 +20,7 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
-    if (terminalRef.current) {
+    if (terminalRef.current && logs.length > 0) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [logs]);
@@ -54,6 +54,7 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
         <div className="flex items-center">
           <TerminalIcon className="h-4 w-4 mr-2 text-lab-purple" />
           <h3 className="text-sm font-medium">Logs</h3>
+          <span className="text-sm text-gray-400 ml-1">({logs.length})</span>
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -76,29 +77,33 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
       </div>
 
       {!isCollapsed && (
-        <ResizablePanelGroup direction="vertical">
-          <ResizablePanel defaultSize={20} minSize={10} maxSize={50}>
-            <div
-              ref={terminalRef}
-              className="font-mono text-xs p-3 overflow-y-auto h-[200px] bg-black/95 text-white"
-            >
-              {logs.length === 0 ? (
-                <div className="text-muted-foreground">
-                  &gt; Terminal ready. Actions will be logged here.
-                </div>
-              ) : (
-                logs.map((log) => (
-                  <div key={log.id} className="mb-1">
-                    <span className="text-gray-500">
-                      [{formatTimestamp(log.timestamp)}]
-                    </span>{" "}
-                    <span className={getLogColor(log.type)}>{log.message}</span>
+        <div className="flex h-[150px]">
+          <ResizablePanelGroup direction="vertical" className="flex-1">
+            <ResizablePanel maxSize={150} defaultSize={150} minSize={150}>
+              <div
+                ref={terminalRef}
+                className="relative h-full overflow-y-auto"
+              >
+                {logs.length === 0 ? (
+                  <div className="text-muted-foreground ml-1">
+                    &gt; Terminal ready. Actions will be logged here.
                   </div>
-                ))
-              )}
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+                ) : (
+                  logs.map((log) => (
+                    <div key={log.id} className="ml-1 mb-1">
+                      <span className="text-gray-500">
+                        [{formatTimestamp(log.timestamp)}]
+                      </span>{" "}
+                      <span className={getLogColor(log.type)}>
+                        {log.message}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
       )}
     </div>
   );
