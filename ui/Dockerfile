@@ -23,11 +23,11 @@ RUN echo "Boogie path: $BOOGIE_EXE" && echo "Z3 path: $Z3_EXE"
 WORKDIR /ui
 
 # Copy package.json and install dependencies
-COPY ui/package.json ui/package-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm install
 
 # Copy the rest of the application code
-COPY ./ui/ .
+COPY . .
 
 # Build the Next.js app
 RUN npm run build
