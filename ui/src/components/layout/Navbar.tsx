@@ -7,6 +7,7 @@ import RAGBotDialog from "../lab/RAGBotDialog";
 import ThemeSelector from "../lab/ThemeSelector";
 import { ThemeType } from "@/types/theme";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import Link from "next/link";
 
 interface NavbarProps {
   onToggleHistory: () => void;
@@ -41,19 +42,21 @@ const Navbar: React.FC<NavbarProps> = ({
             </Button>
           )}
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-lab-gradient shadow-sm">
-              <AtomIcon className="h-5 w-5 text-white" />
+          <Link href="#">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-lab-gradient shadow-sm">
+                <AtomIcon className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="font-extrabold text-xl tracking-tight">
+                  Aptos <span className="gradient-text">PlayLab</span>
+                </span>
+                <span className="text-xs text-muted-foreground -mt-1">
+                  Experiment, create, and innovate with AI assistance.
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col items-start">
-              <span className="font-extrabold text-xl tracking-tight">
-                Aptos <span className="gradient-text">PlayLab</span>
-              </span>
-              <span className="text-xs text-muted-foreground -mt-1">
-                Experiment, create, and innovate with AI assistance.
-              </span>
-            </div>
-          </div>
+          </Link>
         </div>
 
         {!isMobile && (
@@ -104,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = ({
         )}
 
         {isMobile && isMenuOpen && (
-          <div className="fixed inset-0 top-16 z-50 bg-white/95 backdrop-blur-md animate-fade-in">
+          <div className="fixed inset-0 top-16 z-50 animate-fade-in bg-black text-white">
             <nav className="container flex flex-col gap-3 p-4">
               <Button
                 variant="ghost"

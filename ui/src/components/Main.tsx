@@ -26,9 +26,9 @@ const Index = () => {
   );
 
   useEffect(() => {
-    setGeneratedFiles(
-      promptType === "contract" ? DEMO_CONTRACT_FILES : DEMO_AGENT_FILES
-    );
+    // setGeneratedFiles(
+    //   promptType === "contract" ? DEMO_CONTRACT_FILES : DEMO_AGENT_FILES
+    // );
   }, [promptType]);
 
   const addLog = (message: string, type: LogEntry["type"] = "info") => {
