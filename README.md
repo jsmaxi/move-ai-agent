@@ -2,6 +2,8 @@
 
 <img src="./images/playlablogo.png" alt="project logo" width="100" height="100"/>
 
+Experiment, create, and innovate with AI assistance.
+
 ## Quick Start
 
 Run:

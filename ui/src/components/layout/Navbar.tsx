@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import RAGBotDialog from "../lab/RAGBotDialog";
 import ThemeSelector from "../lab/ThemeSelector";
 import { ThemeType } from "@/types/theme";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 interface NavbarProps {
   onToggleHistory: () => void;
@@ -19,22 +20,11 @@ const Navbar: React.FC<NavbarProps> = ({
   onThemeChange,
 }) => {
   const isMobile = useIsMobile();
-  const [isConnected, setIsConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
   const [balance, setBalance] = useState("1000.0");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRAGBotOpen, setIsRAGBotOpen] = useState(false);
 
-  const handleConnect = () => {
-    // Simulate wallet connection
-    setWalletAddress("0x1234567890123456789");
-    setIsConnected(true);
-  };
-
-  const handleDisconnect = () => {
-    setWalletAddress("");
-    setIsConnected(false);
-  };
+  const { connected } = useWallet();
 
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-md border-b border-lab-border bg-white/70 header-lab">
@@ -68,7 +58,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
         {!isMobile && (
           <div className="hidden md:flex items-center gap-4">
-            {isConnected && (
+            {connected && (
               <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
                 <span className="text-sm font-medium text-lab-dark">
                   {balance} APT
@@ -99,13 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({
               onThemeChange={onThemeChange}
             />
 
-            <WalletConnect
-              onConnect={handleConnect}
-              onDisconnect={handleDisconnect}
-              isConnected={isConnected}
-              walletAddress={walletAddress}
-              balance={balance}
-            />
+            <WalletConnect />
           </div>
         )}
 
@@ -115,13 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({
               currentTheme={currentTheme}
               onThemeChange={onThemeChange}
             />
-            <WalletConnect
-              onConnect={handleConnect}
-              onDisconnect={handleDisconnect}
-              isConnected={isConnected}
-              walletAddress={walletAddress}
-              balance={balance}
-            />
+            <WalletConnect />
           </div>
         )}
 
