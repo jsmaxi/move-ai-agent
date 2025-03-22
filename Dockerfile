@@ -2,7 +2,7 @@
 FROM ubuntu:latest
 
 # Install Aptos CLI
-RUN apt-get update && apt-get install -y curl python3 nodejs npm
+RUN apt-get update && apt-get install -y curl python3 nodejs npm unzip
 RUN node --version
 RUN npm --version
 RUN python3 --version
