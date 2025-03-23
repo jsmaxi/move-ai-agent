@@ -336,7 +336,7 @@ const Index = () => {
 
           const kitFile: CodeFile = {
             name: "agent.ts",
-            language: "typescript",
+            language: "javascript",
             content: parsedData?.agent,
           };
 
