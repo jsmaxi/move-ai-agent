@@ -9,6 +9,7 @@ interface MainLayoutProps {
   children: React.ReactNode;
   onHistoryItemClick?: (item: HistoryItem) => void;
   historyItems: HistoryItem[];
+  balance: number;
 }
 
 // const DEMO_HISTORY: HistoryItem[] = [
@@ -36,6 +37,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   onHistoryItemClick,
   historyItems,
+  balance,
 }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<ThemeType>("default");
@@ -64,6 +66,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         onToggleHistory={toggleHistory}
         currentTheme={currentTheme}
         onThemeChange={handleThemeChange}
+        balance={balance}
       />
 
       <div className="flex flex-1 overflow-hidden">

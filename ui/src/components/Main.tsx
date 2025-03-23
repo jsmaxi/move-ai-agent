@@ -12,9 +12,10 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Github, BugIcon } from "lucide-react";
 import { AGENT_TEMPLATES, CONTRACT_TEMPLATES } from "@/lib/templates";
 import { GeneratedCode } from "@/types/generatedCode";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
-const DEMO_CONTRACT_FILES: CodeFile[] = CONTRACT_TEMPLATES["fungible-token"];
-const DEMO_AGENT_FILES: CodeFile[] = AGENT_TEMPLATES["transfer-monitor"];
+// const DEMO_CONTRACT_FILES: CodeFile[] = CONTRACT_TEMPLATES["fungible-token"];
+// const DEMO_AGENT_FILES: CodeFile[] = AGENT_TEMPLATES["transfer-monitor"];
 
 const Index = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -23,11 +24,14 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRagBotOpen, setIsRagBotOpen] = useState(false);
   const [isActionInProgress, setIsActionInProgress] = useState(false);
+  const [balance, setBalance] = useState<number>(10); // Initial balance for testing
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [prompt, setPrompt] = useState<string>("");
   const [promptType, setPromptType] = useState<"contract" | "agent">(
     "contract"
   );
+
+  const { connected } = useWallet();
 
   const addLog = (message: string, type: LogEntry["type"] = "info") => {
     const newLog: LogEntry = {
@@ -82,6 +86,11 @@ const Index = () => {
   const handleContractAction = async (
     action: "findBugs" | "compile" | "deploy" | "prove"
   ) => {
+    if (!connected) {
+      alert("Please connect your Aptos wallet first!");
+      return;
+    }
+
     const actionCosts = {
       findBugs: 0.3,
       compile: 0.1,
@@ -124,7 +133,8 @@ const Index = () => {
           console.log("audited");
           console.log(data.output);
           addLog(data.output, "warning");
-          addLog("Audited", "success");
+          addLog("Audit executed", "success");
+          setBalance(balance - cost);
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -150,6 +160,7 @@ const Index = () => {
           console.log(data.output);
           addLog(data.output, "warning");
           addLog("Compile executed", "success");
+          setBalance(balance - cost);
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -175,6 +186,7 @@ const Index = () => {
           console.log(data.output);
           addLog(data.output, "warning");
           addLog("Deploy executed", "success");
+          setBalance(balance - cost);
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -200,6 +212,7 @@ const Index = () => {
           console.log(data.output);
           addLog(data.output, "info");
           addLog("Prove executed", "success");
+          setBalance(balance - cost);
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -347,6 +360,7 @@ const Index = () => {
     <MainLayout
       onHistoryItemClick={handleHistoryItemClick}
       historyItems={historyItems}
+      balance={balance}
     >
       <div className="space-y-6">
         <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 auto-rows-auto">
