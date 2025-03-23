@@ -84,6 +84,10 @@ const Index = () => {
     );
   };
 
+  const handleActionCost = (actionCost: number) => {
+    setBalance(balance - actionCost);
+  };
+
   const handleContractAction = async (
     action: "findBugs" | "compile" | "deploy" | "prove"
   ) => {
@@ -366,16 +370,6 @@ const Index = () => {
   const handleHistoryItemClick = (item: HistoryItem) => {
     setPromptType(item.type);
     setPrompt(item.prompt);
-
-    // const templates =
-    //   item.type === "contract" ? CONTRACT_TEMPLATES : AGENT_TEMPLATES;
-
-    // const templateIds = Object.keys(templates);
-    // if (templateIds.length > 0) {
-    //   const firstTemplate = templates[templateIds[0]];
-    //   setGeneratedFiles(firstTemplate);
-    // }
-
     addLog(`Loaded ${item.type} prompt: ${item.prompt}`, "info");
   };
 
@@ -384,6 +378,7 @@ const Index = () => {
       onHistoryItemClick={handleHistoryItemClick}
       historyItems={historyItems}
       balance={balance}
+      onCost={handleActionCost}
     >
       <div className="space-y-6">
         <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 auto-rows-auto">

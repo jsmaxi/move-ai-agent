@@ -10,34 +10,15 @@ interface MainLayoutProps {
   onHistoryItemClick?: (item: HistoryItem) => void;
   historyItems: HistoryItem[];
   balance: number;
+  onCost: (cost: number) => void;
 }
-
-// const DEMO_HISTORY: HistoryItem[] = [
-//   {
-//     id: "1",
-//     timestamp: new Date(Date.now() - 1000 * 60 * 10),
-//     prompt: "Create a token with transfer capabilities",
-//     type: "contract",
-//   },
-//   {
-//     id: "2",
-//     timestamp: new Date(Date.now() - 1000 * 60 * 30),
-//     prompt: "Create an agent that monitors token transfers",
-//     type: "agent",
-//   },
-//   {
-//     id: "3",
-//     timestamp: new Date(Date.now() - 1000 * 60 * 60),
-//     prompt: "Create a simple marketplace contract for NFTs",
-//     type: "contract",
-//   },
-// ];
 
 const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   onHistoryItemClick,
   historyItems,
   balance,
+  onCost,
 }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<ThemeType>("default");
@@ -67,6 +48,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         currentTheme={currentTheme}
         onThemeChange={handleThemeChange}
         balance={balance}
+        onCost={onCost}
       />
 
       <div className="flex flex-1 overflow-hidden">
