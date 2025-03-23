@@ -66,23 +66,44 @@ const RAGBotDialog: React.FC<RAGBotDialogProps> = ({ open, onOpenChange }) => {
 
     const query = prompt.trim();
 
-    const response = await fetch("/api/llmrag_aptos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query }),
-    });
+    if (promptType === "aptos") {
+      const response = await fetch("/api/llmrag_aptos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      console.log("received answer");
-      console.log(data.output);
-      botResponse = data.output;
+      if (response.ok) {
+        console.log("received answer from aptos rag");
+        console.log(data.output);
+        botResponse = data.output;
+      } else {
+        console.log("Error:", data.message);
+        botResponse = data.error;
+      }
     } else {
-      console.log("Error:", data.message);
-      botResponse = data.error;
+      const response = await fetch("/api/llmrag_agent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("received answer from agent rag");
+        console.log(data.output);
+        botResponse = data.output;
+      } else {
+        console.log("Error:", data.message);
+        botResponse = data.error;
+      }
     }
 
     setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
