@@ -8,35 +8,38 @@ import { ThemeType } from "@/types/theme";
 interface MainLayoutProps {
   children: React.ReactNode;
   onHistoryItemClick?: (item: HistoryItem) => void;
+  historyItems: HistoryItem[];
+  balance: number;
 }
 
-const DEMO_HISTORY: HistoryItem[] = [
-  {
-    id: "1",
-    timestamp: new Date(Date.now() - 1000 * 60 * 10),
-    prompt: "Create a token with transfer capabilities",
-    type: "contract",
-  },
-  {
-    id: "2",
-    timestamp: new Date(Date.now() - 1000 * 60 * 30),
-    prompt: "Create an agent that monitors token transfers",
-    type: "agent",
-  },
-  {
-    id: "3",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60),
-    prompt: "Create a simple marketplace contract for NFTs",
-    type: "contract",
-  },
-];
+// const DEMO_HISTORY: HistoryItem[] = [
+//   {
+//     id: "1",
+//     timestamp: new Date(Date.now() - 1000 * 60 * 10),
+//     prompt: "Create a token with transfer capabilities",
+//     type: "contract",
+//   },
+//   {
+//     id: "2",
+//     timestamp: new Date(Date.now() - 1000 * 60 * 30),
+//     prompt: "Create an agent that monitors token transfers",
+//     type: "agent",
+//   },
+//   {
+//     id: "3",
+//     timestamp: new Date(Date.now() - 1000 * 60 * 60),
+//     prompt: "Create a simple marketplace contract for NFTs",
+//     type: "contract",
+//   },
+// ];
 
 const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   onHistoryItemClick,
+  historyItems,
+  balance,
 }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [history] = useState<HistoryItem[]>(DEMO_HISTORY);
   const [currentTheme, setCurrentTheme] = useState<ThemeType>("default");
 
   const toggleHistory = () => {
@@ -63,6 +66,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         onToggleHistory={toggleHistory}
         currentTheme={currentTheme}
         onThemeChange={handleThemeChange}
+        balance={balance}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -76,7 +80,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
             </div>
 
             <div className="p-2">
-              {history.map((item) => (
+              {historyItems.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => onHistoryItemClick?.(item)}
@@ -100,7 +104,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 </div>
               ))}
 
-              {history.length === 0 && (
+              {historyItems.length === 0 && (
                 <div className="p-4 text-center text-muted-foreground">
                   <p>No prompts in history yet</p>
                 </div>

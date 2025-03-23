@@ -13,15 +13,16 @@ interface NavbarProps {
   onToggleHistory: () => void;
   currentTheme: ThemeType;
   onThemeChange: (theme: ThemeType) => void;
+  balance: number;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
   onToggleHistory,
   currentTheme,
   onThemeChange,
+  balance,
 }) => {
   const isMobile = useIsMobile();
-  const [balance, setBalance] = useState("1000.0");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRAGBotOpen, setIsRAGBotOpen] = useState(false);
 
@@ -64,7 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({
             {connected && (
               <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
                 <span className="text-sm font-medium text-lab-dark">
-                  {balance} APT
+                  {balance.toFixed(1)} APT
                 </span>
               </div>
             )}
