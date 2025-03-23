@@ -38,9 +38,9 @@ export default async function handler(
       ${moveAgentDocs}
 
       Task:
-      ${txt}
+      ${query}
 
-      Generate Langchain Js based agent code based on the context and task.You are an Langchain Js and LangGraph js expert.
+      Generate Langchain Js based agent kit code based on the context and task. You are an Langchain Js and LangGraph js expert.
       Make sure that output is properly escaped JSON string, adhering to this format:
         {
             \"agent\": \"agent code\",
