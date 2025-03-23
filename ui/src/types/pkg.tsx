@@ -7,11 +7,10 @@ export const pkg: CodeFile = {
   "name": "PlayLab",
   "version": "1.0.0",
   "description": "Move agent kit PlayLab",
-  "main": "agent.js",
+  "main": "agent.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["aptos", "blockchain", "monitoring", "agent"],
   "author": "Aptos PlayLab",

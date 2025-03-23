@@ -13,14 +13,13 @@ This project is designed to streamline development and push the boundaries of au
 ## 🚀 What Aptos PlayLab Can Do
 
 - 🤖 **AI agent to generate Aptos smart contracts** in Move
-- 🧠 **AI agent to generate LangChain JS / LangGraph agent code** using the Move Agent Kit  
+- 🧠 **AI agent to generate LangChain JS / LangGraph agent code** using the Move Agent Kit
   - Agent creating agents — like **Von Neumann factories** for on-chain AI
-- 📚 **RAG-powered chat with Aptos documentation** 
-- 📚 **RAG-powered chat with Move Agent Kit documentation and codebase** 
+- 📚 **RAG-powered chat with Aptos documentation**
+- 📚 **RAG-powered chat with Move Agent Kit documentation and codebase**
 - ⚙️ **Compile and deploy generated smart contracts** to the Aptos network
 - 🧾 **Run the Move Prover** for formal verification of smart contracts
 - 🔐 **Basic AI-assisted smart contract security audit** (early-stage)
-
 
 ## Quick Start - Run it locally
 
@@ -51,7 +50,6 @@ https://www.npmjs.com/package/move-agent-kit
 Docs:
 
 https://metamove.gitbook.io/move-agent-kit
-
 
 ## Contract Actions Example
 
@@ -87,3 +85,11 @@ aptos move deploy
 ```
 
 [Output Example](OUTPUT.md)
+
+## Online Code Sandbox
+
+```
+npm install codesandbox
+```
+
+https://codesandbox.io/docs/learn/sandboxes/cli-api#define-api

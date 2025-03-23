@@ -177,15 +177,34 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
     }
   };
 
-  const openInSandbox = () => {
-    const filesContent = encodeURIComponent(JSON.stringify(files));
-    const packageName =
-      promptType === "agent"
-        ? "move-agent-kit-sandbox"
-        : "aptos-contract-sandbox";
-    const url = `https://stackblitz.com/edit/${packageName}?files=${filesContent}`;
-    window.open(url, "_blank");
-    toast.success("Opening code in Sandbox");
+  const openInSandbox = async () => {
+    try {
+      const agent = files[0].content;
+      const packagejson = files[1].content;
+
+      const response = await fetch("/api/sandbox", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ agent, packagejson }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const url = data.url;
+        console.log(url);
+        toast.success("Opening code in Sandbox environment");
+        window.open(url, "_blank");
+      } else {
+        console.log("Error:", data.message);
+        toast.error("An error occurred! Please check console for details.");
+      }
+    } catch (e) {
+      console.log("Error:", e);
+      toast.error("An error occurred! Please check console for details.");
+    }
   };
 
   const getLanguageClass = (language: string) => {
@@ -298,7 +317,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
             variant="outline"
             size="sm"
             onClick={openInSandbox}
-            title="Open in StackBlitz Sandbox"
+            title="Open in Sandbox"
             className="w-full justify-center"
           >
             <ExternalLink className="h-4 w-4 mr-1" /> Open in Sandbox
