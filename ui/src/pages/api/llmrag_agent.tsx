@@ -19,7 +19,7 @@ export default async function handler(
 
   try {
     // Read the Move AI Agent documentation directly from file
-    const moveAgentDocsPath = path.join(process.cwd(), "full_docs", "move_ai_agent.txt");
+    const moveAgentDocsPath = path.join(process.cwd(), "ui", "data", "move_ai_agent.txt");
     const moveAgentDocs = fs.readFileSync(moveAgentDocsPath, "utf-8");
 
     // Generate code using Claude Sonnet
