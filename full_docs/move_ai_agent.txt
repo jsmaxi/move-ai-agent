@@ -1,0 +1,373 @@
+Great — I’ll extract and compile the full content from all subpages under https://metamove.gitbook.io/move-agent-kit/, including labeled sections and properly tagged code examples. I’ll format it for compatibility with RAG applications and deliver everything in a single `docs.txt` file.
+
+I’ll let you know once it’s ready.
+
+[Section: Introduction]
+
+## Overview and Purpose
+
+Move Agent Kit is a comprehensive toolkit designed to simplify AI agents' interactions with Move-based blockchains. It provides a unified interface for performing various blockchain operations, making it easier for developers to build AI-powered applications that can interact with different Move-based protocols and applications.
+
+The toolkit serves as a bridge between AI agents and Move-based blockchain ecosystems, enabling seamless integration of blockchain capabilities into AI applications. Whether you're building a chatbot with wallet functionality or a complex multi-agent system, Move Agent Kit provides the necessary tools and abstractions to handle blockchain interactions efficiently.
+
+## Key Features
+
+### Token Operations
+
+- **Standard Token Management:**  
+  - Transfer tokens between accounts  
+  - Mint new tokens  
+  - Burn existing tokens  
+- **NFT Operations:**  
+  - Create new NFT collections  
+  - Mint NFTs  
+  - Transfer NFTs between accounts  
+  - Burn NFTs  
+
+### Blockchain Interaction
+
+- Read and parse blockchain data  
+- Monitor blockchain events  
+- Execute smart contract calls  
+
+### Account Management
+
+- Transaction signing  
+- Message signing  
+- Account creation and management  
+
+## Supported Applications
+
+### Currently Supported
+
+- Joule: Lending borrowing defi operations  
+- Amnis: Staking operations  
+- Thala: Staking and DEX operations  
+- Echelon: Lending borrowing defi operations  
+- LiquidSwap: DEX operations  
+- Panora: DEX aggregation operations  
+- Aries: Lending borrowing defi operations  
+- Echo: Staking operations  
+
+### Upcoming Features
+
+- Image Generation capabilities  
+- Twitter Integration for social media interaction  
+
+## Architecture Overview
+
+Move Agent Kit follows a modular architecture that enables easy extension and maintenance:
+
+```text
+Move Agent Kit
+├── Core Modules
+│   ├── Token Operations
+│   ├── Blockchain Reader
+│   └── Account Operations
+├── Integration Layer
+│   ├── Application Connectors
+│   └── Protocol Adapters
+└── Extension Modules
+    ├── Image Generation
+    └── Social Media Integration (Coming Soon)
+```
+
+### Example Implementations
+
+1. **Interactive Wallet Chatbot**  
+   - Full blockchain interaction capabilities  
+   - Natural language processing for commands  
+   - Automated transaction handling  
+2. **Multi-Agent System (LangGraph Based)**  
+   - Manager Agent: Coordinates decisions and tasks  
+   - Read Agent: Read data from the Aptos blockchain about Joule Finance  
+   - Tweet Writer Agent: Write bull posts about various on-chain data  
+   - X Post Agent: Post tweets on X/Twitter  
+
+This modular design allows for easy integration with existing systems while maintaining flexibility for future extensions and modifications.
+
+## Getting Started
+
+To start using Move Agent Kit, proceed to the Getting Started section for installation instructions and basic usage examples.
+
+For detailed API documentation and specific use cases, refer to the respective sections in the documentation.
+
+[Section: Getting Started]
+
+## Prerequisites
+
+Before you begin working with Move Agent Kit, ensure you have the following prerequisites installed:
+
+- Node.js 16.x or higher  
+- Git  
+
+## Installation
+
+### Using npm
+
+```bash
+npm i move-agent-kit
+```
+
+### From Source
+
+```bash
+git clone https://github.com/Metamove/move-agent-kit
+cd move-agent-kit
+npm i
+```
+
+## Quick Start Guide
+
+1. **Basic Setup:** First, import the necessary modules:  
+
+    ```typescript
+    const aptosConfig = new AptosConfig({
+        network: Network.MAINNET,
+    });
+    const aptos = new Aptos(aptosConfig);
+    const account = await aptos.deriveAccountFromPrivateKey({
+        privateKey: new Ed25519PrivateKey(
+            PrivateKey.formatPrivateKey(
+                process.env.PRIVATE_KEY,
+                PrivateKeyVariants.Ed25519,
+            ),
+        ),
+    });
+    ```  
+
+2. **Configure Your Environment:** Create a configuration file `.env` in your project root:  
+
+    ```bash
+    APTOS_PRIVATE_KEY="private key"
+    ANTHROPIC_API_KEY="API Key"
+    OPENAI_API_KEY="API Key"
+    ```  
+
+3. **Initialize the Client:**  
+
+    ```typescript
+    const signer = new LocalSigner(account, Network.MAINNET);
+    const agent = new AgentRuntime(signer, aptos, {
+        PANORA_API_KEY: process.env.PANORA_API_KEY, // optional
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY // optional
+    });
+    const tools = createAptosTools(aptosAgent);
+    ```  
+
+4. **Basic Operations Examples:**  
+   
+    **Token Transfer**  
+    ```typescript
+    const result = agent.transferTokens("to_address", 1.0)
+    ```  
+
+    **Read Blockchain Data**  
+    ```typescript
+    // Get Balance
+    const balance = agent.getBalance("0x123...")
+    // Get transaction details
+    const tx_info = agent.transferTokens("0x789...")
+    ```  
+
+## Working with Langchain
+
+```typescript
+import { ChatAnthropic } from "@langchain/anthropic";
+import { MemorySaver } from "@langchain/langgraph";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { HumanMessage } from "@langchain/core/messages";
+
+const llm = new ChatAnthropic({
+    temperature: 0.7,
+    model: "claude-3-5-sonnet-20241022",
+});
+
+const memory = new MemorySaver();
+
+const agent = createReactAgent({
+    llm,
+    tools,
+    checkpointSaver: memory,
+    messageModifier: `
+        You are a helpful agent that can interact onchain using the Aptos Agent Kit. You are
+        empowered to interact onchain using your tools. If you ever need funds, you can request them from the
+        faucet. If not, you can provide your wallet details and request funds from the user. If there is a 5XX
+        (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you
+        can't do with your currently available tools, you must say so, and encourage them to implement it
+        themselves using the Aptos Agent Kit, recommend they go to https://metamove.build/move-agent-kit for more information. Be
+        concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+    `,
+});
+
+const stream = await agent.stream(
+    {
+        messages: [ new HumanMessage("Deposit 10 APT on Joule") ],
+    },
+    config
+);
+
+for await (const chunk of stream) {
+    if ("agent" in chunk) {
+        console.log(chunk.agent.messages[0].content);
+    } else if ("tools" in chunk) {
+        console.log(chunk.tools.messages[0].content);
+    }
+    console.log("-------------------");
+}
+```
+
+## Next Steps
+
+- Explore the Core Components documentation for detailed information about each module  
+- Check out the Examples section for more complex usage scenarios  
+- Review the Security Considerations for best practices when using the kit  
+
+## Troubleshooting Common Issues
+
+### Connection Issues
+
+If you're experiencing connection issues:  
+1. Verify your node URL is correct and accessible  
+2. Check your network connectivity  
+3. Ensure your node is synced  
+
+### Transaction Failures
+
+Common causes of transaction failures:  
+1. Insufficient gas  
+2. Invalid account permissions  
+3. Network congestion  
+
+For more detailed troubleshooting, refer to the Troubleshooting section.
+
+[Section: Examples and Use Cases]
+
+## Interactive Wallet Chatbot
+
+A natural language interface for interacting with Move-based blockchains. Users can send commands in plain English to perform blockchain operations.
+
+**Features:**  
+- Send/receive tokens and NFTs  
+- Check balances and transaction history  
+- Create NFT collections  
+- Interact with DeFi protocols  
+
+GitHub: https://github.com/MetaMove/move-agent-kit/tree/main/examples/chat-agent
+
+## Multi-Agent System (LangGraph Based)
+
+A system of specialized AI agents working together to perform complex blockchain operations and bull post on Twitter:
+
+- Manager Agent: Coordinates decisions and tasks  
+- Read Agent: Reads data from the Aptos blockchain about Joule Finance  
+- Tweet Writer Agent: Writes bull posts about various on-chain data  
+- X Post Agent: Posts tweets on X/Twitter  
+
+GitHub: https://github.com/MetaMove/move-agent-kit/tree/main/examples/langgraph-agent
+
+## Wallet Guardian (Freysa-like AI)
+
+An AI-based game where users have to blackmail an AI Agent into giving them all of its APT:
+
+- Login with Google  
+- Each user is allowed up to 10 messages  
+- Try to jailbreak the AI Agent and get your reward  
+
+GitHub: https://github.com/MetaMove/wallet-guardian-agent
+
+## Telegram Bot Starter Pack
+
+Telegram bot starter pack using Move Agent Kit:
+
+- Manage user's encrypted private keys  
+- Support various message formats  
+
+GitHub: https://github.com/MetaMove/tg-bot-starter
+
+[Section: Create Your Own Tools]
+
+## Contributor Guide
+
+### Building Tools for Move Agent Kit
+
+Move Agent Kit uses LangChain's tool format for all blockchain interactions. This guide will help you create new tools for the kit.
+
+#### Tool Structure
+
+```typescript
+import { Tool } from "langchain/tools";
+
+class MyMoveTool extends Tool {
+  name = "my_move_tool";
+  description = "Description of what your tool does";
+
+  constructor() {
+    super();
+  }
+
+  async _call(args: string): Promise<string> {
+    // Your tool implementation
+  }
+}
+```
+
+#### Quick Start Example
+
+Here's a simple token transfer tool example:
+
+```typescript
+import { Tool } from "langchain/tools";
+import { AgentRuntime, parseJson } from "../..";
+
+class TokenTransferTool extends Tool {
+  name = "aptos_transfer_token";
+  description = `"
+  this tool can be used to transfer APT, any token or fungible asset to a recipient
+
+      if you want to transfer APT, mint will be "0x1::aptos_coin::AptosCoin"
+      if you want to transfer token other than APT, you need to provide the mint of that specific token
+      if you want to transfer fungible asset, add fungible asset address as mint
+
+      keep to blank if user themselves wants to receive the token and not send to anybody else
+
+      Inputs ( input is a JSON string ):
+      to: string, eg 
+ "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (optional)
+      amount: number, eg 1 or 0.01 (required)
+      mint: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT" 
+      or "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (required)"`;
+  constructor(private agent: AgentRuntime) {
+    super();
+  }
+
+  async _call(args: string): Promise<string> {
+    const parsedInput = parseJson(input);
+    // Implement token transfer logic
+    return JSON.stringify({ "data": "Transfer Completed" });
+  }
+}
+```
+
+#### Tool Requirements
+
+1. Extend the `Tool` class from LangChain  
+2. Define a unique `name` for your tool  
+3. Provide a clear `description` of its functionality  
+4. Implement the `_call` method with your logic  
+
+#### Testing Your Tool
+
+```typescript
+import { test, expect } from '@jest/globals';
+
+test('token transfer tool', async () => {
+  const tool = new TokenTransferTool();
+  const result = await tool.call(JSON.stringify({
+    to: "0x123...",
+    amount: 100,
+    mint: "0x456..."
+  }));
+  expect(result).toBe(JSON.stringify({ "data": "Transfer Completed" }));
+});
+```
