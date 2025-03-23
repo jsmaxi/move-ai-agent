@@ -32,6 +32,7 @@ import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-toml";
 import "prismjs/themes/prism-tomorrow.css";
 import "@/utils/prism-move";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 interface CodeDisplayProps {
   files: CodeFile[];
@@ -76,6 +77,8 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
   >({});
   const [contractStatus, setContractStatus] = useState<ContractStatus>("none");
 
+  const { connected } = useWallet();
+
   useEffect(() => {
     if (files.length > 0) {
       const highlighted: Record<string, string> = {};
@@ -108,6 +111,9 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
     console.log(action);
     if (onContractAction) {
       await onContractAction(action);
+    }
+    if (!connected) {
+      return;
     }
     console.log("set status of action");
     if (action === "compile") {
