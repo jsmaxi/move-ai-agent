@@ -113,7 +113,7 @@ const RAGBotDialog: React.FC<RAGBotDialogProps> = ({ open, onOpenChange }) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] tech-card border-lab-border p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] tech-card border-lab-border p-0 overflow-auto">
         <DialogHeader className="px-6 pt-6 pb-2">
           <DialogTitle className="flex items-center gap-2 text-xl">
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-lab-gradient text-white">

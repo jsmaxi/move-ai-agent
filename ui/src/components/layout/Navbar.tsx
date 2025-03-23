@@ -73,11 +73,16 @@ const Navbar: React.FC<NavbarProps> = ({
         {!isMobile && (
           <div className="hidden md:flex items-center gap-4">
             {connected && (
-              <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
-                <span className="text-sm font-medium text-lab-dark">
-                  {balance.toFixed(1)} APT
-                </span>
-              </div>
+              <Link
+                href="https://aptos.dev/en/build/apis/faucet-api"
+                target="_blank"
+              >
+                <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
+                  <span className="text-sm font-medium text-lab-dark">
+                    {balance.toFixed(1)} APT
+                  </span>
+                </div>
+              </Link>
             )}
 
             <Button
@@ -118,6 +123,18 @@ const Navbar: React.FC<NavbarProps> = ({
 
         {isMobile && (
           <div className="flex items-center gap-2">
+            {connected && (
+              <Link
+                href="https://aptos.dev/en/build/apis/faucet-api"
+                target="_blank"
+              >
+                <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
+                  <span className="text-sm font-medium text-lab-dark">
+                    {balance.toFixed(1)} APT
+                  </span>
+                </div>
+              </Link>
+            )}
             <ThemeSelector
               currentTheme={currentTheme}
               onThemeChange={onThemeChange}
