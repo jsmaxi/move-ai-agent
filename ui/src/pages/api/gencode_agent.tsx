@@ -2,6 +2,9 @@ import { ChatAnthropic } from "@langchain/anthropic";
 import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +14,7 @@ export default async function handler(
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
 
-  const { query } = req.body;
+  const { query, ctx } = req.body;
 
   if (!query) {
     return res.status(400).json({ message: "Query is required" });
@@ -26,6 +29,36 @@ export default async function handler(
     );
     const moveAgentDocs = fs.readFileSync(moveAgentDocsPath, "utf-8");
 
+    let userContext: string = "User Context:\n";
+
+    if (ctx && ctx.trim()) {
+      console.log("Generating code with extra user context");
+      // Split the data into chunks
+      const textSplitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 1000,
+        chunkOverlap: 200,
+      });
+      const docs = await textSplitter.createDocuments([ctx as string]);
+
+      // Generate embeddings and store them
+      const embeddings = new OpenAIEmbeddings({
+        apiKey: process.env.OPENAI_API_KEY,
+        model: "text-embedding-3-large",
+      });
+      // Add documents to the vector store
+      const vectorStore = await MemoryVectorStore.fromDocuments(
+        docs,
+        embeddings
+      );
+
+      // Retrieve relevant documents
+      const results = await vectorStore.similaritySearch(query, 3);
+
+      userContext += results
+        .map((result: any) => result.pageContent)
+        .join("\n\n");
+    }
+
     // Generate code using Claude Sonnet
     const model = new ChatAnthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
@@ -34,6 +67,8 @@ export default async function handler(
     });
 
     const prompt = `
+      ${userContext}
+
       Context:
       ${moveAgentDocs}
 

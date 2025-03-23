@@ -266,15 +266,15 @@ const Index = () => {
 
     try {
       if (type === "contract") {
-        const txt = prompt;
+        const query = prompt;
         const ctx = context;
 
-        const response = await fetch("/api/gencode", {
+        const response = await fetch("/api/gencode_aptos", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ txt, ctx }),
+          body: JSON.stringify({ query, ctx }),
         });
 
         const data = await response.json();
@@ -311,15 +311,15 @@ const Index = () => {
           toast.error("An error occurred! Please check console for details.");
         }
       } else {
-        const txt = prompt;
+        const query = prompt;
         const ctx = context;
 
-        const response = await fetch("/api/gencode", {
+        const response = await fetch("/api/gencode_agent", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ txt, ctx }),
+          body: JSON.stringify({ query, ctx }),
         });
 
         const data = await response.json();
@@ -337,14 +337,14 @@ const Index = () => {
           const kitFile: CodeFile = {
             name: "agent.ts",
             language: "typescript",
-            content: parsedData?.code,
+            content: parsedData?.agent,
           };
 
           const pkgFile: CodeFile = pkg;
 
           console.log("generated");
           setGeneratedFiles([kitFile, pkgFile]);
-          addLog("Generated move agent kit code", "success");
+          addLog("Generated Move Agent Kit code", "success");
         } else {
           console.log("Error:", data.message);
           addLog(data?.message, "error");
