@@ -24,7 +24,7 @@ export default async function handler(
     //   "https://cdn.jsdelivr.net/gh/jsmaxi/llm-embeddings/test.txt"
     // );
     const aptosExamples = await fetchData(
-      "https://cdn.jsdelivr.net/gh/jsmaxi/llm-embeddings/examples.txt"
+      "https://cdn.jsdelivr.net/gh/jsmaxi/llm-embeddings/aptos_smart_contract.txt"
     );
 
     // Split the data into chunks

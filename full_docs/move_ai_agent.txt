@@ -1,6 +1,4 @@
-Great — I’ll extract and compile the full content from all subpages under https://metamove.gitbook.io/move-agent-kit/, including labeled sections and properly tagged code examples. I’ll format it for compatibility with RAG applications and deliver everything in a single `docs.txt` file.
-
-I’ll let you know once it’s ready.
+# Move Agent Kit Docs
 
 [Section: Introduction]
 

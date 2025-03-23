@@ -1,6 +1,4 @@
-Perfect. I’ll extract all tool classes from the GitHub folder at https://github.com/MetaMove/move-agent-kit/tree/main/src/tools. I’ll include their full code, descriptions, and generate a summary list of all available tools. The output will be structured in a .txt file optimized for use in RAG applications, with clear labels and code blocks for each tool.
-
-I’ll let you know as soon as it’s ready.
+# Move Agent Kit Tools 
 
 **List of Tools:**
 
