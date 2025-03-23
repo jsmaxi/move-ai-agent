@@ -3,6 +3,8 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { NextApiRequest, NextApiResponse } from "next";
+import * as fs from 'fs';
+import * as path from 'path';
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,29 +14,24 @@ export default async function handler(
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
 
-  const { query } = req.body;
+  const { txt } = req.body;
 
-  if (!query) {
-    return res.status(400).json({ message: "Query is required" });
+  if (!txt) {
+    return res.status(400).json({ message: "Prompt is required" });
   }
 
   try {
-    // Fetch documentation and examples from a remote source
-    // const aptosDocs = await fetchData(
-    //   "https://cdn.jsdelivr.net/gh/jsmaxi/llm-embeddings/test.txt"
-    // );
-    const aptosExamples = await fetchData(
-      "https://cdn.jsdelivr.net/gh/jsmaxi/llm-embeddings/aptos_smart_contract.txt"
-    );
-
+    // Read the Aptos smart contract documentation from file
+    const aptosDocsPath = path.join(process.cwd(), 'full_docs', 'aptos_smart_contract.txt');
+    const aptosDocsContent = fs.readFileSync(aptosDocsPath, 'utf-8');
+    
+    console.log("Generating code with Aptos documentation context");
     // Split the data into chunks
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
     });
-    const docs = await textSplitter.createDocuments([
-      /*aptosDocs, */ aptosExamples,
-    ]);
+    const docs = await textSplitter.createDocuments([aptosDocsContent]);
 
     // Generate embeddings and store them
     const embeddings = new OpenAIEmbeddings({
@@ -42,10 +39,13 @@ export default async function handler(
       model: "text-embedding-3-large",
     });
     // Add documents to the vector store
-    const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
+    const vectorStore = await MemoryVectorStore.fromDocuments(
+      docs,
+      embeddings
+    );
 
     // Retrieve relevant documents
-    const results = await vectorStore.similaritySearch(query, 3);
+    const results = await vectorStore.similaritySearch(txt, 3);
 
     const context = results
       .map((result: any) => result.pageContent)
@@ -59,13 +59,22 @@ export default async function handler(
     });
 
     const prompt = `
-      Context:
-      ${context}
+    Context:
+    ${context}
 
-      Task:
-      ${query}
+    Task:
+    ${txt}
 
-      Generate Aptos smart contract code based on the provided context. Ensure the code is compatible with the Aptos blockchain and follows best practices.
+    Generate Aptos smart contract code based on the provided context and task. 
+    Ensure the code is compatible with the Aptos blockchain and follows best practices.
+    Return both, contract.move smart contract code and Move.toml manifest code. 
+    Avoid any additional text, details, suggestions or instructions.
+    Avoid unresolved addresses in Move.toml manifest.
+    Make sure that output is properly escaped JSON string, adhering to this format:
+      {
+          \"contract\": \"move contract code\",
+          \"manifest\": \"toml manifest code\"
+      }
     `;
 
     const response = await model.invoke(prompt);
@@ -82,13 +91,4 @@ export default async function handler(
       .status(500)
       .json({ message: "Failed to generate code", error: error?.message });
   }
-}
-
-async function fetchData(url: string) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    console.log(response?.status, response?.statusText);
-    throw new Error(`Failed to fetch data from ${url}`);
-  }
-  return await response.text();
 }
