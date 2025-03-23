@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import PromptInput from "@/components/lab/PromptInput";
 import CodeDisplay from "@/components/lab/CodeDisplay";
@@ -14,9 +14,10 @@ import { AGENT_TEMPLATES, CONTRACT_TEMPLATES } from "@/lib/templates";
 import { GeneratedCode, GeneratedKit } from "@/types/generatedCode";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { pkg } from "@/types/pkg";
-
-// const DEMO_CONTRACT_FILES: CodeFile[] = CONTRACT_TEMPLATES["fungible-token"];
-// const DEMO_AGENT_FILES: CodeFile[] = AGENT_TEMPLATES["transfer-monitor"];
+import { Transaction } from "@/types/transaction";
+import TransactionList from "./lab/TransactionList";
+import AuditList from "./lab/AuditList";
+import { Audit } from "@/types/audit";
 
 const Index = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -25,8 +26,10 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRagBotOpen, setIsRagBotOpen] = useState(false);
   const [isActionInProgress, setIsActionInProgress] = useState(false);
-  const [balance, setBalance] = useState<number>(10); // Initial balance for testing
+  const [balance, setBalance] = useState<number>(10); // Initial balance for testing on devnet
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [audits, setAudits] = useState<Audit[]>([]);
   const [prompt, setPrompt] = useState<string>("");
   const [promptType, setPromptType] = useState<"contract" | "agent">(
     "contract"
@@ -84,6 +87,10 @@ const Index = () => {
     );
   };
 
+  const handleActionCost = (actionCost: number) => {
+    setBalance(balance - actionCost);
+  };
+
   const handleContractAction = async (
     action: "findBugs" | "compile" | "deploy" | "prove"
   ) => {
@@ -115,6 +122,11 @@ const Index = () => {
         const moveCode = generatedFiles[0]?.content;
         const tomlManifest = generatedFiles[1]?.content;
 
+        const contractName =
+          prompt && prompt.length > 30
+            ? prompt.substring(0, 20) + "..."
+            : prompt;
+
         const response = await fetch("/api/audit", {
           method: "POST",
           headers: {
@@ -131,6 +143,17 @@ const Index = () => {
           addLog(data.output, "warning");
           addLog("Audit executed", "success");
           setBalance(balance - cost);
+          const newAudit: Audit = {
+            id: uuidv4(),
+            date: new Date(),
+            contractName: contractName,
+            summary:
+              data.output.length > 30
+                ? data.output.substring(0, 30) + "..."
+                : data.output + "...",
+            details: data.output,
+          };
+          setAudits((prevAudits) => [newAudit, ...prevAudits].slice(0, 10));
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -183,6 +206,29 @@ const Index = () => {
           addLog(data.output, "warning");
           addLog("Deploy executed", "success");
           setBalance(balance - cost);
+          const txRegex = /"transaction_hash": "(0x[a-fA-F0-9]+)"/;
+          const txMatch = data.output.match(txRegex);
+          const txHash = txMatch ? txMatch[1] : null;
+          console.log("Transaction hash:", txHash);
+          let success = false;
+          try {
+            const vmStatusRegex = /"vm_status":\s*"([^"]*)"/i;
+            const vmStatusMatch = data.output.match(vmStatusRegex);
+            if (vmStatusMatch) {
+              const vmStatus = vmStatusMatch[1];
+              const containsSuccess = /success/i.test(vmStatus);
+              success = containsSuccess;
+            }
+          } catch (e) {
+            console.log("Unable to determine tx status");
+          }
+          const newTx: Transaction = {
+            id: uuidv4(),
+            hash: txHash,
+            date: new Date(),
+            status: success ? "success" : "failed",
+          };
+          setTransactions((prevTxs) => [newTx, ...prevTxs].slice(0, 10));
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -336,7 +382,7 @@ const Index = () => {
 
           const kitFile: CodeFile = {
             name: "agent.ts",
-            language: "typescript",
+            language: "javascript",
             content: parsedData?.agent,
           };
 
@@ -366,16 +412,6 @@ const Index = () => {
   const handleHistoryItemClick = (item: HistoryItem) => {
     setPromptType(item.type);
     setPrompt(item.prompt);
-
-    // const templates =
-    //   item.type === "contract" ? CONTRACT_TEMPLATES : AGENT_TEMPLATES;
-
-    // const templateIds = Object.keys(templates);
-    // if (templateIds.length > 0) {
-    //   const firstTemplate = templates[templateIds[0]];
-    //   setGeneratedFiles(firstTemplate);
-    // }
-
     addLog(`Loaded ${item.type} prompt: ${item.prompt}`, "info");
   };
 
@@ -384,6 +420,7 @@ const Index = () => {
       onHistoryItemClick={handleHistoryItemClick}
       historyItems={historyItems}
       balance={balance}
+      onCost={handleActionCost}
     >
       <div className="space-y-6">
         <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 auto-rows-auto">
@@ -421,10 +458,18 @@ const Index = () => {
           </div>
         </section>
 
+        <section>
+          <TransactionList transactions={transactions} />
+        </section>
+
+        <section>
+          <AuditList audits={audits} />
+        </section>
+
         <section className="flex justify-center gap-4 mt-8">
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() =>
               window.open(
                 "https://github.com/jsmaxi/move-ai-agent/issues/new",
@@ -436,7 +481,7 @@ const Index = () => {
           </Button>
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() =>
               window.open("https://github.com/jsmaxi/move-ai-agent", "_blank")
             }

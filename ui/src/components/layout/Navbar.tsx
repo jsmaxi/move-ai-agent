@@ -1,19 +1,27 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import WalletConnect from "../lab/WalletConnect";
-import { BrainCircuit, History, Menu, AtomIcon } from "lucide-react";
+import {
+  BrainCircuit,
+  History,
+  Menu,
+  AtomIcon,
+  ShieldCheck,
+} from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import RAGBotDialog from "../lab/RAGBotDialog";
 import ThemeSelector from "../lab/ThemeSelector";
 import { ThemeType } from "@/types/theme";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import Link from "next/link";
+import MoveAuditorDialog from "../lab/MoveAuditorDialog";
 
 interface NavbarProps {
   onToggleHistory: () => void;
   currentTheme: ThemeType;
   onThemeChange: (theme: ThemeType) => void;
   balance: number;
+  onCost: (cost: number) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -21,10 +29,12 @@ const Navbar: React.FC<NavbarProps> = ({
   currentTheme,
   onThemeChange,
   balance,
+  onCost,
 }) => {
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRAGBotOpen, setIsRAGBotOpen] = useState(false);
+  const [isAuditorOpen, setIsAuditorOpen] = useState(false);
 
   const { connected } = useWallet();
 
@@ -63,11 +73,16 @@ const Navbar: React.FC<NavbarProps> = ({
         {!isMobile && (
           <div className="hidden md:flex items-center gap-4">
             {connected && (
-              <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
-                <span className="text-sm font-medium text-lab-dark">
-                  {balance.toFixed(1)} APT
-                </span>
-              </div>
+              <Link
+                href="https://aptos.dev/en/build/apis/faucet-api"
+                target="_blank"
+              >
+                <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
+                  <span className="text-sm font-medium text-lab-dark">
+                    {balance.toFixed(1)} APT
+                  </span>
+                </div>
+              </Link>
             )}
 
             <Button
@@ -77,6 +92,15 @@ const Navbar: React.FC<NavbarProps> = ({
             >
               <History className="h-4 w-4" />
               <span className="font-medium">History</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="gap-2 text-lab-dark hover:bg-lab-blue/5"
+              onClick={() => setIsAuditorOpen(true)}
+            >
+              <ShieldCheck className="h-4 w-4" />
+              <span className="font-medium">Auditor</span>
             </Button>
 
             <Button
@@ -99,6 +123,18 @@ const Navbar: React.FC<NavbarProps> = ({
 
         {isMobile && (
           <div className="flex items-center gap-2">
+            {connected && (
+              <Link
+                href="https://aptos.dev/en/build/apis/faucet-api"
+                target="_blank"
+              >
+                <div className="flex items-center gap-2 px-3 py-1.5 border border-lab-border rounded-lg bg-white/50 backdrop-blur-sm">
+                  <span className="text-sm font-medium text-lab-dark">
+                    {balance.toFixed(1)} APT
+                  </span>
+                </div>
+              </Link>
+            )}
             <ThemeSelector
               currentTheme={currentTheme}
               onThemeChange={onThemeChange}
@@ -108,11 +144,11 @@ const Navbar: React.FC<NavbarProps> = ({
         )}
 
         {isMobile && isMenuOpen && (
-          <div className="fixed inset-0 top-16 z-50 animate-fade-in bg-black text-white">
+          <div className="fixed inset-0 top-16 z-50 animate-fade-in">
             <nav className="container flex flex-col gap-3 p-4">
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-2 text-lab-dark hover:bg-lab-blue/5 h-12"
+                className="w-full justify-start gap-2 text-lab-dark bg-gray-300 hover:bg-gray-500 h-12"
                 onClick={() => {
                   onToggleHistory();
                   setIsMenuOpen(false);
@@ -124,7 +160,19 @@ const Navbar: React.FC<NavbarProps> = ({
 
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-2 text-lab-dark hover:bg-lab-blue/5 h-12"
+                className="w-full justify-start gap-2 text-lab-dark bg-gray-300 hover:bg-gray-500 h-12"
+                onClick={() => {
+                  setIsAuditorOpen(true);
+                  setIsMenuOpen(false);
+                }}
+              >
+                <ShieldCheck className="h-5 w-5" />
+                <span className="font-medium">Auditor</span>
+              </Button>
+
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 text-lab-dark bg-gray-300 hover:bg-gray-500 h-12"
                 onClick={() => {
                   setIsRAGBotOpen(true);
                   setIsMenuOpen(false);
@@ -138,6 +186,11 @@ const Navbar: React.FC<NavbarProps> = ({
         )}
 
         <RAGBotDialog open={isRAGBotOpen} onOpenChange={setIsRAGBotOpen} />
+        <MoveAuditorDialog
+          open={isAuditorOpen}
+          onOpenChange={setIsAuditorOpen}
+          onAuditCost={onCost}
+        />
       </div>
     </header>
   );

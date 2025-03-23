@@ -9,11 +9,11 @@ export default async function handler(
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
 
-  const { moveCode, tomlManifest } = req.body;
+  const { moveCode } = req.body;
 
-  if (!moveCode || !tomlManifest) {
+  if (!moveCode) {
     return res.status(400).json({
-      message: "Both contract.Move code and Move.toml manifest are required",
+      message: "Move smart contract code is required",
     });
   }
 
@@ -28,16 +28,13 @@ export default async function handler(
     const prompt = `
       You are Aptos Move smart contract developer and security expert.
 
-      Audit provided Aptos move smart contract code and toml manifest code. 
+      Audit provided Aptos move smart contract code. 
       Ensure the code is compatible with the Aptos blockchain and follows best practices.
       Avoid starting the response with phrases like 'I'll audit', start with the findings immediately.
       Avoid mentioning possitive aspects or suggestions for future development. Mention issues, vulnerabilities, and possible improvements you found.
 
       Move smart contract code:
       ${moveCode}
-
-      Corresponding toml manifest:
-      ${tomlManifest}
     `;
 
     const response = await model.invoke(prompt);
@@ -49,7 +46,7 @@ export default async function handler(
     );
     res.status(200).json({ output: response.content });
   } catch (error: any) {
-    console.error("Error auditing code:", error);
+    console.error("Error auditor:", error);
     res
       .status(500)
       .json({ message: "Failed to audit the code", error: error?.message });

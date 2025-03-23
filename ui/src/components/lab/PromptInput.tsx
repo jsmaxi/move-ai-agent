@@ -20,52 +20,42 @@ interface AgentTemplate {
 
 const CONTRACT_TEMPLATES: ContractTemplate[] = [
   {
-    id: "fungible-token",
-    name: "Fungible Token",
-    description: "Standard fungible token with transfer capabilities",
+    id: "greet-dog",
+    name: "Greet Dog",
+    description: "Smart contract to greet a dog",
+  },
+  {
+    id: "counter",
+    name: "Simple Counter",
+    description: "Counter smart contract",
   },
   {
     id: "nft",
-    name: "NFT Collection",
-    description: "Non-fungible token with metadata and minting functions",
-  },
-  {
-    id: "marketplace",
-    name: "NFT Marketplace",
-    description: "Marketplace for buying and selling NFTs",
-  },
-  {
-    id: "staking",
-    name: "Staking Contract",
-    description: "Token staking with rewards distribution",
-  },
-  {
-    id: "dao",
-    name: "DAO Governance",
-    description: "Decentralized governance with proposal and voting",
+    name: "NFT Mint Burn",
+    description: "Smart contract to mint and burn NFT",
   },
 ];
 
 const AGENT_TEMPLATES: AgentTemplate[] = [
   {
-    id: "transfer-monitor",
-    name: "Transfer Monitor",
-    description: "Agent that monitors token transfers",
+    id: "check-balance",
+    name: "Check Balance",
+    description: "Agent that checks APT balance",
   },
   {
-    id: "price-oracle",
-    name: "Price Oracle",
-    description: "Agent that fetches and provides price data",
+    id: "llm-joule",
+    name: "LLM Joule Deposit",
+    description: "Agent that deposits APT on Joule",
   },
   {
-    id: "liquidity-bot",
-    name: "Liquidity Bot",
-    description: "Agent that provides liquidity to DEX pools",
+    id: "custom-tool",
+    name: "Custom Tool",
+    description: "Agent code for adding custom tool",
   },
   {
-    id: "event-notifier",
-    name: "Event Notifier",
-    description: "Agent that sends notifications for on-chain events",
+    id: "tg-bot",
+    name: "Telegram Bot Simple",
+    description: "Agent that can interact with Telegram user",
   },
 ];
 
