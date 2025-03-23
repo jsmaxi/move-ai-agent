@@ -20,29 +20,19 @@ interface AgentTemplate {
 
 const CONTRACT_TEMPLATES: ContractTemplate[] = [
   {
-    id: "fungible-token",
-    name: "Fungible Token",
-    description: "Standard fungible token with transfer capabilities",
+    id: "greet-dog",
+    name: "Greet Dog",
+    description: "Smart contract to greet a dog",
+  },
+  {
+    id: "counter",
+    name: "Simple Counter",
+    description: "Counter smart contract",
   },
   {
     id: "nft",
-    name: "NFT Collection",
-    description: "Non-fungible token with metadata and minting functions",
-  },
-  {
-    id: "marketplace",
-    name: "NFT Marketplace",
-    description: "Marketplace for buying and selling NFTs",
-  },
-  {
-    id: "staking",
-    name: "Staking Contract",
-    description: "Token staking with rewards distribution",
-  },
-  {
-    id: "dao",
-    name: "DAO Governance",
-    description: "Decentralized governance with proposal and voting",
+    name: "NFT Mint Burn",
+    description: "Smart contract to mint and burn NFT",
   },
 ];
 
