@@ -11,8 +11,9 @@ import { HistoryItem } from "@/types/history";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Github, BugIcon } from "lucide-react";
 import { AGENT_TEMPLATES, CONTRACT_TEMPLATES } from "@/lib/templates";
-import { GeneratedCode } from "@/types/generatedCode";
+import { GeneratedCode, GeneratedKit } from "@/types/generatedCode";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { pkg } from "@/types/pkg";
 
 // const DEMO_CONTRACT_FILES: CodeFile[] = CONTRACT_TEMPLATES["fungible-token"];
 // const DEMO_AGENT_FILES: CodeFile[] = AGENT_TEMPLATES["transfer-monitor"];
@@ -107,11 +108,6 @@ const Index = () => {
       } action...`,
       "info"
     );
-
-    // addLog(
-    //   `${actionName} completed successfully. Cost: ${cost} APT`,
-    //   "success"
-    // );
 
     try {
       setIsActionInProgress(true);
@@ -269,14 +265,7 @@ const Index = () => {
     setHistoryItems([...historyItems, item]);
 
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
       if (type === "contract") {
-        // const templateIds = Object.keys(CONTRACT_TEMPLATES);
-        // const randomTemplateId =
-        //   templateIds[Math.floor(Math.random() * templateIds.length)];
-        // setGeneratedFiles(CONTRACT_TEMPLATES[randomTemplateId]);
-        // addLog("Generated Aptos contract code", "success");
-        // addLog(`Contract type: ${randomTemplateId}`, "info");
         const txt = prompt;
         const ctx = context;
 
@@ -322,12 +311,46 @@ const Index = () => {
           toast.error("An error occurred! Please check console for details.");
         }
       } else {
-        const templateIds = Object.keys(AGENT_TEMPLATES);
-        const randomTemplateId =
-          templateIds[Math.floor(Math.random() * templateIds.length)];
-        setGeneratedFiles(AGENT_TEMPLATES[randomTemplateId]);
-        addLog("Generated Move Agent Kit code", "success");
-        addLog(`Agent type: ${randomTemplateId}`, "info");
+        const txt = prompt;
+        const ctx = context;
+
+        const response = await fetch("/api/gencode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ txt, ctx }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("response ok");
+          const code = data.output;
+          console.log(JSON.stringify(code));
+
+          console.log("parsing...");
+          const parsedData: GeneratedKit = JSON.parse(code);
+          console.log("parsed");
+          console.log(parsedData);
+
+          const kitFile: CodeFile = {
+            name: "agent.ts",
+            language: "typescript",
+            content: parsedData?.code,
+          };
+
+          const pkgFile: CodeFile = pkg;
+
+          console.log("generated");
+          setGeneratedFiles([kitFile, pkgFile]);
+          addLog("Generated move agent kit code", "success");
+        } else {
+          console.log("Error:", data.message);
+          addLog(data?.message, "error");
+          addLog(data?.error, "error");
+          toast.error("An error occurred! Please check console for details.");
+        }
       }
 
       toast.success("Code generated successfully");

@@ -19,12 +19,12 @@ export default async function handler(
 
   try {
     // Read the Move AI Agent documentation directly from file
-    const moveAgentDocsPath = path.join(
+    const aptosDocsPath = path.join(
       process.cwd(),
       "data",
       "aptos_smart_contract.txt"
     );
-    const moveAgentDocs = fs.readFileSync(moveAgentDocsPath, "utf-8");
+    const aptosDocs = fs.readFileSync(aptosDocsPath, "utf-8");
 
     // Generate code using Claude Sonnet
     const model = new ChatAnthropic({
@@ -35,7 +35,7 @@ export default async function handler(
 
     const prompt = `
       Context:
-      ${moveAgentDocs}
+      ${aptosDocs}
 
       Query:
       ${query}
@@ -43,6 +43,7 @@ export default async function handler(
       Generate Aptos smart contract code based on the provided context and query. Ensure the code is compatible with the Aptos blockchain and follows best practices.Return both, contract.move smart contract code and Move.toml manifest code. 
       Avoid any additional text, details, suggestions or instructions.
       Avoid unresolved addresses in Move.toml manifest.
+
       Make sure that output is properly escaped JSON string, adhering to this format:
         {
             \"contract\": \"move contract code\",

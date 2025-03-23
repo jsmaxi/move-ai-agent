@@ -1,8 +1,13 @@
-{
-  "name": "kit",
+import { CodeFile } from "@/utils/codeHighlight";
+
+export const pkg: CodeFile = {
+  name: "package.json",
+  language: "javascript",
+  content: `{
+  "name": "PlayLab",
   "version": "1.0.0",
   "description": "Move agent kit PlayLab",
-  "main": "index.js",
+  "main": "agent.js",
   "type": "module",
   "private": true,
   "scripts": {
@@ -23,4 +28,5 @@
   "devDependencies": {
     "@types/node": "^22.13.10"
   }
-}
+}`,
+};
