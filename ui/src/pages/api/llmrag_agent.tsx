@@ -42,7 +42,7 @@ export default async function handler(
 
       You are an expert in Aptos blockchain and the Move AI agent kit. 
       Please answer the following question thoroughly and professionally, referencing the Context passed earlier, do not make up any information, and avoid using any external resources.
-      if you do not know anything, please say you do not know. Keep your response under 500 characters unless specifically requested more details.
+      if you do not know anything, please say you do not know. If you are talking about a tool, please provide the tool name and its description.
     `;
 
     const response = await model.invoke(prompt);
