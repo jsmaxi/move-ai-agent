@@ -213,7 +213,9 @@ const RAGBotDialog: React.FC<RAGBotDialogProps> = ({ open, onOpenChange }) => {
                             : "bg-white border border-lab-border"
                         }`}
                       >
-                        {message.text}
+                        <pre className="inline whitespace-pre-wrap break-words">
+                          {message.text}
+                        </pre>
                       </div>
                     </div>
                   ))}
