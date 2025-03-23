@@ -1,12 +1,27 @@
-# Aptos PlayLab AI
-
-<img src="./images/playlablogo.png" alt="project logo" width="100" height="100"/>
-
-Experiment, create, and innovate with AI assistance.
+# 🧪 Aptos PlayLab: AI-Powered IDE for Move Smart Contracts
 
 UI: https://move-ai-agent-production.up.railway.app/
 
-## Quick Start
+<img src="./images/playlablogo.png" alt="project logo" width="100" height="100"/>
+**Aptos PlayLab** is an interactive development environment for experimenting with Move smart contracts on the **Aptos** network. With built-in AI assistance, you can write, audit, compile, and deploy Move contracts — all from a single interface.
+
+This project is designed for **both beginners and advanced Move developers**, aiming to streamline development and push the boundaries of autonomous agent-based tooling.
+
+> ⚠️ Many components are **proof-of-concept** and under active development. Expect bugs, experimental features, and a growing playground for innovation!
+
+## 🚀 What Aptos PlayLab Can Do
+
+- 🤖 **AI agent to generate Aptos smart contracts** in Move
+- 🧠 **AI agent to generate LangChain JS / LangGraph agent code** using the Move Agent Kit  
+  - Agent creating agents — like **Von Neumann factories** for on-chain AI
+- 📚 **RAG-powered chat with Aptos documentation** 
+- 📚 **RAG-powered chat with Move Agent Kit documentation and codebase** 
+- ⚙️ **Compile and deploy generated smart contracts** to the Aptos network
+- 🧾 **Run the Move Prover** for formal verification of smart contracts
+- 🔐 **Basic AI-assisted smart contract security audit** (early-stage)
+
+
+## Quick Start - Run it locally
 
 Run:
 
@@ -26,8 +41,6 @@ Also, to interact with the contracts locally, install and setup aptos-cli tool. 
 aptos init
 ```
 
----
-
 ## Move Agent Kit
 
 Package:
@@ -38,7 +51,6 @@ Docs:
 
 https://metamove.gitbook.io/move-agent-kit
 
----
 
 ## Contract Actions Example
 
@@ -74,29 +86,3 @@ aptos move deploy
 ```
 
 [Output Example](OUTPUT.md)
-
----
-
-## RAG
-
-jsDelivr free CDN: https://www.jsdelivr.com/?docs=gh
-
-example file: https://cdn.jsdelivr.net/gh/jsmaxi/llm-embeddings/test.txt
-
-LLM Embeddings (public): https://github.com/jsmaxi/llm-embeddings
-
-Set environment variables (API keys) in .env file, according to .env.example
-
-Obtain ANTHROPIC_API_KEY from https://console.anthropic.com/ (Claude)
-
-Obtain OPENAI_API_KEY from https://platform.openai.com/ (OpenAI)
-
-Local embeddings example:
-
-https://github.com/jsmaxi/move-ai-agent/blob/main/ui/src/lib/loadDocs.ts
-
-https://github.com/jsmaxi/move-ai-agent/blob/main/ui/src/pages/api/kit.tsx
-
-https://github.com/jsmaxi/move-ai-agent/blob/main/ui/data/docs2.json
-
----
