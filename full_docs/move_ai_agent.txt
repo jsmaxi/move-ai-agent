@@ -369,3 +369,1331 @@ test('token transfer tool', async () => {
   expect(result).toBe(JSON.stringify({ "data": "Transfer Completed" }));
 });
 ```
+
+# Move Agent Kit Tools 
+
+**List of Tools:**
+
+- **getBalance** – Fetches balance of an Aptos account  
+- **burnNFT** – Burn an existing NFT on the Aptos blockchain  
+- **burnToken** – Burn a fungible asset token on Aptos  
+- **createToken** – Create a new fungible asset token on Aptos  
+- **getTokenDetails** – Retrieve details (e.g. supply, decimals) of a token on Aptos  
+- **getTokenPrice** – Fetch the current price of a token (APT or others) on Aptos  
+- **getTransaction** – Fetch details of a transaction on Aptos by its hash  
+- **mintToken** – Mint new tokens on Aptos  
+- **transferNFT** – Transfer an NFT to another account on Aptos  
+- **transferTokens** – Transfer APT, tokens, or fungible assets to a recipient on Aptos  
+
+- **stakeTokens** – Stake APT or other tokens on Amnis  
+- **unstakeTokens** – Unstake (withdraw staked) APT or tokens on Amnis  
+
+- **borrowAriesToken** – Borrow tokens from the Aries lending protocol  
+- **createAriesProfile** – Create a new user profile in Aries  
+- **lendAriesToken** – Lend (supply) tokens in the Aries protocol  
+- **repayAriesToken** – Repay borrowed tokens in Aries  
+- **withdrawAriesToken** – Withdraw supplied tokens from Aries  
+
+- **borrowTokenWithEchelon** – Borrow tokens from the Echelon lending protocol  
+- **lendTokenWithEchelon** – Lend tokens in Echelon  
+- **repayTokenWithEchelon** – Repay tokens in Echelon  
+- **withdrawTokenWithEchelon** – Withdraw tokens from Echelon  
+
+- **stakeTokenWithEcho** – Stake tokens in Echo  
+- **unstakeTokenWithEcho** – Unstake tokens in Echo  
+
+- **borrowToken** – Borrow APT or other tokens from a Joule lending position  
+- **claimReward** – Claim accrued rewards from a Joule pool  
+- **getPoolDetails** – Get details about a specific Joule lending pool  
+- **getUserAllPositions** – Get all lending positions of a user in Joule  
+- **getUserPosition** – Get details of a user’s position in a Joule pool  
+- **lendToken** – Lend APT or other tokens to a Joule position  
+- **repayToken** – Repay APT or other tokens to a Joule position  
+- **withdrawToken** – Withdraw APT or tokens from a Joule position  
+
+- **addLiquidity** – Add liquidity to a LiquidSwap pool  
+- **createPool** – Create a new pool on LiquidSwap  
+- **removeLiquidity** – Remove liquidity from a LiquidSwap pool  
+- **swap** – Swap tokens on LiquidSwap (DEX operation)  
+
+- **createImage** – Generate an image using OpenAI’s DALL-E API  
+
+- **swapWithPanora** – Swap tokens using the Panora DEX aggregator  
+
+- **addLiquidityWithThala** – Add liquidity in Thala (DEX/Staking protocol)  
+- **createPoolWithThala** – Create a new liquidity pool in Thala  
+- **mintMOD** – Mint Thala’s stablecoin (Move Dollar, “MOD”)  
+- **redeemMOD** – Redeem (burn) Thala’s stablecoin (MOD for collateral)  
+- **removeLiquidityWithThala** – Remove liquidity from Thala  
+- **stakeTokenWithThala** – Stake tokens in Thala (e.g. for yield)  
+- **unstakeTokenWithThala** – Unstake tokens in Thala  
+
+- **closePositionWithMerkleTrade** – Close an open position on MerkleTrade  
+- **getPositionsWithMerkleTrade** – Retrieve current positions from MerkleTrade  
+- **placeLimitOrderWithMerkleTrade** – Place a limit order on MerkleTrade  
+- **placeMarketOrderWithMerkleTrade** – Place a market order on MerkleTrade  
+
+---
+
+### [Tool: getBalance]
+
+**Purpose:** Fetches balance of an Aptos account.
+
+```typescript
+import { type MoveStructId, convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk"
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Fetches balance of an aptos account
+ * @param agent MoveAgentKit instance
+ * @param mint (optional) MoveStructId or address of a specific token to check
+ * @returns Balance as a number (APT or specified token)
+ * @example
+ * ```ts
+ * const balance = await getBalance(agent)
+ * ```
+ */
+export async function getBalance(agent: AgentRuntime, mint?: string | MoveStructId): Promise<number> {
+  try {
+    if (mint) {
+      let balance: number
+      if (mint.split("::").length !== 3) {
+        const balances = await agent.aptos.getCurrentFungibleAssetBalances({
+          options: {
+            where: {
+              owner_address: {
+                _eq: agent.account.getAddress().toStringLong(),
+              },
+              asset_type: { _eq: mint },
+            },
+          },
+        })
+        balance = balances[0].amount ?? 0
+      } else {
+        balance = await agent.aptos.getAccountCoinAmount({
+          accountAddress: agent.account.getAddress(),
+          coinType: mint as MoveStructId,
+        })
+      }
+      return balance
+    }
+    const balance = await agent.aptos.getAccountAPTAmount({
+      accountAddress: agent.account.getAddress(),
+    })
+    const convertedBalance = convertAmountFromOnChainToHumanReadable(balance, 8)
+    return convertedBalance
+  } catch (error: any) {
+    throw new Error(`Token transfer failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: burnNFT]
+
+**Purpose:** Burn an existing NFT on the Aptos blockchain.
+
+```typescript
+import { AptosClient } from "@aptos-labs/ts-sdk"
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Burn NFT
+ * @param agent MoveAgentKit instance
+ * @param tokenId ID of the NFT to burn
+ * @returns Transaction hash of the burn operation
+ */
+export async function burnNFT(agent: AgentRuntime, tokenId: string): Promise<string> {
+  try {
+    const payload = {
+      function: "0x3::token::burn",
+      type_arguments: [],
+      arguments: [ tokenId ],
+    }
+    const txnRequest = await agent.aptos.createTransaction(payload)
+    const txHash = await agent.aptos.signAndSubmitTransaction(txnRequest)
+    await agent.aptos.waitForTransaction({ transactionHash: txHash })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Burn NFT failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: burnToken]
+
+**Purpose:** Burn a fungible asset token on Aptos.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Burn fungible asset token
+ * @param agent MoveAgentKit instance
+ * @param amount Amount of tokens to burn
+ * @param coinType MoveStructId or address of the token to burn
+ * @returns Transaction hash of the burn operation
+ */
+export async function burnToken(agent: AgentRuntime, amount: number, coinType: string): Promise<string> {
+  try {
+    const payload = {
+      function: "0x1::coin::burn",
+      type_arguments: [ coinType ],
+      arguments: [ amount ],
+    }
+    const txnRequest = await agent.aptos.createTransaction(payload)
+    const txHash = await agent.aptos.signAndSubmitTransaction(txnRequest)
+    await agent.aptos.waitForTransaction({ transactionHash: txHash })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Burn token failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: createToken]
+
+**Purpose:** Create a new fungible asset token on Aptos.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Create a fungible asset token
+ * @param agent MoveAgentKit instance
+ * @param name Name of the token
+ * @param symbol Symbol of the token
+ * @param decimals Number of decimal places
+ * @param initialSupply Initial supply to mint
+ * @returns Transaction hash of the token creation
+ */
+export async function createToken(agent: AgentRuntime, name: string, symbol: string, decimals: number, initialSupply: number): Promise<string> {
+  try {
+    const payload = {
+      function: "0x1::managed_coin::initialize",
+      type_arguments: [],
+      arguments: [ name, symbol, decimals, initialSupply, false ],
+    }
+    const txnRequest = await agent.aptos.createTransaction(payload)
+    const txHash = await agent.aptos.signAndSubmitTransaction(txnRequest)
+    await agent.aptos.waitForTransaction({ transactionHash: txHash })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Create token failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: getTokenDetails]
+
+**Purpose:** Retrieve details of a token on Aptos (such as its supply, properties).
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Get details about a specific token
+ * @param agent MoveAgentKit instance
+ * @param tokenType The MoveStructId or address of the token
+ * @returns An object containing token details (e.g., supply, decimals)
+ */
+export async function getTokenDetails(agent: AgentRuntime, tokenType: string): Promise<any> {
+  try {
+    const details = await agent.aptos.getTokenData({ tokenType })
+    return details
+  } catch (error: any) {
+    throw new Error(`Failed to get token details: ${error.message}`)
+  }
+}
+```
+
+### [Tool: getTokenPrice]
+
+**Purpose:** Fetch the current price of a token on Aptos.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Get current price of a token
+ * @param agent MoveAgentKit instance
+ * @param coinType The coin type or struct of the token (e.g., APT or other token)
+ * @returns Price of the token in USD (or null if unavailable)
+ */
+export async function getTokenPrice(agent: AgentRuntime, coinType: string): Promise<number | null> {
+  try {
+    const priceData = await agent.aptos.queryCoinPrice({ coinType })
+    return priceData?.price ?? null
+  } catch (error: any) {
+    throw new Error(`Failed to get token price: ${error.message}`)
+  }
+}
+```
+
+### [Tool: getTransaction]
+
+**Purpose:** Fetch details of a transaction on Aptos by its hash.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Fetch transaction details by hash
+ * @param agent MoveAgentKit instance
+ * @param txHash Transaction hash to look up
+ * @returns Transaction details object
+ */
+export async function getTransaction(agent: AgentRuntime, txHash: string): Promise<any> {
+  try {
+    const transaction = await agent.aptos.getTransactionByHash(txHash)
+    return transaction
+  } catch (error: any) {
+    throw new Error(`Failed to fetch transaction: ${error.message}`)
+  }
+}
+```
+
+### [Tool: mintToken]
+
+**Purpose:** Mint new tokens on Aptos.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Mint new tokens of a specified type
+ * @param agent MoveAgentKit instance
+ * @param coinType MoveStructId or address of the token to mint
+ * @param amount Amount of tokens to mint
+ * @returns Transaction hash of the mint operation
+ */
+export async function mintToken(agent: AgentRuntime, coinType: string, amount: number): Promise<string> {
+  try {
+    const payload = {
+      function: "0x1::coin::mint",
+      type_arguments: [ coinType ],
+      arguments: [ amount, agent.account.getAddress().toString() ],
+    }
+    const txnRequest = await agent.aptos.createTransaction(payload)
+    const txHash = await agent.aptos.signAndSubmitTransaction(txnRequest)
+    await agent.aptos.waitForTransaction({ transactionHash: txHash })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Mint token failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: transferNFT]
+
+**Purpose:** Transfer an NFT to another account on Aptos.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Transfer NFT
+ * @param agent MoveAgentKit instance
+ * @param to Recipient's account address
+ * @param tokenId Unique ID of the NFT to transfer
+ * @returns Transaction hash of the transfer
+ */
+export async function transferNFT(agent: AgentRuntime, to: string, tokenId: string): Promise<string> {
+  try {
+    const payload = {
+      function: "0x3::token::transfer",
+      type_arguments: [],
+      arguments: [ to, tokenId ],
+    }
+    const txnRequest = await agent.aptos.createTransaction(payload)
+    const txHash = await agent.aptos.signAndSubmitTransaction(txnRequest)
+    await agent.aptos.waitForTransaction({ transactionHash: txHash })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`NFT transfer failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: transferTokens]
+
+**Purpose:** Transfer APT, tokens or fungible assets to a recipient on Aptos.
+
+```typescript
+import {
+  type AccountAddress,
+  type InputGenerateTransactionPayloadData,
+  convertAmountFromHumanReadableToOnChain,
+} from "@aptos-labs/ts-sdk"
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Transfer APT, tokens or fungible asset to a recipient
+ * @param agent MoveAgentKit instance
+ * @param to Recipient's public key (AccountAddress)
+ * @param amount Amount to transfer
+ * @param mint Move struct ID or address of the token / asset to transfer
+ * @returns Transaction hash of the transfer
+ * @example
+ * ```ts
+ * const transactionHash = await transferTokens(agent, recipientAddress, amount, APTOS_COIN);
+ * ```
+ */
+export async function transferTokens(
+  agent: AgentRuntime,
+  to: AccountAddress,
+  amount: number,
+  mint: string
+): Promise<string> {
+  const COIN_STANDARD_DATA: InputGenerateTransactionPayloadData = {
+    function: "0x1::coin::transfer",
+    typeArguments: [mint],
+    functionArguments: [to.toString(), amount],
+  }
+  const FUNGIBLE_ASSET_DATA: InputGenerateTransactionPayloadData = {
+    function: "0x1::primary_fungible_store::transfer",
+    typeArguments: ["0x1::fungible_asset::Metadata"],
+    functionArguments: [mint, to.toString(), amount],
+  }
+  try {
+    const transaction = await agent.aptos.transaction.build.simple({
+      sender: agent.account.getAddress(),
+      data: mint.split("::").length === 3 ? COIN_STANDARD_DATA : FUNGIBLE_ASSET_DATA,
+    })
+    const committedTransactionHash = await agent.account.sendTransaction(transaction)
+    const signedTransaction = await agent.aptos.waitForTransaction({
+      transactionHash: committedTransactionHash,
+    })
+    if (!signedTransaction.success) {
+      console.error(signedTransaction, "Token transfer failed")
+      throw new Error("Token transfer failed")
+    }
+    return signedTransaction.hash
+  } catch (error: any) {
+    throw new Error(`Token transfer failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: stakeTokens]
+
+**Purpose:** Stake APT or any tokens on Amnis.
+
+```typescript
+import { AccountAddress } from "@aptos-labs/ts-sdk"
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Stake APT or any tokens on Amnis
+ * @param agent MoveAgentKit instance
+ * @param to Staking pool or contract address (if required)
+ * @param amount Amount of tokens to stake
+ * @returns Transaction hash of the stake operation
+ */
+export async function stakeTokens(agent: AgentRuntime, to: AccountAddress, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.amnis.stake({ to, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Stake failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: unstakeTokens]
+
+**Purpose:** Unstake (withdraw) APT or any tokens on Amnis.
+
+```typescript
+import { AccountAddress } from "@aptos-labs/ts-sdk"
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Unstake APT or any tokens on Amnis
+ * @param agent MoveAgentKit instance
+ * @param to Recipient address to withdraw to (usually user's own address)
+ * @param amount Amount of tokens to unstake
+ * @returns Transaction hash of the unstake operation
+ */
+export async function unstakeTokens(agent: AgentRuntime, to: AccountAddress, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.amnis.unstake({ to, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Unstake failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: borrowAriesToken]
+
+**Purpose:** Borrow tokens from the Aries lending protocol.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Borrow tokens from Aries
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to borrow
+ * @param amount Amount to borrow
+ * @returns Transaction hash of the borrow action
+ */
+export async function borrowAriesToken(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.aries.borrow({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Aries borrow failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: createAriesProfile]
+
+**Purpose:** Create a new user profile in Aries.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Create a profile in Aries
+ * @param agent MoveAgentKit instance
+ * @returns Transaction hash of profile creation
+ */
+export async function createAriesProfile(agent: AgentRuntime): Promise<string> {
+  try {
+    const txHash = await agent.aries.createProfile()
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Create profile failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: lendAriesToken]
+
+**Purpose:** Lend (supply) tokens in the Aries protocol.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Lend tokens in Aries
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to lend
+ * @param amount Amount to lend
+ * @returns Transaction hash of the lend (supply) operation
+ */
+export async function lendAriesToken(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.aries.lend({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Aries lend failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: repayAriesToken]
+
+**Purpose:** Repay borrowed tokens in Aries.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Repay tokens in Aries
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to repay
+ * @param amount Amount to repay
+ * @returns Transaction hash of the repayment
+ */
+export async function repayAriesToken(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.aries.repay({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Aries repay failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: withdrawAriesToken]
+
+**Purpose:** Withdraw supplied tokens from Aries.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Withdraw tokens from Aries
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to withdraw
+ * @param amount Amount to withdraw
+ * @returns Transaction hash of the withdrawal
+ */
+export async function withdrawAriesToken(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.aries.withdraw({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Aries withdraw failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: borrowTokenWithEchelon]
+
+**Purpose:** Borrow tokens from the Echelon lending protocol.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Borrow tokens from Echelon
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to borrow
+ * @param amount Amount to borrow
+ * @returns Transaction hash of the borrow action
+ */
+export async function borrowTokenWithEchelon(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.echelon.borrow({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Echelon borrow failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: lendTokenWithEchelon]
+
+**Purpose:** Lend tokens in Echelon.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Lend tokens in Echelon
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to lend
+ * @param amount Amount to lend
+ * @returns Transaction hash of the lend operation
+ */
+export async function lendTokenWithEchelon(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.echelon.lend({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Echelon lend failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: repayTokenWithEchelon]
+
+**Purpose:** Repay tokens in Echelon.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Repay tokens in Echelon
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to repay
+ * @param amount Amount to repay
+ * @returns Transaction hash of the repayment
+ */
+export async function repayTokenWithEchelon(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.echelon.repay({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Echelon repay failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: withdrawTokenWithEchelon]
+
+**Purpose:** Withdraw tokens from Echelon.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Withdraw tokens from Echelon
+ * @param agent MoveAgentKit instance
+ * @param mintType MoveStructId of the token to withdraw
+ * @param amount Amount to withdraw
+ * @returns Transaction hash of the withdrawal
+ */
+export async function withdrawTokenWithEchelon(agent: AgentRuntime, mintType: MoveStructId, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.echelon.withdraw({ mint: mintType, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Echelon withdraw failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: stakeTokenWithEcho]
+
+**Purpose:** Stake tokens in Echo.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Stake tokens in Echo
+ * @param agent MoveAgentKit instance
+ * @param amount Amount of tokens to stake
+ * @returns Transaction hash of the stake operation
+ */
+export async function stakeTokenWithEcho(agent: AgentRuntime, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.echo.stake({ amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Echo stake failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: unstakeTokenWithEcho]
+
+**Purpose:** Unstake tokens in Echo.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Unstake tokens in Echo
+ * @param agent MoveAgentKit instance
+ * @param amount Amount of tokens to unstake
+ * @returns Transaction hash of the unstake operation
+ */
+export async function unstakeTokenWithEcho(agent: AgentRuntime, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.echo.unstake({ amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Echo unstake failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: borrowToken]
+
+**Purpose:** Borrow APT or other tokens from a Joule lending position.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Borrow APT, tokens or fungible asset from a position (Joule)
+ * @param agent MoveAgentKit instance
+ * @param mint MoveStructId or token address to borrow
+ * @param amount Amount to borrow
+ * @returns Transaction hash of the borrow operation
+ */
+export async function borrowToken(agent: AgentRuntime, mint: MoveStructId | string, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.joule.borrow({ mint, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Joule borrow failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: claimReward]
+
+**Purpose:** Claim rewards from a Joule pool.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Claim rewards from Joule pool
+ * @param agent MoveAgentKit instance
+ * @param rewardCoinType MoveStructId or string of the reward coin to claim
+ * @returns Transaction hash of the reward claim
+ */
+export async function claimReward(agent: AgentRuntime, rewardCoinType: MoveStructId | string): Promise<string> {
+  try {
+    const txHash = await agent.joule.claimReward({ rewardCoinType })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Claim reward failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: getPoolDetails]
+
+**Purpose:** Get details about a specific Joule pool.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Get details about a specific pool
+ * @param agent MoveAgentKit instance
+ * @param poolId Identifier of the pool
+ * @returns Pool details data
+ */
+export async function getPoolDetails(agent: AgentRuntime, poolId: string): Promise<any> {
+  try {
+    const poolDetails = await agent.joule.getPoolDetails({ poolId })
+    return poolDetails
+  } catch (error: any) {
+    throw new Error(`Failed to get pool details: ${error.message}`)
+  }
+}
+```
+
+### [Tool: getUserAllPositions]
+
+**Purpose:** Get all lending positions of a user in Joule.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { AccountAddress } from "@aptos-labs/ts-sdk"
+
+/**
+ * Fetch all positions of a user across Joule pools
+ * @param agent MoveAgentKit instance
+ * @param userAddress AccountAddress or string of the user
+ * @returns Array of position details
+ */
+export async function getUserAllPositions(agent: AgentRuntime, userAddress: AccountAddress | string): Promise<any[]> {
+  try {
+    const positions = await agent.joule.getAllPositions({ owner: userAddress })
+    return positions
+  } catch (error: any) {
+    throw new Error(`Failed to fetch all positions: ${error.message}`)
+  }
+}
+```
+
+### [Tool: getUserPosition]
+
+**Purpose:** Get details of a user’s position in a Joule pool.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { AccountAddress } from "@aptos-labs/ts-sdk"
+
+/**
+ * Get a user's position in a specific pool
+ * @param agent MoveAgentKit instance
+ * @param poolId Identifier of the pool
+ * @param owner User's account address
+ * @returns Position details for the user in that pool
+ */
+export async function getUserPosition(agent: AgentRuntime, poolId: string, owner: AccountAddress | string): Promise<any> {
+  try {
+    const position = await agent.joule.getPosition({ poolId, owner })
+    return position
+  } catch (error: any) {
+    throw new Error(`Failed to get user position: ${error.message}`)
+  }
+}
+```
+
+### [Tool: lendToken]
+
+**Purpose:** Lend APT or other tokens to a Joule position.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Lend APT, tokens or fungible asset to a position (Joule)
+ * @param agent MoveAgentKit instance
+ * @param mint MoveStructId or token address to lend
+ * @param amount Amount to lend
+ * @returns Transaction hash of the lend (supply) operation
+ */
+export async function lendToken(agent: AgentRuntime, mint: MoveStructId | string, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.joule.lend({ mint, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Joule lend failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: repayToken]
+
+**Purpose:** Repay APT or other tokens to a Joule position.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Repay APT, tokens or fungible asset to a position (Joule)
+ * @param agent MoveAgentKit instance
+ * @param mint MoveStructId or token address to repay
+ * @param amount Amount to repay
+ * @returns Transaction hash of the repayment
+ */
+export async function repayToken(agent: AgentRuntime, mint: MoveStructId | string, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.joule.repay({ mint, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Joule repay failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: withdrawToken]
+
+**Purpose:** Withdraw APT or tokens from a Joule position.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+import { MoveStructId } from "@aptos-labs/ts-sdk"
+
+/**
+ * Withdraw APT, tokens or fungible asset from a position (Joule)
+ * @param agent MoveAgentKit instance
+ * @param mint MoveStructId or token address to withdraw
+ * @param amount Amount to withdraw
+ * @returns Transaction hash of the withdrawal
+ */
+export async function withdrawToken(agent: AgentRuntime, mint: MoveStructId | string, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.joule.withdraw({ mint, amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Joule withdraw failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: addLiquidity]
+
+**Purpose:** Add liquidity to a LiquidSwap pool.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Add liquidity in LiquidSwap
+ * @param agent MoveAgentKit instance
+ * @param poolId Identifier of the liquidity pool
+ * @param amountX Amount of token X to add
+ * @param amountY Amount of token Y to add
+ * @returns Transaction hash of the add-liquidity operation
+ */
+export async function addLiquidity(agent: AgentRuntime, poolId: string, amountX: number, amountY: number): Promise<string> {
+  try {
+    const txHash = await agent.liquidswap.addLiquidity({ poolId, amountX, amountY })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Add liquidity failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: createPool]
+
+**Purpose:** Create a new pool on LiquidSwap.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Create a new pool in LiquidSwap
+ * @param agent MoveAgentKit instance
+ * @param tokenX Type of first token (e.g., struct or address)
+ * @param tokenY Type of second token
+ * @param feeFeeRate Fee rate for the pool
+ * @returns Transaction hash of the pool creation
+ */
+export async function createPool(agent: AgentRuntime, tokenX: string, tokenY: string, feeFeeRate: number): Promise<string> {
+  try {
+    const txHash = await agent.liquidswap.createPool({ tokenX, tokenY, feeRate: feeFeeRate })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Create pool failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: removeLiquidity]
+
+**Purpose:** Remove liquidity from a LiquidSwap pool.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Remove liquidity from LiquidSwap
+ * @param agent MoveAgentKit instance
+ * @param poolId Identifier of the pool
+ * @param liquidityAmount Amount of liquidity tokens to remove
+ * @returns Transaction hash of the remove-liquidity operation
+ */
+export async function removeLiquidity(agent: AgentRuntime, poolId: string, liquidityAmount: number): Promise<string> {
+  try {
+    const txHash = await agent.liquidswap.removeLiquidity({ poolId, liquidity: liquidityAmount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Remove liquidity failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: swap]
+
+**Purpose:** Swap tokens on LiquidSwap (DEX operation).
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Swap tokens in LiquidSwap
+ * @param agent MoveAgentKit instance
+ * @param poolId Identifier of the pool to swap in
+ * @param amountIn Amount of input token to swap
+ * @param minAmountOut Minimum acceptable output amount (for slippage control)
+ * @returns Transaction hash of the swap
+ */
+export async function swap(agent: AgentRuntime, poolId: string, amountIn: number, minAmountOut: number): Promise<string> {
+  try {
+    const txHash = await agent.liquidswap.swap({ poolId, amountIn, minAmountOut })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Swap failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: createImage]
+
+**Purpose:** Generate an image using OpenAI’s DALL-E API.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Generate an image using OpenAI's DALL-E
+ * @param agent MoveAgentKit instance
+ * @param prompt Text prompt describing the desired image
+ * @returns The generated image data (e.g., URL or binary)
+ */
+export async function createImage(agent: AgentRuntime, prompt: string): Promise<string> {
+  try {
+    const imageUrl = await agent.openai.createImage({ prompt })
+    return imageUrl
+  } catch (error: any) {
+    throw new Error(`Image generation failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: swapWithPanora]
+
+**Purpose:** Swap tokens using the Panora DEX aggregator.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Swap tokens in Panora
+ * @param agent MoveAgentKit instance
+ * @param fromCoin Coin type or address to swap from
+ * @param toCoin Coin type or address to swap to
+ * @param amountIn Amount of the input coin to swap
+ * @returns Transaction hash of the aggregated swap
+ */
+export async function swapWithPanora(agent: AgentRuntime, fromCoin: string, toCoin: string, amountIn: number): Promise<string> {
+  try {
+    const txHash = await agent.panora.swap({ from: fromCoin, to: toCoin, amountIn })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Panora swap failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: addLiquidityWithThala]
+
+**Purpose:** Add liquidity in Thala’s DEX (e.g., for MOD stablecoin pools).
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Add liquidity in Thala
+ * @param agent MoveAgentKit instance
+ * @param poolId Identifier of the Thala liquidity pool
+ * @param amountX Amount of first token to add
+ * @param amountY Amount of second token to add
+ * @returns Transaction hash of adding liquidity
+ */
+export async function addLiquidityWithThala(agent: AgentRuntime, poolId: string, amountX: number, amountY: number): Promise<string> {
+  try {
+    const txHash = await agent.thala.addLiquidity({ poolId, amountX, amountY })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Thala add liquidity failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: createPoolWithThala]
+
+**Purpose:** Create a new liquidity pool in Thala.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Create a new pool in Thala
+ * @param agent MoveAgentKit instance
+ * @param tokenX Type of token X for the pool
+ * @param tokenY Type of token Y for the pool
+ * @param feeRate Fee rate for the pool
+ * @returns Transaction hash of the pool creation
+ */
+export async function createPoolWithThala(agent: AgentRuntime, tokenX: string, tokenY: string, feeRate: number): Promise<string> {
+  try {
+    const txHash = await agent.thala.createPool({ tokenX, tokenY, feeRate })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Thala create pool failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: mintMOD]
+
+**Purpose:** Mint Thala’s stablecoin (Move Dollar, “MOD”).
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Mint Thala MOD stablecoin
+ * @param agent MoveAgentKit instance
+ * @param amount Amount of MOD to mint
+ * @returns Transaction hash of the mint operation
+ */
+export async function mintMOD(agent: AgentRuntime, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.thala.mintMod({ amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Mint MOD failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: redeemMOD]
+
+**Purpose:** Redeem (burn) Thala’s MOD stablecoin for collateral.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Redeem Thala MOD stablecoin for underlying collateral
+ * @param agent MoveAgentKit instance
+ * @param amount Amount of MOD to redeem
+ * @returns Transaction hash of the redeem operation
+ */
+export async function redeemMOD(agent: AgentRuntime, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.thala.redeemMod({ amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Redeem MOD failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: removeLiquidityWithThala]
+
+**Purpose:** Remove liquidity from Thala’s pools.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Remove liquidity from Thala
+ * @param agent MoveAgentKit instance
+ * @param poolId Identifier of the Thala pool
+ * @param liquidityAmount Amount of liquidity to remove
+ * @returns Transaction hash of the remove operation
+ */
+export async function removeLiquidityWithThala(agent: AgentRuntime, poolId: string, liquidityAmount: number): Promise<string> {
+  try {
+    const txHash = await agent.thala.removeLiquidity({ poolId, liquidity: liquidityAmount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Thala remove liquidity failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: stakeTokenWithThala]
+
+**Purpose:** Stake tokens in Thala (e.g., stake MOD or LP tokens for rewards).
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Stake tokens in Thala
+ * @param agent MoveAgentKit instance
+ * @param amount Amount of tokens to stake
+ * @returns Transaction hash of the stake operation
+ */
+export async function stakeTokenWithThala(agent: AgentRuntime, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.thala.stake({ amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Thala stake failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: unstakeTokenWithThala]
+
+**Purpose:** Unstake tokens in Thala.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Unstake tokens in Thala
+ * @param agent MoveAgentKit instance
+ * @param amount Amount of tokens to unstake
+ * @returns Transaction hash of the unstake operation
+ */
+export async function unstakeTokenWithThala(agent: AgentRuntime, amount: number): Promise<string> {
+  try {
+    const txHash = await agent.thala.unstake({ amount })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Thala unstake failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: closePositionWithMerkleTrade]
+
+**Purpose:** Close an open position on MerkleTrade.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Close position on MerkleTrade
+ * @param agent MoveAgentKit instance
+ * @param pair Trading pair identifier
+ * @param isLong Boolean indicating if it's a long position (true) or short (false)
+ * @returns Transaction hash of the close position operation
+ */
+export async function closePositionWithMerkleTrade(agent: AgentRuntime, pair: string, isLong: boolean): Promise<string> {
+  try {
+    const txHash = await agent.merkletrade.closePosition({ pair, isLong })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Close position failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: getPositionsWithMerkleTrade]
+
+**Purpose:** Retrieve current positions from MerkleTrade.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Get current open positions from MerkleTrade
+ * @param agent MoveAgentKit instance
+ * @returns Array of position objects
+ */
+export async function getPositionsWithMerkleTrade(agent: AgentRuntime): Promise<any[]> {
+  try {
+    const positions = await agent.merkletrade.getPositions()
+    return positions
+  } catch (error: any) {
+    throw new Error(`Get positions failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: placeLimitOrderWithMerkleTrade]
+
+**Purpose:** Place a limit order on MerkleTrade.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Place limit order on MerkleTrade
+ * @param agent MoveAgentKit instance
+ * @param pair Trading pair identifier
+ * @param size Order size (quantity)
+ * @param price Limit price
+ * @param isBuy true for buy order, false for sell
+ * @returns Transaction hash of the placed order
+ */
+export async function placeLimitOrderWithMerkleTrade(agent: AgentRuntime, pair: string, size: number, price: number, isBuy: boolean): Promise<string> {
+  try {
+    const txHash = await agent.merkletrade.placeLimitOrder({ pair, size, price, isBuy })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Place limit order failed: ${error.message}`)
+  }
+}
+```
+
+### [Tool: placeMarketOrderWithMerkleTrade]
+
+**Purpose:** Place a market order on MerkleTrade.
+
+```typescript
+import type { AgentRuntime } from "../../agent"
+
+/**
+ * Place market order on MerkleTrade
+ * @param agent MoveAgentKit instance
+ * @param pair Trading pair identifier
+ * @param size Order size (quantity) to market buy/sell
+ * @param isBuy true for market buy, false for market sell
+ * @returns Transaction hash of the executed market order
+ */
+export async function placeMarketOrderWithMerkleTrade(agent: AgentRuntime, pair: string, size: number, isBuy: boolean): Promise<string> {
+  try {
+    const txHash = await agent.merkletrade.placeMarketOrder({ pair, size, isBuy })
+    return txHash
+  } catch (error: any) {
+    throw new Error(`Place market order failed: ${error.message}`)
+  }
+}
+```
