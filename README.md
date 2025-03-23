@@ -91,4 +91,12 @@ Obtain ANTHROPIC_API_KEY from https://console.anthropic.com/ (Claude)
 
 Obtain OPENAI_API_KEY from https://platform.openai.com/ (OpenAI)
 
+Local embeddings example:
+
+https://github.com/jsmaxi/move-ai-agent/blob/main/ui/src/lib/loadDocs.ts
+
+https://github.com/jsmaxi/move-ai-agent/blob/main/ui/src/pages/api/kit.tsx
+
+https://github.com/jsmaxi/move-ai-agent/blob/main/ui/data/docs2.json
+
 ---
