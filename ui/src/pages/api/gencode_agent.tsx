@@ -75,7 +75,8 @@ export default async function handler(
       Query:
       ${query}
 
-      Generate Langchain Js based agent kit code based on the context and Query. You are an Langchain Js and LangGraph Js expert.
+      Generate Langchain Js based agent kit code based on the context and Query.
+      refer to the Quick Start Guide in the context to create the agent code, and look at what tools are available in the context.
       Make sure that output is properly escaped JSON string, adhering to this format:
         {
             \"agent\": \"agent code\",
