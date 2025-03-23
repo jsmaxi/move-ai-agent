@@ -95,7 +95,7 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
                         [{formatTimestamp(log.timestamp)}]
                       </span>{" "}
                       <span className={getLogColor(log.type)}>
-                        {log.message}
+                        <pre className="inline">{log.message}</pre>
                       </span>
                     </div>
                   ))
