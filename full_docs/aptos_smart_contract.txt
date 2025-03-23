@@ -1,7 +1,3 @@
-Got it. I’ll gather the full page content from all links under https://aptos.dev/en/build/smart-contracts/ that share the same base URL. I’ll ensure the data is extracted in a format suitable for RAG (Retrieval-Augmented Generation), including properly flagging and preserving code examples.
-
-I’ll compile all this into a single `docs.txt` file and let you know as soon as it’s ready.
-
 # Smart Contracts on Aptos
 
 Aptos contracts are written using Move, a next-generation language for secure, sandboxed, and formally verified programming which is used for multiple chains. Move allows developers to write programs that flexibly manage and transfer assets while providing security and protections against attacks on those assets ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=Smart%20Contracts%20on%20Aptos)).
