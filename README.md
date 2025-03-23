@@ -20,6 +20,12 @@ Open: http://localhost:3000/
 
 Setup environment variables by .env.example
 
+Also, to interact with the contracts locally, install and setup aptos-cli tool. Then run (inside ui folder):
+
+```
+aptos init
+```
+
 ---
 
 ## Move Agent Kit
