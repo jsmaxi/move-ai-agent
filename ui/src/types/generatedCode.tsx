@@ -4,5 +4,5 @@ export interface GeneratedCode {
 }
 
 export interface GeneratedKit {
-  code: string;
+  agent: string;
 }
