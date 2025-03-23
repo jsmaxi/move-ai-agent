@@ -3,9 +3,10 @@
 UI: https://move-ai-agent-production.up.railway.app/
 
 <img src="./images/playlablogo.png" alt="project logo" width="100" height="100"/>
+
 **Aptos PlayLab** is an interactive development environment for experimenting with Move smart contracts on the **Aptos** network. With built-in AI assistance, you can write, audit, compile, and deploy Move contracts — all from a single interface.
 
-This project is designed for **both beginners and advanced Move developers**, aiming to streamline development and push the boundaries of autonomous agent-based tooling.
+This project is designed to streamline development and push the boundaries of autonomous agent-based tooling. This could also act as a learning tool for Move Smart Contract Development.
 
 > ⚠️ Many components are **proof-of-concept** and under active development. Expect bugs, experimental features, and a growing playground for innovation!
 
