@@ -1,0 +1,933 @@
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This Page📖 Learn Move👨‍💻 Move Examples⚒️ Developer FAQ and DiscussionsMove IDE pluginsExternal Question? Give us feedback →Edit this page on →Scroll to topSmart Contracts (Move)Smart Contracts on Aptos Aptos contracts are written using Move, a next generation language for secure, sandboxed, and formally verified programming which is used for multiple chains.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+Move allows developers to write programs that flexibly manage and transfer assets while providing security and protections against attacks on those assets. 📖 Learn Move Why Move? →Learn why Aptos uses the Move LanguageCreate Package → by learning how to create a Move packageObjects →Learn how to use the Object standard on Aptos to create composable and flexible primitives on chain 👨‍💻 Move Examples Aptos Move Examples ↗30+ examples on how to develop Move on AptosMove Tutorial ↗Covers the basics of programming with MoveYour first Move Module →A hello_blockchain example of how to publish your first move module Here is a hello_blockchain example of move hello_blockchain.move ↗️Source Codemodule hello_blockchain::message { use std::error; use std::signer; use std::string; use aptos_framework::event; //:!:>resource struct MessageHolder has key { message: string::String, } //<:!:resource #[event] struct MessageChange has drop, store { account: address, from_message: string::String,
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+//:!:>resource struct MessageHolder has key { message: string::String, } //<:!:resource #[event] struct MessageChange has drop, store { account: address, from_message: string::String, to_message: string::String, } /// There is no message present const ENO_MESSAGE: u64 = 0; #[view] public fun get_message(addr: address): string::String acquires MessageHolder { assert!(exists(addr), error::not_found(ENO_MESSAGE)); borrow_global(addr).message } public entry fun set_message(account: signer, message: string::String) acquires MessageHolder { let account_addr = signer::address_of(&account); if (!exists(account_addr)) { move_to(&account, MessageHolder { message, }) } else { let old_message_holder = borrow_global_mut(account_addr); let from_message = old_message_holder.message; event::emit(MessageChange { account: account_addr, from_message, to_message: copy message, }); old_message_holder.message = message; } } #[test(account = @0x1)] public entry fun sender_can_set_message(account: signer)
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+{ account: account_addr, from_message, to_message: copy message, }); old_message_holder.message = message; } } #[test(account = @0x1)] public entry fun sender_can_set_message(account: signer) acquires MessageHolder { let addr = signer::address_of(&account); aptos_framework::account::create_account_for_test(addr); set_message(account, string::utf8(b"Hello, Blockchain")); assert!( get_message(addr) == string::utf8(b"Hello, Blockchain"), ENO_MESSAGE ); } } ⚒️ Developer FAQ and Discussions Aptos Dev Discussions for Q&A about Move.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+Move IDE plugins Aptos Move Analyzer for Visual Studio.
+
+Move language plugin for JetBrains IDEs: Supports syntax highlighting, code navigation, renames, formatting, type checks and code generation.
+
+External Aptos Move by Example Teach yourself Move on Aptos.
+
+Formal Verification, the Move Language, and the Move Prover Pontem Move Playground Collection of nestable Move We have a new Move on Aptos compiler that supports Move 2.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+See this page for more information.Solana to Aptos CheatsheetWhy Move?EnglishLight\n //\u003c:!:resource\n\n #[event]\n struct MessageChange has drop, store \n\n /// There is no message present\n const ENO_MESSAGE: u64 = 0;\n\n #[view]\n public fun get_message(addr: address): string::String acquires MessageHolder \n\n public entry fun set_message(account: signer, message: string::String)\n acquires MessageHolder )\n } else );\n old_message_holder.message = message;\n }\n }\n\n #[test(account = @0x1)]\n public entry fun sender_can_set_message(account: signer) acquires MessageHolder \n}","_permalink":"https://.com/aptos-labs/aptos-core/blob/77e1d222ebc5e7294e115e0d090c001da1d0e072/aptos-move/move-examples/hello_blockchain/sources/hello_blockchain.move#L1-L59","used_in_latest_docs":true,"updated_at":"Thu, 30 May 2024 21:58:14 GMT","highlightedCode":"\u003cpre class=\"shiki shiki-themes -light -dark\"
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+30 May 2024 21:58:14 GMT","highlightedCode":"\u003cpre class=\"shiki shiki-themes -light -dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"\u003e\u003ccode\u003e\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003emodule\u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e hello_blockchain\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e::\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003emessage\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\"\u003e //\u0026#x3C;:!:resource\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+//\u0026#x3C;:!:resource\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e #[event]\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e struct\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageChange\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e has\u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e drop\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e, \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003estore\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003estore\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\"\u003e /// There is no message present\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e const\u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e ENO_MESSAGE\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003eu64\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e = \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e0\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e = \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e0\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e;\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e #[view]\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e fun\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e get_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(addr: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003eaddress\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(addr: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003eaddress\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e): string::\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003eString\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e acquires\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageHolder\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e entry\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e entry\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e fun\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e set_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(account: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003esigner\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e, message: string::\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003eString\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e)\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e acquires\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e acquires\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageHolder\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e )\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e } \u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003eelse\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e );\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e old_message_holder.message = message;\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e }\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e }\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e }\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e #[test(account = @0x1)]\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e entry\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e fun\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e sender_can_set_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(account: \u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+sender_can_set_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(account: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003esigner\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e) \u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003eacquires\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageHolder\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e}\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e","language":"move"}}},"__N_SSG":true},"page":"/en//smart-contracts","query":,"Id":"L-vovsShnr1FbJjUjbQsa","isFallback":false,"gsp":true,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts
+TITLE: smart-contracts
+CONTENT:
+Move Code Examples:
+
+```move
+module hello_blockchain::message { use std::error; use std::signer; use std::string; use aptos_framework::event; //:!:>resource struct MessageHolder has key { message: string::String, }
+```
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/get-started
+TITLE: get-started
+CONTENT:
+body.next-error-h1@media (prefers-color-scheme:dark).next-error-h1}404This page could not be found.← Go back to home},"page":"/404","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This PageWhy Move on Aptos?SecurityDeveloper ExperienceQuestion? Give us feedback →Edit this page on →Scroll to topSmart Contracts (Move)Why Move?Why Move? The Move programming language was originally created by a team of engineers at Facebook for the Diem Payment .
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+Move is designed to be a platform-agnostic language to enable common libraries, tooling, and developer communities across diverse blockchains with vastly different data and execution models.
+
+At Aptos, we believe in ing a strong developer community in Move and invite them to upon the Move on Aptos stack and contribute to the open source software.
+
+Move is built upon the following principles: PrincipleExplanationSecure by defaultFinancial systems are built to ensure users don’t lose funds.
+
+Move was designed to prevent entire classes of attacks and bugs such as reentrancy attacks, double spends, and arithmetic overflow.
+
+Type safety and compile time checks are at the forefront of the security.Runtime VerificationThe bytecode can be verified at runtime to verify that nothing has gone wrong, providing extra safety and preventing malicious actors.Formal VerificationMove on Aptos provides a specification language to provide formal verification of contracts.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+This allows for proving invariants and assists with code auditing.SimplicityThe commands and bytecode are purposely simple.
+
+This allows for easy decompilation, runtime verification, and code inspection.
+
+Using regular programming languages for blockchains often requires to ignore large part of the language to make them suitable for smart contracts (e.g.
+
+Rust).
+
+Why Move on Aptos? Move on Aptos supports the full language built by the team at Facebook, with additional extensions built to improve the security and the developer experience.
+
+Security AdvantagesExplanationFormal VerificationAptos framework is fully specified and formally verified with the Move Prover.
+
+This includes the core contracts involving governance, NFTs, and Tokens.Gas CoverageMove VM has 100% gas coverage.
+
+Gas is charged based upon actual usage in the system (CPU, memory, storage, I/O).
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+This includes the core contracts involving governance, NFTs, and Tokens.Gas CoverageMove VM has 100% gas coverage.
+
+Gas is charged based upon actual usage in the system (CPU, memory, storage, I/O).
+
+In other words, no gas exploits.Security RedundancySecurity redundancy provided by runtime safety checks.Permission ControlsPermission controls can flexibly be built at various levels.
+
+For example, token level permission controls exist by default to enable RWA tokenization.
+
+Developer Experience AdvantagesExplanationMove Development Tools- Unit testing: Move has built-in unit testing for all contracts.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+Developer Experience AdvantagesExplanationMove Development Tools- Unit testing: Move has built-in unit testing for all contracts.
+
+Aptos additionally provides test functionality in the framework to test different scenarios. - Coverage: Coverage tooling allows for both source and bytecode level coverage reporting. - Decompiler: For better security, on-chain bytecode can be disassembled or decompiled to provide visibility into the actual contracts. - IDE Plugins: Aptos has support for two major IDEs: Visual Studio Code and IntelliJ.Data ModelAptos has an accessible data model with the data definition stored on-chain.
+
+Objects and accounts can have multiple distinct structures in an easy-to-parse format.UpgradabilityUpgradability ensures that application interfaces cannot be broken and doesn’t require explicit adoption from downstream applications.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+Contracts can simply be upgraded in-place to fix bugs.Cross-InteractionMove allows for interaction between contracts by using type-safe structs.Code StorageAptos stores source code on-chain improving the ability to audit and ensure contract to bytecode correctness.Sponsored TransactionsNative sponsored transaction support allows for having transactions be paid by other users with no special services or contract-specific code required.Robust Token StandardsThe Digital Asset and Fungible Asset standards provide flexibility and a unified standard for diverse types of tokens and digital assets on-chain.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/why-move
+TITLE: why-move
+CONTENT:
+These were influenced by existing standards such as ERC-20, ERC-721, ERC-1155 and Token-2022.On-chain RandomnessNative on-chain unbiasable randomness provides a safe and consistent way of getting random numbers, with extra safety checks at compile time.Smart Contracts (Move)Create PackageEnglishLight},"page":"/en//smart-contracts/why-move","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This Pageaptos move initUpdate Move.tomlAdd to sources directoryQuestion? Give us feedback →Edit this page on →Scroll to topSmart Contracts (Move)Create PackageCreate Package 💡We recommend installing the Aptos CLI before beginning.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+If you haven’t already installed the Aptos CLI, see the CLI section aptos move initIn a new project directory, initialize a Move package by running:Terminalaptos move init --name You should now have a Move project that looks like so:scriptssourcestestsMove.toml💡You can also create a Move package from a template.Update Move.tomlIn Move.toml, fill in the following key information: name: name of your package version: package version (default is "0.0.0") addresses: Describes which address the module will be deployed to.
+
+These are named addresses that can be used as aliases.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+These are named addresses that can be used as aliases.
+
+In the below example, we will use hello_blockchain as the named address. dependencies: You will likely want to use AptosFramework and other Third Party Dependencies Below is an exampleMove.toml[package] name = "Examples" version = "0.0.0" [addresses] hello_blockchain = "_" [dependencies.AptosFramework] git = "https://.com/aptos-labs/aptos-framework.git" rev = "mainnet" subdir = "aptos-framework"Add to sources directoryAdd your code in the sources directory.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+Here we have a hello_blockchain.move example.hello_blockchain.move ↗️Source Codemodule hello_blockchain::message { use std::error; use std::signer; use std::string; use aptos_framework::event; #[test_only] use std::debug; //:!:>resource struct MessageHolder has key { message: string::String, } //<:!:resource #[event] struct MessageChange has drop, store { account: address, from_message: string::String, to_message: string::String, } /// There is no message present const ENO_MESSAGE: u64 = 0; #[view] public fun get_message(addr: address): string::String acquires MessageHolder { assert!(exists(addr), error::not_found(ENO_MESSAGE)); borrow_global(addr).message } public entry fun set_message(account: signer, message: string::String) acquires MessageHolder { let account_addr = signer::address_of(&account); if (!exists(account_addr)) { move_to(&account, MessageHolder { message, }) } else { let old_message_holder = borrow_global_mut(account_addr); let from_message =
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+= signer::address_of(&account); if (!exists(account_addr)) { move_to(&account, MessageHolder { message, }) } else { let old_message_holder = borrow_global_mut(account_addr); let from_message = old_message_holder.message; event::emit(MessageChange { account: account_addr, from_message, to_message: copy message, }); old_message_holder.message = message; } } #[test(account = @0x1)] public entry fun sender_can_set_message(account: signer) acquires MessageHolder { let msg: string::String = string::utf8(b"Running test for sender_can_set_message..."); debug::print(&msg); let addr = signer::address_of(&account); aptos_framework::account::create_account_for_test(addr); set_message(account, string::utf8(b"Hello, Blockchain")); assert!( get_message(addr) == string::utf8(b"Hello, Blockchain"), ENO_MESSAGE ); } }Why Move?CompilingEnglishLight\n //\u003c:!:resource\n\n #[event]\n struct MessageChange has drop, store \n\n /// There is no message present\n const ENO_MESSAGE: u64 = 0;\n\n #[view]\n
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+); } }Why Move?CompilingEnglishLight\n //\u003c:!:resource\n\n #[event]\n struct MessageChange has drop, store \n\n /// There is no message present\n const ENO_MESSAGE: u64 = 0;\n\n #[view]\n public fun get_message(addr: address): string::String acquires MessageHolder \n\n public entry fun set_message(account: signer, message: string::String)\n acquires MessageHolder )\n } else );\n old_message_holder.message = message;\n }\n }\n\n #[test(account = @0x1)]\n public entry fun sender_can_set_message(account: signer) acquires MessageHolder \n}","_permalink":"https://.com/aptos-labs/aptos-core/blob/afd3706c17bcccfb39a9d6059aecbfa648ed295d/aptos-move/move-examples/hello_blockchain/sources/hello_blockchain.move#L1-L64","used_in_latest_docs":true,"updated_at":"2024-09-10 21:17:35","highlightedCode":"\u003cpre class=\"shiki shiki-themes -light -dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\"
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+21:17:35","highlightedCode":"\u003cpre class=\"shiki shiki-themes -light -dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"\u003e\u003ccode\u003e\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003emodule\u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e hello_blockchain\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e::\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003emessage\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\"\u003e //\u0026#x3C;:!:resource\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+//\u0026#x3C;:!:resource\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e #[event]\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e struct\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageChange\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e has\u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e drop\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e, \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003estore\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003estore\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\"\u003e /// There is no message present\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e const\u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e ENO_MESSAGE\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003eu64\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e = \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e0\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e = \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e0\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e;\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e #[view]\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e fun\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e get_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(addr: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003eaddress\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(addr: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003eaddress\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e): string::\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003eString\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e acquires\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageHolder\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e entry\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e entry\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e fun\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e set_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(account: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003esigner\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e, message: string::\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003eString\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e)\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e acquires\u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e acquires\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageHolder\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e )\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e } \u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003eelse\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e );\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e old_message_holder.message = message;\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e }\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e }\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e }\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003e #[test(account = @0x1)]\u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e public\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e entry\u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003e fun\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e sender_can_set_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(account: \u003c/span\u003e\u003cspan
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+sender_can_set_message\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e(account: \u003c/span\u003e\u003cspan style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\"\u003esigner\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e) \u003c/span\u003e\u003cspan style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\"\u003eacquires\u003c/span\u003e\u003cspan style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"\u003e MessageHolder\u003c/span\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e \u003c/span\u003e\u003c/span\u003e\n\u003cspan class=\"line\"\u003e\u003cspan style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"\u003e}\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e","language":"move"}}},"__N_SSG":true},"page":"/en//smart-contracts/create-package","query":,"Id":"L-vovsShnr1FbJjUjbQsa","isFallback":false,"gsp":true,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/create-package
+TITLE: create-package
+CONTENT:
+Move Code Examples:
+
+```move
+module hello_blockchain::message { use std::error; use std::signer; use std::string; use aptos_framework::event; #[test_only] use std::debug; //:!:>resource struct MessageHolder has key { message: string::String, }
+```
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This Pageaptos move compileUnpacking bytecode_modulessource_mapsQuestion? Give us feedback →Edit this page on →Scroll to topSmart Contracts (Move)CompilingCompiling 💡Ensure that your CLI is up to date before compiling. aptos move compile Once you have a package set up, you can compile your Move code by doing: Terminalaptos move compile If run successfully, you should receive a Terminal output like so Terminal{ "Result": [ "::" ] } 💡You may need to add named addresses, especially for examples.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+For example, with the Hello Blockchain Move example, you will need to add the hello_blockchain named address:Terminalaptos move compile --named-addresses hello_blockchain=default Unpacking Compiled Move packages contain a folder structure that resembles the one below. package_namebytecode_modulesdependenciesmodule_name.mvsource_mapsdependenciesmodule_name.mvsmsourcesdependenciesmodule_name.moveInfo.yamlscriptssourcesmodule_name.movetestsMove.toml bytecode_modules The bytecode modules folder contains the compiled Move bytecode for your module(s) (such as module_name.mv).
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/compiling
+TITLE: compiling
+CONTENT:
+To learn more about the bytecode and its security features, see why move? source_maps The source maps folder contains source maps (such as module_name.mvsm) which allow users to map the compiled bytecode back to the source code and relevant dependencies.Create PackageDeploymentEnglishLight},"page":"/en//smart-contracts/compiling","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/testing
+TITLE: testing
+CONTENT:
+body.next-error-h1@media (prefers-color-scheme:dark).next-error-h1}404This page could not be found.← Go back to home},"page":"/404","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This PageInstructionsCompile codeDeploy code to an objectTransfer and upgrade code in an existing packageQuestion? Give us feedback →Edit this page on →Scroll to topSmart Contracts (Move)DeploymentObject Code Deployment This document goes through how you can deploy code to Objects.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+This is the recommended way to deploy code to the blockchain, as this reduces deployment complexity, and safely manages access control policies for the code owner.
+
+Note that in this context, code refers to packages.
+
+Deploying code to objects will guarantee the following: Each deployment publishes to a new address.
+
+Only the owner of the code object can upgrade and freeze the code.
+
+This means you can transfer the object to a new owner, and they will have full ownership of the code.
+
+You are granting them the rights to upgrade and freeze the code.
+
+There is no need to manage seeds, or deploy to a new address on each deployment.
+
+Object code deployment greatly simplifies the deployment process.
+
+Instructions Below are the instructions on how to compile, deploy and upgrade code to objects.
+
+Compile codeMake sure is left as a placeholder _.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+Instructions Below are the instructions on how to compile, deploy and upgrade code to objects.
+
+Compile codeMake sure is left as a placeholder _.
+
+This is needed as the CLI command will override the address. value represents the owner of the code, or the owner of the object to deploy the code to.
+
+Here is an example as with the value my_address.Move.toml[addresses] my_address = "_"Compile your move code running the below command.
+
+Replace with the named address.
+
+Replace with the address of your account.
+
+Terminalaptos move compile --named-addresses =Deploy code to an objectDeploy the compiled code to an object via the command: Replace with the named address.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+Terminalaptos move compile --named-addresses =Deploy code to an objectDeploy the compiled code to an object via the command: Replace with the named address.
+
+Terminalaptos move deploy-object --address-name An example can be found below:Terminalaptos move deploy-object --address-name my_addressThis will ask if you want to publish the code under the specified object address.Example output:TerminalDo you want to publish this package at object address 0x8d6eb306bcf6c61dbaa0dbf8daa8252e121b63e95991afcab3b12d3be7f001ab [yes/no] >Congrats, you have deployed your code to a new object with a unique address!Take note of the object address as you will need it later for upgrades.Transfer and upgrade code in an existing packageFirst, you may want to transfer the object from the deployer account to an admin account.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+The admin account will have rights to upgrade the code.Here’s how you can do it via CLI, here your deployer_account should be the current owner of the object.aptos move run —-function-id 0x1::object::transfer --type-args 0x1::object::ObjectCore -—args address: address: —-profile Here’s how you can do it via the typescript SDK:const transaction = await aptos.transaction.;Now you can upgrade the code with the designated admin account, as shown below.If you wish to upgrade the code in the object deployed, run the following: Replace with the existing named address.
+
+Replace with the address of the object hosting the code.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/deployment
+TITLE: deployment
+CONTENT:
+Replace with the address of the object hosting the code.
+
+Note: the value for the account name should now be the object address, as the package containing the module(s) is now deployed to that address.Terminalaptos move upgrade-object --address-name --object-address Example of the command above:Terminalaptos move upgrade-object --address-name my_address --object-address 0x8d6eb306bcf6c61dbaa0dbf8daa8252e121b63e95991afcab3b12d3be7f001abThis will ask if you want to upgrade the existing code deployed at the object address.Example output:TerminalDo you want to upgrade the package 'MyPackage' at object address 0x8d6eb306bcf6c61dbaa0dbf8daa8252e121b63e95991afcab3b12d3be7f001ab [yes/no]Congrats, you have upgraded your code in the existing object!CompilingDebuggingEnglishLight},"page":"/en//smart-contracts/deployment","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This PageDebugging with the Aptos CLISimulation on transaction submissionLocal SimulationGas Profiling and TracingEvaluating performanceQuestion? Give us feedback →Edit this page on →Scroll to topSmart Contracts (Move)DebuggingDebugging Move Move was designed to be simple and safe, but like with all programming languages, bugs can still occur.
+
+This guide will help you debug your Move code and figure out what went wrong.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+This guide will help you debug your Move code and figure out what went wrong.
+
+Please feel free to contribute with additional tooling and information that can help others in the community.
+
+Debugging with the Aptos CLI Simulation on transaction submission You can use the Aptos CLI to simulate entry functions prior to executing them.
+
+Normally, a transaction will fail in simulation if it won’t work on-chain.
+
+For example: aptos move run --function-id 0x1::aptos_account::transfer --args address:0x1 u64:1000000000000000000 { "Error": "Simulation failed with status: Move abort in 0x1::coin: EINSUFFICIENT_BALANCE(0x10006): Not enough coins to complete transaction" } The same applies to Move scripts as well.
+
+For example: aptos move run-script --script-path ...
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+Local Simulation Additionally, for some situations, local simulation, may give additional information and print out any debug statements you have in your code. aptos move run --function-id 0x1::aptos_account::transferred --args address:0x1 u64:1000000000000000000 --local Simulating transaction locally... { "Result": { "transaction_hash": "0x4115316915d409ba4106632c82d4b09220035ffdbd0b86bbe29a586d03d06318", "gas_used": 3, "gas_unit_price": 100, "sender": "78077fe8db589e1a3407170cf8af3bd60a8c95737918c15dd6f49dcbecc7900a", "success": false, "version": 56634003, "vm_status": "status FUNCTION_RESOLUTION_FAILURE of type Verification with message Function 0x1::aptos_account::transferred does not exist" } } Gas Profiling and Tracing Adding the gas profile will additionally add the ability to trace how much gas is used in computation: aptos move run --function-id 0x1::aptos_account::transferred --args address:0x1 u64:1000000000000000000 --profile-gas Simulating transaction locally using the
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+how much gas is used in computation: aptos move run --function-id 0x1::aptos_account::transferred --args address:0x1 u64:1000000000000000000 --profile-gas Simulating transaction locally using the gas profiler...
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+Gas report saved to gas-profiling/txn-a90ca655-0x1-aptos_account-transferred. { "Result": { "transaction_hash": "0xa90ca6550dcdd7f514f4cdcdee7dc1fbee17082fcf68f3db3e5755a93b89bcfc", "gas_used": 3, "gas_unit_price": 100, "sender": "78077fe8db589e1a3407170cf8af3bd60a8c95737918c15dd6f49dcbecc7900a", "success": false, "version": 56651618, "vm_status": "status FUNCTION_RESOLUTION_FAILURE of type Verification with message Function 0x1::aptos_account::transferred does not exist" } } And this will generate a gas report viewable in HTML format: open gas-profiling/txn-a90ca655-0x1-aptos_account-transferred/index.html Evaluating performance aptos move run --function-id 0x1::aptos_account::transfer --args address:0x1 u64:1 --benchmark Benchmarking transaction locally...
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/smart-contracts/debugging
+TITLE: debugging
+CONTENT:
+Running time (cold code cache): 22.144458ms Running time (warm code cache): 669.5µs { "Result": { "transaction_hash": "0x7cdf37ff4d798b3ac3f1e860a40428853e381598a511b9291f2a49e5ff6262a0", "gas_used": 11, "gas_unit_price": 100, "sender": "78077fe8db589e1a3407170cf8af3bd60a8c95737918c15dd6f49dcbecc7900a", "success": true, "version": 56679764, "vm_status": "status EXECUTED of type Execution" } }DeploymentBinary Canonical Serialization (BCS)EnglishLight},"page":"/en//smart-contracts/debugging","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/aptos-standards
+TITLE: aptos-standards
+CONTENT:
+body.next-error-h1@media (prefers-color-scheme:dark).next-error-h1}404This page could not be found.← Go back to home},"page":"/404","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/move-language
+TITLE: move-language
+CONTENT:
+body.next-error-h1@media (prefers-color-scheme:dark).next-error-h1}404This page could not be found.← Go back to home},"page":"/404","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This PageAptos FullnodeIndexerFaucet (Only Testnet/Devnet)Aptos Labs operated API DeploymentsQuestion? Give us feedback →Edit this page on →Scroll to topAPIsAptos APIs The Aptos Blockchain can be accessed by several APIs, depending on your use-case.
+
+Aptos Fullnode This API - embedded into Fullnodes - provides a simple, low latency, yet low-level way of reading state and submitting transactions to the Aptos Blockchain.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+Aptos Fullnode This API - embedded into Fullnodes - provides a simple, low latency, yet low-level way of reading state and submitting transactions to the Aptos Blockchain.
+
+It also supports transaction simulation.
+
+Aptos Fullnode REST API (Mainnet) →Mainnet API playground for Aptos Fullnode REST APIAptos Fullnode REST API (Testnet) →Testnet API playground for Aptos Fullnode REST APIAptos Fullnode REST API (Devnet) →Devnet API playground for Aptos Fullnode REST API Indexer Indexer GraphQL API →This GraphQL API offers a high-level, opinionated GraphQL interface to read state from the Aptos Blockchain.
+
+It’s ideal for interacting with NFTs, Aptos Objects, or custom Move contracts.
+
+Learn more about the Indexer-powered GraphQL API here.Transaction Stream API →This GRPC API streams historical and real-time transaction data to an indexing processor.
+
+It’s used by Aptos Core Indexing and can also support custom app-specific indexing processors for real-time blockchain data processing.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+It’s used by Aptos Core Indexing and can also support custom app-specific indexing processors for real-time blockchain data processing.
+
+Learn more here.
+
+Faucet (Only Testnet/Devnet) Faucet API →This API provides the ability to receive test tokens on devnet.
+
+Its primary purpose is the development and testing of applications and Move contracts before deploying them to mainnet.
+
+On testnet you can mint at the mint page.
+
+The code of each of the above-mentioned APIs is open-sourced on .
+
+As such anyone can operate these APIs and many independent operators and ers worldwide choose to do so.
+
+Aptos Labs operated API Deployments Aptos Labs operates a deployment of these APIs on behalf of Aptos Foundation for each Aptos and makes them available for public consumption.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/apis
+TITLE: apis
+CONTENT:
+Aptos Labs operated API Deployments Aptos Labs operates a deployment of these APIs on behalf of Aptos Foundation for each Aptos and makes them available for public consumption.
+
+At the moment there are 2 sets of Aptos Labs API deployments: APIs with anonymous access and IP-based rate-limiting [Beta] APIs with authentication and developer-account based rate limiting through the Aptos Labs Developer Portal Aptos Token Standard OverviewFullnode REST API ReferenceEnglishLight},"page":"/en//apis","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/sdks
+TITLE: sdks
+CONTENT:
+:}),l&&&&(s.style.colorScheme=t)}if(n)c(n);else trycatch(e)})("class","theme","system",null,["light","dark"],null,true,true)document.try}catch(e)🎉 Welcome to the new Aptos Docs! Click here to .DevelopersAdditional Ethereum to Aptos CheatsheetSolana to Aptos CheatsheetSmart Contracts (Move)Why Move?Create PackageCompilingTestingDeploymentDebuggingAptos StandardsBinary Canonical Serialization (BCS)ObjectCreating ObjectsUsing ObjectsDigital Asset (DA)Fungible Asset (FA)Coin (legacy)Token (legacy)Addressable StorageAccountsTableObjectsResource AccountsData StructuresStructVectorSmart VectorSmart TableReferenceMove ReferenceMove BookSummaryMove 2 Release NotesGetting StartedModules and ScriptsMove TutorialPrimitive TypesIntegersBoolAddressVectorSignerReferencesTuples and UnitBasic ConceptsLocal Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/sdks
+TITLE: sdks
+CONTENT:
+Variables and ScopesEqualityAbort and AssertConditionalsWhile, For, and LoopFunctionsStructs and Enum TypesConstantsGenericsType abilitiesUses and AliasesFriendsPackagesPackage UpgradesUnit TestsGlobal StorageGlobal Storage StructureGlobal Storage OperatorsReferenceStandard LibraryCoding ConventionsError CodesAdvanced MoveScriptsWriting Move ScriptsCompiling Move ScriptsRunning Move ScriptsMove Scripts TutorialMove ProverMove Prover User GuideMove Prover Supporting Move Specification LanguageRandomnessCryptographyMove Security GuidelinesGas ProfilingCompiler V2LinterAptos StandardsModules on AptosMove ReferenceThird Party DependenciesAptos Token Standard OverviewAPIsFullnode REST API ReferenceFullnode REST API GuideIndexer GraphQL APIData ProvidersFaucet APIAPI GatewaySDKsTypeScript SDKQuickstartUsageAccountsAccount AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf:
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/sdks
+TITLE: sdks
+CONTENT:
+AbstractionFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatScript ComposerExample CodeSurf: TypeScript Type Safety for Move ContractsLegacy TypeScript SDK (Deprecated)TypeScript SDK Migration GuidePython SDKGo SDKUsageAccountsFetch DataTransactionsSimulating TransactionsMulti-Agent TransactionsSponsoring TransactionsBatching TransactionsBCS FormatExample CodeRust SDK.NET SDKGetting StartedUnity IntegrationGodot IntegrationAccountsEd25519 AccountsKeyless AccountsMultikey AccountsTransactionsBasic TransactionsSponsored TransactionsQueriesView FunctionsExamplesC++ / Unreal SDKUnity SDKWallet AdapterDapp ersBrowser Extension Wallet ersSDK Wallet ersAptos Wallet StandardCommunity SDKsKotlin SDKQuickstartUsageCreating and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/sdks
+TITLE: sdks
+CONTENT:
+and Managing AccountsFetch Data via the Kotlin SDKing and Sending TransactionsSponsoring Transactions (Fee Payer)For iOS DevelopersAptosKitGetting StartedClient ConfigurationSwift SDKUnity SDK (Legacy)IndexerIndexer APIIndexer API Table ReferenceArchitectureSelf-Hosted Indexer APIExample QueriesGet Fungible Asset BalancesGet Transactions Impacting an AccountGet Aptos NameGet Fungible Asset InfoGet NFT Collections By AccountGet NFTs By AccountGet Token MetadataCount Delegators in Staking PoolIndexer SDKQuickstart GuideDocumentationInitial SetupDefining a Data SchemaCreate a ProcessorCreating a StepTransaction Stream StepParsing TransactionsConnecting StepsVersion TrackingRunning a ProcessorAdvanced TutorialsAdvanced TutorialsMigrate to Indexer SDKImporting TransactionsTransaction Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/sdks
+TITLE: sdks
+CONTENT:
+Stream ServiceAptos-Hosted Transaction Stream ServiceSelf-Hosted Transaction Stream ServiceRunning LocallyLegacy IndexerRun an Indexer FullnodeCustom Data ModelMigrate to Transaction Stream ServiceCLIInstallationMacWindowsLinuxInstall Specific Versions (Advanced)SetupInstall Move ProverStart from templateUsageWorking With Move ContractsLocal Simulation, Benchmarking & Gas ProfilingArguments in JSON TutorialMultisig Governance TutorialFormatting Move ContractsTrying Things On-ChainLook Up On-Chain Account InfoCreate Test AccountsUse Hardware LedgerReplaying Past TransactionsRunning a Local Managing a NodeRunning a Public (Advanced)create-aptos-dappTemplatesFAQGuidesBeginnerYour First Transaction an E2E Dapp with Aptos1.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/sdks
+TITLE: sdks
+CONTENT:
+Create Smart Contract2.
+
+Set Up The Frontend3.
+
+Fetch Data from Chain4.
+
+Submit Data to Chain5.
+
+Handle TasksYour First NFTYour First CoinYour First Fungible AssetYour First Move ModuleYour First MultisigAdvancedManage Fungible Assets with MultisigAptos Keyless AccountsIntroductionOIDC SupportIntegration GuideSimple ExampleHow Keyless WorksTerminology and FAQFederated KeylessKey ConsiderationsIntegration GuideSimple ExampleFAQsSponsored TransactionsTransaction ManagementAccount Key RotationIntegration GuidesExchangesApplicationsOraclesEnglishLightOn This PageCommunity SDKsQuestion? Give us feedback →Edit this page on →Scroll to topSDKsOfficial SDKs Use these Aptos software development kits (SDKs), in combination with the Aptos CLI for your development on the Aptos blockchain.
+--- DOCUMENT END ---
+
+--- DOCUMENT START ---
+URL: https://aptos.dev/en/build/sdks
+TITLE: sdks
+CONTENT:
+Typescript SDK →Aptos Typescript SDK (recommended)pnpm i @aptos-labs/ts-sdkPython SDK →Aptos Python SDKpip3 install aptos-sdkGo SDK →Aptos Go SDKC#/.NET SDK →Aptos .NET SDKdotnet add package AptosRust SDK →Aptos Rust SDKC++ / Unreal SDK →Aptos C++ / Unreal SDKUnity SDK →Aptos Unity SDKWallet Adapter →Aptos Wallet Adapter Community SDKs SDKs provided by the community for Aptos.
+
+These may not be fully vetted by the Aptos team, and may still be in development.
+
+They are still provided as a resource for all developers.
+
+Kotlin SDK →Aptos Kotlin Multiplatform SDK by KaptosSwift SDK →Aptos Swift SDK by AlcoveAPI GatewayTypeScript SDKEnglishLight},"page":"/en//sdks","query":,"Id":"L-vovsShnr1FbJjUjbQsa","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
+--- DOCUMENT END ---
+
