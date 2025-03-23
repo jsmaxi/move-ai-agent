@@ -30,6 +30,8 @@ export default async function handler(
 
       Audit provided Aptos move smart contract code and toml manifest code. 
       Ensure the code is compatible with the Aptos blockchain and follows best practices.
+      Avoid starting the response with phrases like 'I'll audit', start with the findings immediately.
+      Avoid mentioning possitive aspects or suggestions for future development. Mention issues, vulnerabilities, and possible improvements you found.
 
       Move smart contract code:
       ${moveCode}

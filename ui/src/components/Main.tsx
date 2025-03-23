@@ -16,6 +16,8 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { pkg } from "@/types/pkg";
 import { Transaction } from "@/types/transaction";
 import TransactionList from "./lab/TransactionList";
+import AuditList from "./lab/AuditList";
+import { Audit } from "@/types/audit";
 
 const Index = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -27,6 +29,7 @@ const Index = () => {
   const [balance, setBalance] = useState<number>(10); // Initial balance for testing on devnet
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [audits, setAudits] = useState<Audit[]>([]);
   const [prompt, setPrompt] = useState<string>("");
   const [promptType, setPromptType] = useState<"contract" | "agent">(
     "contract"
@@ -119,6 +122,11 @@ const Index = () => {
         const moveCode = generatedFiles[0]?.content;
         const tomlManifest = generatedFiles[1]?.content;
 
+        const contractName =
+          prompt && prompt.length > 30
+            ? prompt.substring(0, 20) + "..."
+            : prompt;
+
         const response = await fetch("/api/audit", {
           method: "POST",
           headers: {
@@ -135,6 +143,17 @@ const Index = () => {
           addLog(data.output, "warning");
           addLog("Audit executed", "success");
           setBalance(balance - cost);
+          const newAudit: Audit = {
+            id: uuidv4(),
+            date: new Date(),
+            contractName: contractName,
+            summary:
+              data.output.length > 30
+                ? data.output.substring(0, 30) + "..."
+                : data.output + "...",
+            details: data.output,
+          };
+          setAudits((prevAudits) => [newAudit, ...prevAudits].slice(0, 10));
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -441,6 +460,10 @@ const Index = () => {
 
         <section>
           <TransactionList transactions={transactions} />
+        </section>
+
+        <section>
+          <AuditList audits={audits} />
         </section>
 
         <section className="flex justify-center gap-4 mt-8">
