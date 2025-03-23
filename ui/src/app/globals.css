@@ -395,7 +395,7 @@
   }
 
   [data-theme="light"] .text-muted-foreground {
-    color: white;
+    color: gray;
   }
 
   [data-theme="matrix"] .header-lab {
