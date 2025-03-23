@@ -48,24 +48,24 @@ const CONTRACT_TEMPLATES: ContractTemplate[] = [
 
 const AGENT_TEMPLATES: AgentTemplate[] = [
   {
-    id: "transfer-monitor",
-    name: "Transfer Monitor",
-    description: "Agent that monitors token transfers",
+    id: "check-balance",
+    name: "Check Balance",
+    description: "Agent that checks APT balance",
   },
   {
-    id: "price-oracle",
-    name: "Price Oracle",
-    description: "Agent that fetches and provides price data",
+    id: "llm-joule",
+    name: "LLM Joule Deposit",
+    description: "Agent that deposits APT on Joule",
   },
   {
-    id: "liquidity-bot",
-    name: "Liquidity Bot",
-    description: "Agent that provides liquidity to DEX pools",
+    id: "custom-tool",
+    name: "Custom Tool",
+    description: "Agent code for adding custom tool",
   },
   {
-    id: "event-notifier",
-    name: "Event Notifier",
-    description: "Agent that sends notifications for on-chain events",
+    id: "tg-bot",
+    name: "Telegram Bot Simple",
+    description: "Agent that can interact with Telegram user",
   },
 ];
 

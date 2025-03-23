@@ -1,3 +1,4 @@
+import { pkg } from "@/types/pkg";
 import { CodeFile } from "@/utils/codeHighlight";
 
 export const CONTRACT_TEMPLATES: Record<string, CodeFile[]> = {
@@ -179,152 +180,366 @@ export const CONTRACT_TEMPLATES: Record<string, CodeFile[]> = {
   };
   
 export const AGENT_TEMPLATES: Record<string, CodeFile[]> = {
-    "transfer-monitor": [
+    "check-balance": [
       {
-        name: "agent.js",
+        name: "agent.ts",
         language: "javascript",
-        content: `import { AptosClient } from "aptos";
-  import { MoveAgentKit } from "move-agent-kit";
-  
-  // Initialize the Move Agent Kit
-  const client = new AptosClient("https://testnet.aptoslabs.com/v1");
-  const agent = new MoveAgentKit({ client });
-  
-  // Monitor token transfers
-  agent.on("tokenTransfer", async (event) => {
-    console.log("Token transfer detected:", event);
-    
-    // Agent logic here
-    const { from, to, amount } = event;
-    
-    // Example: Log large transfers
-    if (amount > 1000) {
-      console.log("Large transfer detected!");
-      // Take action...
-    }
+        content: `import "dotenv/config";
+import {
+  AptosConfig,
+  Network,
+  Aptos,
+  Ed25519PrivateKey,
+  PrivateKey,
+  PrivateKeyVariants,
+} from "@aptos-labs/ts-sdk";
+import { AgentRuntime, LocalSigner } from "move-agent-kit";
+
+try {
+  console.log("Is Mainnet:", process.env.IS_MAINNET);
+  console.log("Private Key:", process.env.PRIVATE_KEY);
+  console.log("Panora API Key:", process.env.PANORA_API_KEY);
+  console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
+
+  const netw =
+    process.env.IS_MAINNET === "true" ? Network.MAINNET : Network.TESTNET;
+
+  console.log("Network.", netw);
+
+  const aptosConfig = new AptosConfig({
+    network: netw,
   });
-  
-  // Start the agent
-  agent.start().then(() => {
-    console.log("Agent is running and monitoring token transfers");
-  }).catch(error => {
-    console.error("Failed to start agent:", error);
-  });`,
+
+  const aptos = new Aptos(aptosConfig);
+
+  const account = await aptos.deriveAccountFromPrivateKey({
+    privateKey: new Ed25519PrivateKey(
+      PrivateKey.formatPrivateKey(
+        process.env.PRIVATE_KEY,
+        PrivateKeyVariants.Ed25519
+      )
+    ),
+  });
+
+  const signer = new LocalSigner(account, netw);
+
+  const agent = new AgentRuntime(signer, aptos);
+
+  const balance = await agent.getBalance();
+
+  console.log("Balance.", balance + " APT");
+
+  console.log("Script executed successfully.");
+} catch (e) {
+  console.error("Error.", e);
+}`,
       },
       {
-        name: "package.json",
-        language: "javascript",
-        content: `{
-    "name": "transfer-monitor-agent",
-    "version": "1.0.0",
-    "description": "Aptos token transfer monitoring agent",
-    "main": "agent.js",
-    "scripts": {
-      "start": "node agent.js",
-      "test": "echo \\"Error: no test specified\\" && exit 1"
-    },
-    "dependencies": {
-      "aptos": "^1.10.0",
-      "move-agent-kit": "^0.5.2"
-    },
-    "keywords": ["aptos", "blockchain", "monitoring", "agent"],
-    "author": "Aptos PlayLab",
-    "license": "MIT"
-  }`,
+        name: pkg.name,
+        language: pkg.language,
+        content: pkg.content,
       },
     ],
-    "price-oracle": [
+    "llm-joule": [
       {
-        name: "price-oracle.js",
+        name: "agent.ts",
         language: "javascript",
-        content: `import { AptosClient } from "aptos";
-  import { MoveAgentKit } from "move-agent-kit";
-  import axios from "axios";
-  
-  // Initialize the Move Agent Kit
-  const client = new AptosClient("https://testnet.aptoslabs.com/v1");
-  const agent = new MoveAgentKit({ client });
-  
-  // Price data cache
-  let priceCache = {};
-  
-  // Fetch price from external API
-  async function fetchPrice(symbol) {
-    try {
-      const response = await axios.get(\`https://api.example.com/prices/\${symbol}\`);
-      return response.data.price;
-    } catch (error) {
-      console.error(\`Failed to fetch price for \${symbol}:\`, error);
-      return null;
-    }
-  }
-  
-  // Update price cache periodically
-  async function updatePrices() {
-    const symbols = ["APT", "BTC", "ETH"];
-    
-    for (const symbol of symbols) {
-      const price = await fetchPrice(symbol);
-      if (price !== null) {
-        priceCache[symbol] = price;
-        console.log(\`Updated price for \${symbol}: \${price}\`);
-      }
-    }
-    
-    // Schedule next update
-    setTimeout(updatePrices, 60000); // Update every minute
-  }
-  
-  // Initialize price cache
-  updatePrices();
-  
-  // Respond to price requests
-  agent.on("priceRequest", async (event) => {
-    const { symbol, requestor } = event;
-    console.log(\`Price request for \${symbol} from \${requestor}\`);
-    
-    if (priceCache[symbol]) {
-      // Send price to requestor
-      await agent.submitTransaction({
-        function: "0x1::oracle::publish_price",
-        arguments: [symbol, priceCache[symbol], requestor],
-        typeArguments: []
-      });
-      
-      console.log(\`Sent price \${priceCache[symbol]} for \${symbol} to \${requestor}\`);
-    } else {
-      console.log(\`No price available for \${symbol}\`);
-    }
+        content: `import "dotenv/config";
+import {
+  AptosConfig,
+  Network,
+  Aptos,
+  Ed25519PrivateKey,
+  PrivateKey,
+  PrivateKeyVariants,
+} from "@aptos-labs/ts-sdk";
+import { ChatAnthropic } from "@langchain/anthropic";
+import { MemorySaver } from "@langchain/langgraph";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { HumanMessage } from "@langchain/core/messages";
+import { createAptosTools, AgentRuntime, LocalSigner } from "move-agent-kit";
+
+try {
+  console.log("Is Mainnet:", process.env.IS_MAINNET);
+  console.log("Private Key:", process.env.PRIVATE_KEY);
+  console.log("Panora API Key:", process.env.PANORA_API_KEY);
+  console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
+
+  const netw =
+    process.env.IS_MAINNET === "true" ? Network.MAINNET : Network.TESTNET;
+
+  console.log("Network.", netw);
+
+  const aptosConfig = new AptosConfig({
+    network: netw,
   });
-  
-  // Start the agent
-  agent.start().then(() => {
-    console.log("Price oracle agent is running");
-  }).catch(error => {
-    console.error("Failed to start price oracle agent:", error);
-  });`,
+
+  const aptos = new Aptos(aptosConfig);
+
+  const account = await aptos.deriveAccountFromPrivateKey({
+    privateKey: new Ed25519PrivateKey(
+      PrivateKey.formatPrivateKey(
+        process.env.PRIVATE_KEY,
+        PrivateKeyVariants.Ed25519
+      )
+    ),
+  });
+
+  const signer = new LocalSigner(account, netw);
+  const aptosAgent = new AgentRuntime(signer, aptos);
+  const tools = createAptosTools(aptosAgent);
+
+  const llm = new ChatAnthropic({
+    temperature: 0.7,
+    model: "claude-3-5-sonnet-20241022",
+  });
+
+  const memory = new MemorySaver();
+
+  const agent = createReactAgent({
+    llm,
+    tools,
+    checkpointSaver: memory,
+    messageModifier: \`
+        You are a helpful agent that can interact onchain using the Aptos Agent Kit. You are
+        empowered to interact onchain using your tools. If you ever need funds, you can request them from the
+        faucet. If not, you can provide your wallet details and request funds from the user. If there is a 5XX
+        (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you
+        can't do with your currently available tools, you must say so, and encourage them to implement it
+        themselves using the Aptos Agent Kit, recommend they go to https://metamove.build/move-agent-kit for more information. Be
+        concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+    \`,
+  });
+
+  const config = { configurable: { thread_id: "Aptos Agent Kit!" } };
+
+  const stream = await agent.stream(
+    {
+      messages: [new HumanMessage("Deposit 0.1 APT on Joule")],
+    },
+    config
+  );
+
+  for await (const chunk of stream) {
+    if ("agent" in chunk) {
+      console.log(chunk.agent.messages[0].content);
+    } else if ("tools" in chunk) {
+      console.log(chunk.tools.messages[0].content);
+    }
+    console.log("-------------------");
+  }
+} catch (e) {
+  console.error("Error.", e);
+}`,
       },
       {
-        name: "package.json",
+        name: pkg.name,
+        language: pkg.language,
+        content: pkg.content,
+      },
+    ],
+    "custom-tool": [
+      {
+        name: "agent.ts",
         language: "javascript",
-        content: `{
-    "name": "price-oracle-agent",
-    "version": "1.0.0",
-    "description": "Aptos price oracle agent",
-    "main": "price-oracle.js",
-    "scripts": {
-      "start": "node price-oracle.js",
-      "test": "echo \\"Error: no test specified\\" && exit 1"
-    },
-    "dependencies": {
-      "aptos": "^1.10.0",
-      "move-agent-kit": "^0.5.2",
-      "axios": "^1.6.0"
-    },
-    "keywords": ["aptos", "blockchain", "oracle", "price", "agent"],
-    "author": "Aptos PlayLab",
-    "license": "MIT"
-  }`,
+        content: `import { Tool } from "langchain/tools";
+import { AgentRuntime, parseJson } from "move-agent-kit";
+
+class TokenTransferTool extends Tool {
+  name = "aptos_transfer_token";
+  description = \`"
+this tool can be used to transfer APT, any token or fungible asset to a recipient
+
+  if you want to transfer APT, mint will be "0x1::aptos_coin::AptosCoin"
+  if you want to transfer token other than APT, you need to provide the mint of that specific token
+  if you want to transfer fungible asset, add fungible asset address as mint
+
+  keep to blank if user themselves wants to receive the token and not send to anybody else
+
+  Inputs ( input is a JSON string ):
+  to: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (optional)
+  amount: number, eg 1 or 0.01 (required)
+  mint: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT" 
+  or "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (required)"\`;
+
+  constructor(agent) {
+    super();
+  }
+
+  async _call(args) {
+    const parsedInput = parseJson(input);
+    // Implement token transfer logic
+    // ...
+    return JSON.stringify({ data: "Transfer Completed" });
+  }
+}
+        `,
+      },
+      {
+        name: pkg.name,
+        language: pkg.language,
+        content: pkg.content,
+      },
+    ],
+    "tg-bot": [
+      {
+        name: "agent.ts",
+        language: "javascript",
+        content: `export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const maxDuration = 60;
+
+import { Bot, webhookCallback } from "grammy";
+
+import { MemorySaver } from "@langchain/langgraph";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { HumanMessage } from "@langchain/core/messages";
+import {
+  Aptos,
+  AptosConfig,
+  Ed25519PrivateKey,
+  Network,
+  PrivateKey,
+  PrivateKeyVariants,
+} from "@aptos-labs/ts-sdk";
+
+import { AgentRuntime, LocalSigner, createAptosTools } from "move-agent-kit";
+import { ChatAnthropic } from "@langchain/anthropic";
+
+const token = process.env.TELEGRAM_BOT_TOKEN;
+if (!token) {
+  throw new Error("TELEGRAM_BOT_TOKEN environment variable not found.");
+}
+const bot = new Bot(token);
+
+async function initializeAgent(userId) {
+  try {
+    const llm = new ChatAnthropic({
+      modelName: "claude-3-5-sonnet-20241022",
+      temperature: 0.7,
+      anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    });
+    const aptosConfig = new AptosConfig({
+      network: Network.MAINNET,
+    });
+
+    const aptos = new Aptos(aptosConfig);
+
+    // Validate and get private key from environment
+    const privateKeyStr = process.env.APTOS_PRIVATE_KEY;
+    if (!privateKeyStr) {
+      throw new Error("Missing APTOS_PRIVATE_KEY environment variable");
+    }
+
+    // Setup account and signer
+    const account = await aptos.deriveAccountFromPrivateKey({
+      privateKey: new Ed25519PrivateKey(
+        PrivateKey.formatPrivateKey(privateKeyStr, PrivateKeyVariants.Ed25519)
+      ),
+    });
+
+    const signer = new LocalSigner(account, Network.MAINNET);
+    const aptosAgent = new AgentRuntime(signer, aptos, {
+      PANORA_API_KEY: process.env.PANORA_API_KEY,
+    });
+    const tools = createAptosTools(aptosAgent);
+    const memory = new MemorySaver();
+    const config = { configurable: { thread_id: userId } };
+    const agent = createReactAgent({
+      llm,
+      tools,
+      checkpointSaver: memory,
+      messageModifier: \`
+      You are a helpful agent that can interact onchain using the Move Agent Kit. 
+      You are empowered to interact onchain using your tools. 
+      If you ever need funds, you can request them from the testnet faucet. 
+      If not, you can provide your wallet details and request funds from the user. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you can't do with your currently available tools, you must say so, and encourage them to implement it themselves using the Move Agent Kit, recommend they go to the Aptos documentation for more information about Move development. Be concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+      \`,
+    });
+    return { agent, config };
+  } catch (error) {
+    console.error("Failed to initialize agent:", error);
+    throw error;
+  }
+}
+// Telegram bot handler
+bot.on("message:text", async (ctx) => {
+  const userId = ctx.from?.id.toString();
+  if (!userId) {
+    return;
+  }
+  const { agent, config } = await initializeAgent(userId);
+  const stream = await agent.stream(
+    { messages: [new HumanMessage(ctx.message.text)] },
+    config
+  );
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Timeout")), 20000)
+  );
+  try {
+    for await (const chunk of await Promise.race([stream, timeoutPromise])) {
+      if ("agent" in chunk) {
+        if (chunk.agent.messages[0].content) {
+          const messageContent = chunk.agent.messages[0].content;
+
+          if (Array.isArray(messageContent)) {
+            const extractedTexts = messageContent
+              .filter((msg) => msg.type === "text")
+              .map((msg) => msg.text)
+              .join("\n\n");
+
+            await ctx.reply(extractedTexts || "No text response available.");
+          } else if (typeof messageContent === "object") {
+            await ctx.reply(JSON.stringify(messageContent, null, 2));
+          } else {
+            await ctx.reply(String(messageContent));
+          }
+        }
+      }
+    }
+  } catch (error) {
+    if (error.message === "Timeout") {
+      await ctx.reply(
+        "I'm sorry, the operation took too long and timed out. Please try again."
+      );
+    } else {
+      console.error("Error processing stream:", error);
+      await ctx.reply(
+        "I'm sorry, an error occurred while processing your request."
+      );
+    }
+  }
+});
+
+export const POST = async (req) => {
+  const headers = new Headers();
+  headers.set("x-vercel-background", "true");
+
+  const handler = webhookCallback(bot, "std/http");
+
+  return handler(req);
+};
+
+/* For testing purposes */
+
+export const GET = async (req) => {
+  try {
+    bot.start();
+    console.log("Bot is running in polling mode...");
+  } catch (error) {
+    console.log("Error starting bot:", error);
+    return new Response("Error starting bot", { status: 500 });
+  }
+
+  return new Response("Bot is running in polling mode...", {
+    status: 200,
+  });
+};`,
+      },
+      {
+        name: pkg.name,
+        language: pkg.language,
+        content: pkg.content,
       },
     ],
   };
