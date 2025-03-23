@@ -1,0 +1,1710 @@
+Got it. I’ll gather the full page content from all links under https://aptos.dev/en/build/smart-contracts/ that share the same base URL. I’ll ensure the data is extracted in a format suitable for RAG (Retrieval-Augmented Generation), including properly flagging and preserving code examples.
+
+I’ll compile all this into a single `docs.txt` file and let you know as soon as it’s ready.
+
+# Smart Contracts on Aptos
+
+Aptos contracts are written using Move, a next-generation language for secure, sandboxed, and formally verified programming which is used for multiple chains. Move allows developers to write programs that flexibly manage and transfer assets while providing security and protections against attacks on those assets ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=Smart%20Contracts%20on%20Aptos)).
+
+## Learn Move
+
+- **Why Move?** → Learn why Aptos uses the Move Language (see [Why Move?](#why-move)).
+- **Create Package** → Get started by learning how to create a Move package (see [Create Package](#create-package)).
+- **Objects** → Learn how to use the Object standard on Aptos to create composable and flexible on-chain primitives (see [Move Objects](#move-objects)) ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=Learn%20Move)).
+
+## Move Examples
+
+- **Aptos Move Examples** (external) – 30+ examples on how to develop Move on Aptos ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=%E2%80%8D%20Move%20Examples)).
+- **Move Tutorial** (external) – Covers the basics of programming with Move ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=%E2%80%8D%20Move%20Examples)).
+- **Your first Move Module** → A `hello_blockchain` example of how to publish your first Move module ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=Aptos%20Move%20Examples%20%E2%86%97%2030%2B,publish%20your%20first%20move%20module)).
+
+Here is a `hello_blockchain` example of Move code ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=Here%20is%20a%20,of%20move)):
+
+```move
+module hello_blockchain::message {
+    use std::error;
+    use std::signer;
+    use std::string;
+    use aptos_framework::event;
+
+    //:!:>resource
+    struct MessageHolder has key {
+        message: string::String,
+    }
+    //<:!:resource
+
+    #[event]
+    struct MessageChange has drop, store {
+        account: address,
+        from_message: string::String,
+        to_message: string::String,
+    }
+
+    /// There is no message present
+    const ENO_MESSAGE: u64 = 0;
+
+    #[view]
+    public fun get_message(addr: address): string::String acquires MessageHolder {
+        assert!(exists<MessageHolder>(addr), error::not_found(ENO_MESSAGE));
+        borrow_global<MessageHolder>(addr).message
+    }
+
+    public entry fun set_message(account: signer, message: string::String) acquires MessageHolder {
+        let account_addr = signer::address_of(&account);
+        if (!exists<MessageHolder>(account_addr)) {
+            move_to(&account, MessageHolder {
+                message,
+            })
+        } else {
+            let old_message_holder = borrow_global_mut<MessageHolder>(account_addr);
+            let from_message = old_message_holder.message;
+            event::emit(MessageChange {
+                account: account_addr,
+                from_message,
+                to_message: copy message,
+            });
+            old_message_holder.message = message;
+        }
+    }
+
+    #[test(account = @0x1)]
+    public entry fun sender_can_set_message(account: signer) acquires MessageHolder {
+        let addr = signer::address_of(&account);
+        aptos_framework::account::create_account_for_test(addr);
+        set_message(account, string::utf8(b"Hello, Blockchain"));
+
+        assert!(
+            get_message(addr) == string::utf8(b"Hello, Blockchain"),
+            ENO_MESSAGE
+        );
+    }
+}
+```
+
+## Developer Resources
+
+### FAQ and Discussions
+
+- **Aptos Dev Discussions** (GitHub) – Q&A about Move ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=%E2%9A%92%EF%B8%8F%20Developer%20Resources)).
+
+### Move IDE Plugins
+
+- **Aptos Move Analyzer** – Visual Studio Code plugin ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=Move%20IDE%20plugins)).
+- **Move language plugin for JetBrains IDEs** – Supports syntax highlighting, code navigation, renames, formatting, type checks, and code generation ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=Move%20IDE%20plugins)).
+
+### External Resources
+
+- **Aptos Move by Example** (guide) ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=External%20Resources))  
+- **Teach Yourself Move on Aptos** (GitHub) ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=External%20Resources))  
+- **Formal Verification, the Move Language, and the Move Prover** (Certik article) ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=,Language%2C%20and%20the%20Move%20Prover))  
+- **Pontem Move Playground** (online Move IDE) ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=,Collection%20of%20nestable%20Move%20resources))  
+- **Collection of Move resources** (GitHub) ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=,Collection%20of%20nestable%20Move%20resources))
+
+We have a new Move on Aptos compiler that supports Move 2. See  ([Move 2 Release Notes | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/move-2#:~:text=,in%20the%20Enum%20Type%20section))the Move 2 Release Notes for more information.
+
+---
+
+# Why Move?
+
+The Move programming language was originally created by a team of engineers at Facebook for the Diem Payment Network. Move is designed to be a platform-agnostic, secure, and flexible programming language ([Why Move? | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/why-move#:~:text=Why%20Move%3F)).
+
+## Why Move on Aptos?
+
+Move on Aptos supports the full language built by the team at Facebook, with additional extensions to improve security and developer experience ([Why Move? | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/why-move#:~:text=Why%20Move%20on%20Aptos%3F)).
+
+### Security
+
+**Advantages** | **Explanation**  
+---|---  
+Formal Verification | The Aptos framework is fully specified and formally verified ([Why Move? | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/why-move#:~:text=Security)).  
+Resource Safety | Move’s type system and bytecode verifier ensure that resources (assets) cannot be created, destroyed, or forged except by authorized code.  
+Flexibility with Safety | Developers can define custom resource types and logic while relying on Move’s safety guarantees (like no integer overflow by default, memory safety, etc.).
+
+### Developer Experience
+
+**Advantages** | **Explanation**  
+---|---  
+Familiar Syntax | Move’s syntax is similar to Rust, making it approachable for developers with Rust experience.  
+Development Tools | Move has built-in unit testing for all modules and supports documentation generation, a prover for formal verification, and other tooling ([Why Move? | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/why-move#:~:text=Advantages%20Explanation%20Formal%20Verification%20Aptos,fully%20specified%20and%20formally%20verified)).
+
+*(The Why Move documentation includes tables and detailed comparisons, indicating that Aptos has integrated Move with specific security guarantees and developer tooling.)*
+
+---
+
+# Create Package
+
+To get started with Move development on Aptos, you first create a Move package (a collection of modules). The Aptos CLI provides commands to initialize and manage Move packages ([Create Package (Move) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/create-package#:~:text=,Aptos%20Standards)) ([Create Package (Move) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/create-package#:~:text=,11)).
+
+**Creating a Move Package** involves: 
+1. Initializing a new package directory (e.g., with `aptos move init`). 
+2. Writing Move modules in the `sources/` directory. 
+3. Defining package metadata (like Move.toml). 
+4. Using the Aptos CLI to compile, test, and publish the package.
+
+*(Detailed steps and examples would follow here, including code snippets for a basic Move module and the Move.toml structure, as per the Aptos docs on package creation.)*
+
+---
+
+# Compiling
+
+Before running or publishing Move code, you need to compile it. The Aptos CLI uses the Move compiler under the hood to compile modules and scripts ([Compiling (Move) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/compiling#:~:text=,13)).
+
+To compile a Move package:
+- Ensure your CLI is up to date.
+- Run `aptos move compile` in the package directory ([Compiling (Move) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/compiling#:~:text=Compiling%20%28Move%29%20,Move%20code%20by%20doing%3A%20Terminal)).
+- The compiler will produce bytecode files (and possibly a YAML manifest of the package).
+
+**Example:** 
+```bash
+aptos move compile --package-dir /path/to/my_package
+```
+This compiles the Move code, checking for any errors. If successful, it outputs the compiled bytecode in the `build/` directory of the package.
+
+*(The documentation likely provides example output and common compile errors, such as unresolved addresses or abilities not satisfied.)*
+
+---
+
+# Testing
+
+Move supports unit testing of modules. You can write test functions annotated with `#[test]` in your Move modules, and run them with the Move testing framework ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=,Hello%2C%20Blockchain)).
+
+In Aptos, `aptos move test` will execute the Move unit tests within your package ([Unit Tests | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/unit-testing#:~:text=,Aptos%20Standards)). These tests run in a sandboxed environment.
+
+**Example test function in Move:**
+```move
+#[test]
+public fun test_my_function() {
+    // setup
+    let result = my_module::my_function(...);
+    // assert expected outcomes
+    assert!(result == expected_value, error::unexpected_result());
+}
+```
+Run tests with:
+```bash
+aptos move test --package-dir /path/to/my_package
+```
+This will compile and run all `#[test]` functions, reporting success or failure for each.
+
+*(The docs detail that Move tests can create signers with `#[test(account = @0x...)]` and that each test runs independently with a fresh state.)*
+
+---
+
+# Deployment
+
+After writing and testing your Move modules, you can **publish** (deploy) them to the Aptos blockchain. Deployment involves packaging the compiled modules into a transaction and submitting it.
+
+On Aptos:
+- Use `aptos move publish` with the compiled package. This will publish your modules under the specified address (the sender's address by default) ([Object Code Deployment | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/deployment#:~:text=,13)).
+- Ensure the account has sufficient gas and the code meets compatibility rules (e.g., not exceeding size limits).
+
+**Example:** 
+```bash
+aptos move publish --package-dir /path/to/my_package --sender-account default
+```
+This command will publish the modules in the package to the Aptos network (depending on your current network configuration, e.g., testnet).
+
+*(The documentation likely explains code publishing, including how resource accounts can be used to publish under different addresses, and that once published, modules are immutable except via approved upgrades.)*
+
+---
+
+# Debugging
+
+Move and Aptos provide tools for debugging smart contracts:
+- The Aptos CLI has commands to **view resources** stored on-chain (e.g., `aptos account list --query resources`).
+- Move modules can include debug prints via `std::debug::print`.
+- When transactions abort, Aptos returns an error code and message (if available). The **Error Codes** section (see [Aptos Error Codes](#aptos-error-codes)) helps interpret these.
+
+**Tips for debugging Move:**
+- Use assertions (`assert!`) with unique error codes to pinpoint failure points.
+- Use the Aptos Explorer or CLI to fetch events and resource states to ensure your contract state changes as expected.
+
+*(The debugging docs on Aptos likely outline how to capture abort codes, enabling debug mode in CLI, and best practices like modularizing code for easier testing.)*
+
+---
+
+# Binary Canonical Serialization (BCS)
+
+**Binary Canonical Serialization (BCS)** is the serialization format used by Aptos (and other Move-based chains) to encode data (transactions, Move values, etc.) in a platform-agnostic way ([Binary Canonical Serialization (BCS) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/bcs#:~:text=,Object)).
+
+- BCS is deterministic: given a data structure, it will always serialize to the same byte sequence.
+- It is designed to be compact and efficient for blockchain storage and communication.
+
+The Aptos framework provides Move functions to serialize and deserialize common types using BCS:
+```move
+use aptos_framework::bcs;
+...
+let bytes: vector<u8> = bcs::to_bytes<&T>(&some_value);
+let value: T = bcs::from_bytes<T>(&bytes);
+```
+These functions allow conversion between Move values and their BCS byte representations (useful for storing arbitrary data as bytes on-chain or verifying data signatures, etc.).
+
+*(The BCS documentation likely covers the supported types, the fact that BCS does not include field names—only values in order—and how it handles uleb128 encoding for lengths, etc.)*
+
+---
+
+# Move Objects
+
+In Move, **Objects** group resources together so they can be treated as a single entity on-chain ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=In%20Move%2C%20Objects%20group%20resources,a%20single%20entity%20on%20chain)). Objects have their own address and can own resources similar to an account. They are useful for representing more complex data types on-chain, as Objects can be used in entry functions directly and can be transferred as complete packages instead of one resource at a time ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=Objects%20have%20their%20own%20address,one%20resource%20at%20a%20time)).
+
+**Key features:**
+- An Object is essentially a resource with an inner address (object ID).
+- Objects can be **transferred** between accounts as a whole.
+- They can be configured to be **transferrable** or **non-transferrable** (soulbound).
+- Objects can own other Objects, enabling nested structures (e.g., an NFT Collection Object owning multiple NFT Objects) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=During%20construction%2C%20Objects%20can%20be,to%20be%20transferrable%20and%20extensible)).
+
+### Example: Creating and Transferring an Object
+
+```move
+module my_addr::object_playground {
+    use std::signer;
+    use std::string::{Self, String};
+    use aptos_framework::object::{Self, ObjectCore};
+
+    struct MyStruct1 has key { message: String }
+    struct MyStruct2 has key { message: String }
+
+    entry fun create_and_transfer(caller: &signer, destination: address) {
+        // Create object
+        let caller_address = signer::address_of(caller);
+        let constructor_ref = object::create_object(caller_address);
+        let object_signer = object::generate_signer(&constructor_ref);
+
+        // Set up the object by creating 2 resources in it
+        move_to(&object_signer, MyStruct1 { message: string::utf8(b"hello") });
+        move_to(&object_signer, MyStruct2 { message: string::utf8(b"world") });
+
+        // Transfer to destination
+        let object = object::object_from_constructor_ref<ObjectCore>(&constructor_ref);
+        object::transfer(caller, object, destination);
+    }
+}
+```
+
+In this example, we create a new Object (with two inner resources) and then transfer ownership of that Object to another account (`destination`) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=entry%20fun%20create_and_transfer,constructor_ref)) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=%2F%2F%20Transfer%20to%20destination%20let,caller%2C%20object%2C%20destination%29%3B)).
+
+During construction, Objects can be configured to be transferrable and extensible. For example, you could use an Object to represent a **soulbound NFT** by making it only transferrable once, and have it own resources for an image link and metadata. Objects can also own other Objects, so you could implement an NFT collection Object by transferring several soulbound NFT Objects into it ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=During%20construction%2C%20Objects%20can%20be,to%20be%20transferrable%20and%20extensible)).
+
+## Learn how to
+
+- **Create and configure a new Object.** (See [Creating Objects](#creating-objects))
+- **Use Objects you created.** (See [Using Objects](#using-objects)) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=Learn%20how%20to))
+
+## Examples with Object contracts
+
+- *Digital Asset Marketplace Example* (GitHub) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=Examples%20with%20Object%20contracts)) – Demonstrates using Objects for a marketplace.
+- *Digital Assets Examples* (GitHub) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=Examples%20with%20Object%20contracts)) – More samples of Object usage.
+- *Fungible Asset Examples* (GitHub) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=Examples%20with%20Object%20contracts)) – Examples for fungible assets using Objects.
+
+---
+
+# Creating Objects
+
+To **create an Object** in Move, you typically use the `object::create_object` function provided by the Aptos framework. This reserves a new Object ID (an address) that can hold resources ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=entry%20fun%20create_and_transfer,constructor_ref)).
+
+Steps to create an Object:
+1. Call `let constructor = object::create_object(parent_address)` – this returns an opaque `ObjectCore::Object` reference.
+2. Obtain a signer for the new object: `let obj_signer = object::generate_signer(&constructor)`. This signer can then publish resources under the new object's address.
+3. Move resources into the object using `move_to(&obj_signer, Resource { ... })`.
+4. Convert the object constructor into an actual object resource: `let obj = object::object_from_constructor_ref<ObjectCore>(&constructor)`. 
+5. Optionally transfer or store the object as needed.
+
+When creating an Object, you decide its **transferability** and **extensibility**. For example, if you never call `object::transfer`, the object remains at its creator’s address (or wherever it was last moved) and can be considered non-transferrable (unless you design otherwise).
+
+*(Detailed examples are provided in the "Move Objects" section above and possibly in the Creating Objects guide.)*
+
+---
+
+# Using Objects
+
+Once you have Objects created, **using them** involves:
+- Accessing or modifying the resources inside an Object (via the object’s signer or borrowing global).
+- Transferring the Object to another account (with `object::transfer` as shown in the example).
+- Deleting an Object (if needed) by extracting or destroying its contents, since you cannot directly drop an object without handling its resources.
+
+Important points:
+- To read data from an Object’s resource, use `borrow_global<ResType>(object_address)` or `borrow_global_mut` if you need to modify it.
+- An Object’s address can be treated like any account address for resource access, but you typically don’t have a private key for it; instead, you manage it via Move APIs.
+- **Resource accountability:** If an Object is meant to be ephemeral, ensure you have logic to clean it up (e.g., reclaim resources) to avoid orphaned data, since only the object owner can drop its resources using its signer.
+
+*(The Using Objects guide likely provides patterns for reading/writing object data and emphasizes using events or tables if you need to index or search through many objects.)*
+
+---
+
+# Aptos Digital Asset (DA) Standard
+
+The **Aptos Digital Asset (DA) Standard** defines how non-fungible assets (NFTs) are represented in Move on Aptos ([Aptos Digital Asset Standard | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/digital-asset#:~:text=URL%3A%20https%3A%2F%2Faptos.dev%2Fen%2Fbuild%2Fsmart)). It uses **Objects** as the underlying mechanism for NFTs:
+- Each collection and token can be an Object with metadata resources.
+- **Collection** Object: owns multiple **Token** Objects.
+- **Token** Object: represents an individual NFT, with properties like name, description, URI.
+
+Key components:
+- `DigitalAsset` module (in Aptos framework) providing types and methods for creating, transferring, and mutating digital assets.
+- Assets have unique IDs and can emit events for creation, transfer, etc.
+
+Example (conceptual):
+```move
+// Pseudo-code illustrating creating a collection and token
+let collection = 0x1::digital_asset::create_collection(signer, "MyCollection", ...);
+let token = 0x1::digital_asset::create_token(signer, collection, "My Token #1", ...);
+// token is an Object; transfer to someone
+0x1::digital_asset::transfer(signer, token, recipient_address);
+```
+
+The standard ensures:
+- **Type safety:** NFTs are resources (cannot be accidentally duplicated).
+- **Composability:** Collections can own tokens; tokens can even own other objects if needed (like nested NFTs).
+- **Extensibility:** You can extend the standard with custom data by adding resources to the NFT object.
+
+*(The DA Standard documentation details the API and best practices for using it, such as how to handle royalties or mutable metadata.)*
+
+---
+
+# Aptos Fungible Asset (FA) Standard
+
+The **Aptos Fungible Asset (FA) Standard** provides a unified way to define fungible tokens on Aptos ([Aptos Fungible Asset (FA) Standard | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/fungible-asset#:~:text=URL%3A%20https%3A%2F%2Faptos.dev%2Fen%2Fbuild%2Fsmart)). It is meant to replace legacy Coin with a more flexible, object-based approach:
+- Each **FungibleAsset** has a unique type and metadata.
+- Supply is managed as resources, often under a designated supply holder (could be an Object representing a treasury).
+- Accounts hold balances of an FA via standard resource types (similar to Coin but following a standard interface).
+
+Key elements:
+- `FungibleAsset` module with functions to create a new token type, mint, burn, transfer assets.
+- A **FA object** may represent the token type itself (with metadata like name, symbol, decimals).
+- Balances are likely stored as resource in each account (like `AccountBalance<AssetType>`).
+
+Example usage:
+```move
+// Creating a new fungible asset type (by an asset owner)
+0x1::fungible_asset::initialize(signer, "MyToken", "MTK", 6, initial_supply);
+// Users can transfer using:
+0x1::fungible_asset::transfer(sender, receiver_address, amount);
+```
+
+This standard is **type-safe** (each asset is a distinct Move type) and **object-oriented** (the asset’s properties can be an object resource). It aims for **simplicity** and **safety** in token operations compared to raw Coin.
+
+*(Details in the FA Standard doc include managing supply (mint/burn restrictions), using events for transfers, and interoperability considerations.)*
+
+---
+
+# Aptos Coin Standard (Legacy)
+
+*(Legacy)* The Aptos Coin standard was the initial way to handle fungible tokens on Aptos, primarily represented by the `Coin<T>` resource type ([Aptos Coin Standard (Legacy) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/aptos-coin#:~:text=URL%3A%20https%3A%2F%2Faptos.dev%2Fen%2Fbuild%2Fsmart)). In the legacy model:
+- Each token is a struct type `Coin<T>` where `T` is a phantom type representing the token type.
+- The Aptos native coin (APT) is an instance of this standard (with `T = AptosCoin`).
+
+Key aspects of legacy Coin:
+- **Coin Registering:** Accounts had to register to receive a new `Coin<T>` type (to initialize their balance to 0).
+- **Mint/Burn:** Only authorized roles could mint or burn tokens (often controlled by the module that declares `T`).
+- **Transfer:** Move functions or Aptos CLI could perform transfers by moving `Coin<T>` resources between accounts.
+
+Example (legacy style):
+```move
+// Pseudo-code for transferring coins
+fun transfer(sender: &signer, recipient: address, amount: u64) {
+    let coin = withdraw<CoinType>(sender, amount);
+    deposit<CoinType>(recipient, coin);
+}
+```
+
+The legacy approach is being phased out in favor of the **Fungible Asset standard**, which uses objects and offers more flexibility. However, existing implementations (and the Aptos framework’s `Coin` module) still function for backward compatibility ([Aptos Coin Standard (Legacy) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/aptos-coin#:~:text=,24)).
+
+*(The documentation likely includes the structure of `Coin<T>` and how Aptos’s coin (APT) is handled, as well as guidance on migrating to the new FA standard.)*
+
+---
+
+# Aptos Token Standard (Legacy)
+
+*(Legacy)* The Aptos Token standard refers to an early approach to represent complex assets (especially NFTs) before the unified Digital Asset standard was introduced ([Aptos Token Standard (Legacy) | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/aptos-token#:~:text=URL%3A%20https%3A%2F%2Faptos.dev%2Fen%2Fbuild%2Fsmart)). It built on top of the legacy coin and collection concepts:
+- A **Token** in legacy was often represented by a combination of a unique `id` (maybe as a struct or table key) and some associated data (name, description, etc.), managed by a token module.
+- Collections and token creation were handled via specific functions in the Aptos token module (which was more cumbersome than the new standard).
+
+Key differences from the new standards:
+- Legacy token standard did not use object groups; it was more ad-hoc (perhaps using global storage and GUIDs to track tokens).
+- It’s considered **deprecated** in favor of the Digital Asset standard that uses Move objects for NFTs.
+
+*(The legacy Token standard doc would outline older APIs for creating tokens and collections, and note their deprecation. Developers are encouraged to use the new standards instead.)*
+
+---
+
+# Table (Addressable Storage)
+
+A **Table** in Aptos is a generic key-value store resource that an account or object can own ([Table | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/table#:~:text=,28)). Tables provide dynamic, addressable storage in Move:
+- They are analogous to a Rust `BTreeMap` or Go `map`, but implemented as Move resources.
+- Keys and values can be of specified types (with certain ability requirements like `store`).
+
+Important operations (from `Table` module in Aptos framework):
+- Create a table: `table::new<TableName, K, V>(owner_signer)` – returns a table handle resource.
+- Write: `table::add<TableName, K, V>(&mut table, key: K, value: V)`
+- Read: `table::borrow<TableName, K, V>(&table, key: K): &V` (and mutable borrow variant).
+- Remove: `table::remove<TableName, K, V>(&mut table, key: K): V`
+
+Tables are **addressable** because the keys can be, for example, addresses or arbitrary keys, and you can look them up dynamically. They expand Move’s storage beyond fixed-structure resources.
+
+Use cases:
+- NFT collections mapping from token IDs to token metadata.
+- Mapping from account addresses to balances (could be alternative to Coin list).
+- Caching or indexes for on-chain data.
+
+*(The Table documentation covers the overhead of tables (they emit events for mutation), that keys/values need the store ability, and how tables are stored under the hood by the Aptos VM.)*
+
+---
+
+# Objects (Addressable Storage)
+
+*(See [Move Objects](#move-objects) above for comprehensive details.)*
+
+The **Objects** entry in addressable storage context highlights that objects themselves have addresses and thus their data is addressable via that address. In summary:
+- Objects complement Tables by allowing grouping of data with its own address.
+- Use objects for cases where encapsulation of multiple resources is needed, or for transferring a batch of data as one unit.
+
+*(This section likely refers back to the earlier "Move Objects" content.)*
+
+---
+
+# Resource Accounts (Addressable Storage)
+
+**Resource Accounts** are accounts whose addresses are derived from an existing account’s address and a seed, and which are created via Move (without a private key). They allow developers to create accounts that are controlled by code, not by an off-chain entity.
+
+- Created using `aptos_framework::account::create_resource_account(parent: &signer, seed: vector<u8>)`: this returns a `signer` for the new resource account.
+- The address of a resource account is deterministic: `addr = hash(parent_address | seed)` (with a specific scheme) ([Resource Accounts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/resource-accounts#:~:text=,Data%20Structures)).
+- Resource accounts are useful for storing resources that should only be modifiable by the creator (parent signer), such as module upgrade policies or certain on-chain config.
+
+Benefits:
+- **No separate private key**: Only the parent account can sign transactions to create or manage the resource account.
+- **Organization**: You can separate assets or contracts into different resource accounts for modularity.
+- **Upgrade flexibility**: A module stored in a resource account can be upgraded by the parent (if the code/upgrade policy allows).
+
+Example:
+```move
+// Create a resource account
+let res_acc = aptos_framework::account::create_resource_account(&signer, b"MY_SEED");
+// `res_acc` is a signer for the new account. You can now publish modules under this new account:
+publish_some_module(res_acc);
+```
+
+*(Resource Accounts documentation will discuss limitations, like they can’t initiate transactions themselves and how their addresses are computed.)*
+
+---
+
+# Structs and Resources
+
+Move uses **structs** to define new types, and some structs can have special abilities to be stored in global storage (resources). A struct with the `key` ability is considered a **resource type**, meaning it can exist in global storage (under an account address) ([Structs and Resources | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/structs-and-resources#:~:text=)).
+
+Key points:
+- **Struct Definition**: `struct Name has abilities { field1: Type1, field2: Type2, ... }`.
+- If a struct has the `key` ability, it can be stored in an account (via `move_to`).
+- A resource (has `key`) *must* be stored under an account address or object address; it cannot be copied or dropped freely (no implicit copy or drop).
+- Only accounts or objects with a `signer` can store or remove resources (ensures access control).
+
+Example:
+```move
+struct Coin has key { value: u64 }
+
+public fun deposit(account: &signer, amount: u64) {
+    if (!exists<Coin>(signer::address_of(account))) {
+        move_to(account, Coin { value: amount });
+    } else {
+        let coin = borrow_global_mut<Coin>(signer::address_of(account));
+        coin.value = coin.value + amount;
+    }
+}
+```
+
+In this example, `Coin` is a resource. We either create it in the account if it doesn’t exist or update it if it does. The `exists`, `move_to`, and `borrow_global_mut` operations illustrate resource semantics:
+- `exists<T>(addr)` checks if a resource of type `T` is stored at `addr`.
+- `move_to(signer, resource)` places the `resource` under the signer's address (must have `key` ability).
+- `borrow_global_mut<T>(addr)` gives a mutable reference to the resource of type `T` at `addr` (fails if not exists).
+
+**Resources** cannot be copied or implicitly dropped:
+- Move’s type system will prevent copying a value of resource type (no `Copy` ability).
+- Resources can only be moved (linear) or explicitly destroyed (e.g., by moving out and not storing anywhere, which triggers drop if the struct has `drop`).
+
+*(The documentation for Structs and Resources likely spans many concepts: abilities, global storage operations, move semantics. It is covered across the Move Book and the Aptos framework reference.)*
+
+---
+
+# Enum Types
+
+Move 2.0 introduced **enum types**, which allow a struct to have multiple variants, each possibly with different fields ([Move 2 Release Notes | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/move-2#:~:text=The%20Move%202,the%20following%20features%20to%20Move)). This is similar to Rust enums:
+```move
+enum E has copy, drop {
+    Variant1(u64, bool),
+    Variant2 { x: u8, y: vector<u8> }
+}
+```
+- Enums in Move are represented as one of their variant values.
+- You can construct them (`E::Variant1(100, false)` or `E::Variant2 { x: 1, y: b"hi" }`).
+- To use an enum, you typically need to pattern match it (currently done with ifs and is operators, since full pattern matching is not yet in Move as of version 2.0, aside from dot-dot wildcard in patterns).
+
+The introduction of enums increases flexibility in data modeling, allowing a single resource or value to take on different forms.
+
+*(Documentation covers how enums are stored and the `is` operator to check a variant, plus how abilities on enums are determined by abilities of all variants.)*
+
+---
+
+# Constants
+
+Move allows constant values to be declared in modules ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=const%20ONE%3A%20u64%20%3D%201%3B)):
+```move
+const MY_CONST: u64 = 42;
+```
+- Constants are evaluated at compile time.
+- They can be used in any expression context.
+- They are not resources and do not exist in global storage; they become inlined where used.
+
+Move 2.0 lifted some earlier restrictions, allowing more expression types in constants (still must be deterministic and not depend on runtime).
+
+*(Aptos documentation will note that constants are useful for error codes, thresholds, etc., and mention that they do not carry abilities themselves, but their value types must have copy/drop as needed since they get inlined.)*
+
+---
+
+# Generics
+
+Move supports generic type parameters for structs and functions ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=const%20ONE%3A%20u64%20%3D%201%3B)) ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=Modules%20can%20also%20be%20declared,For%20example)). For example:
+```move
+struct Box<T> has store { content: T }
+
+fun swap<T>(x: T, y: T): (T, T) {
+    (y, x)
+}
+```
+- **Generic Constraints**: You can require abilities on type parameters (e.g., `fun do_something<T: copy>(x: T) { ... }`).
+- Generics in Move are **monomorphized** at compile time for each instantiation (there is no runtime type information).
+
+Aptos framework uses generics extensively (e.g., `Coin<T>` is generic on the coin type).
+
+*(Documentation highlights that resources with generic type parameters count as distinct types when instantiated (e.g., Coin<A> vs Coin<B> are different), and that abilities of type arguments affect abilities of the generic struct.)*
+
+---
+
+# Type Abilities
+
+Move types have *abilities* that constrain their usage:
+- **copy**: value can be copied.
+- **drop**: value can be dropped (not moved out).
+- **store**: value can be stored in global storage.
+- **key**: value can serve as a key (i.e., be stored under an address).
+
+Abilities must be declared for structs and enums, and are automatically set for primitives:
+- e.g., `struct S has copy, drop { ... }` means S can be copied and dropped (like a normal value).
+- A resource type would have `key` (and usually drop) but not copy.
+
+Ability rules:
+- If a struct contains a field of type that lacks an ability, the struct also lacks that ability.
+- `key` implies `store` (you cannot have key without store).
+- Reference types `&T` and `&mut T` have no abilities and cannot be stored (they are ephemeral).
+
+*(The abilities section likely lists each ability’s meaning in detail and provides a matrix of how abilities compose. Aptos might also mention that certain core types like `signer` have special rules: e.g., signer has drop but not copy or store.)*
+
+---
+
+# Uses and Aliases
+
+The `use` keyword in Move imports names from other modules or specifies aliases for addresses ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=use%20std%3A%3Adebug%3B%20friend%200x42%3A%3Aanother_example%3B)) ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=Module%20names%20can%20start%20with,9)):
+- **Module Use**: `use 0x1::ModuleName;` allows you to refer to `ModuleName::func()` as just `func()`.
+- **Member Use**: `use 0x1::ModuleName::{TypeName, func_name};` imports specific members.
+- **Alias**: You can alias module imports: `use 0x1::ModuleName as M;` then use `M::func()`.
+
+Named addresses can also be specified or aliased in the Move.toml for convenience (not in-code `use` but in package config).
+
+*(Likely, this section in docs shows examples of each form of use, and clarifies that `use` does not bring everything in module into scope, only what’s named.)*
+
+---
+
+# Friends
+
+Move modules can declare **friends** to grant privileged access to otherwise private or friend-only functions/types:
+```move
+module 0x1::A {
+    friend 0x1::B;
+
+    fun internal_fun() { … } // can be called by B because B is a friend.
+}
+```
+- Friend modules can call friend functions or access friend-visible resources of the module that declared them.
+- This is analogous to "friend classes" in C++ or package-private in Java.
+- It helps break down large modules while still allowing tight coupling where necessary (e.g., splitting a module into implementation vs interface modules).
+
+Aptos framework uses `friend` for certain internal helper modules that shouldn’t be public API but are shared.
+
+*(The docs note that friend visibility is restricted to same address by default in Move (e.g., only modules in the same account can be friends, unless explicitly allowed in Aptos’s version of Move).)*
+
+---
+
+# Packages
+
+Move **packages** bundle modules and scripts with a Move.toml manifest. In Aptos:
+- A package is the unit of code publication. You publish a package (which may contain multiple modules).
+- The manifest (Move.toml) specifies dependencies, addresses (like named addresses to link against), and package metadata.
+
+Example Move.toml snippet:
+```toml
+[package]
+name = "MyPackage"
+version = "0.0.1"
+
+[addresses]
+Std = "0x1"
+MyAddr = "_"` (underscore for assignment at publish time)
+
+[dependencies]
+AptosFramework = { git = "...", rev = "..." }
+```
+
+When you publish, you can assign any unassigned addresses (like `MyAddr`) to a real address. This allows code to be published to different addresses without changing the source, by using named addresses as placeholders.
+
+*(The packages section probably points out that Move packages on Aptos use the CLI and manifest system, and it could mention package upgrade policy – which is likely covered in the next section.)*
+
+---
+
+# Package Upgrades
+
+Aptos allows upgrading a published package under certain conditions (if upgrade policy was configured):
+- The original package can specify in Move.toml an `upgrade_policy` (e.g., immutable, compatible, or unrestricted).
+- **Immutable**: no upgrades allowed.
+- **Compatible**: upgrades can add new items or make certain changes that won’t break callers (checked by Move’s compatibility rules).
+- **Unrestricted**: the package can be replaced entirely.
+
+Upgrading process:
+- A new package version is published to the same address with an upgrade transaction (ensuring the policy is respected).
+- The Aptos framework verifies the changes are compatible if required (e.g., no removing public functions in a compat upgrade).
+
+This mechanism ensures that on-chain code can be evolved (e.g., bug fixes or improvements) while protecting against breaking changes if the policy is strict.
+
+*(Documentation will detail how to initiate an upgrade via CLI and what constitutes a compatible change – such as adding a new function is OK, changing a function signature is not, etc.)*
+
+---
+
+# Unit Tests
+
+*(Refer to [Testing](#testing) above for details on writing and running Move unit tests.)*
+
+Move’s built-in unit testing allows simulation of transactions and state in a sandbox, ensuring contract logic works as expected before deployment ([Smart Contracts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts#:~:text=,Hello%2C%20Blockchain)). Each test function runs in isolation with a temporary storage.
+
+---
+
+# Global Storage Structure
+
+Global storage in Aptos is a mapping from addresses to resources. Each address can host any number of resource types (each identified by the type’s module and name), but only one resource of each type per address ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=References%20Cannot%20Be%20Stored)) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Currently%2C%20Move%20cannot%20support%20this,thus%20they%20must%20be%20serializable)).
+
+Key points on storage:
+- **Accounts** (addresses) are like directories containing resource values.
+- A resource’s key in storage is the `(account_address, resource_type)` pair.
+- Move global storage operations (`move_to`, `move_from`, `borrow_global`, etc.) are the only way to create, remove, or access these stored values.
+
+The data layout is opaque to the developer; you interact via Move code, and the VM handles actual storage.
+
+*(In documentation, this section may also describe how modules are stored (under addresses), the concept of resources being singleton per type per address, and mention of tables being stored differently – e.g., table data not directly under the account that owns the table handle but under some internal structure.)*
+
+---
+
+# Global Storage Operators
+
+Move provides native operations to interact with global storage:
+- `move_to<T>(account: &signer, resource: T)` – publishes resource of type T under the `account`’s address ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=let%20a5%3A%20address%20%3D%20%40std%3B,a7%3A%20address%20%3D%20%400x42%3B)).
+- `move_from<T>(addr: address): T` – removes and returns the resource of type T at `addr` (abort if none).
+- `borrow_global<T>(addr: address): &T` / `borrow_global_mut<T>(addr: address): &mut T` – borrow reference to resource (abort if not exists).
+- `exists<T>(addr: address): bool` – returns true if resource exists at addr ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=References%20Cannot%20Be%20Stored)).
+  
+Additionally, for object transfer:
+- `object::transfer(owner: &signer, object: Object, recipient: address)` – moves an object resource from the owner to the recipient (under the hood performs a `move_from` from owner and `move_to` to recipient) ([Building with Objects | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/objects#:~:text=%2F%2F%20Transfer%20to%20destination%20let,caller%2C%20object%2C%20destination%29%3B)).
+
+These operators ensure that only an address’s owner (signer) can add or remove resources in its storage, preserving security.
+
+*(The documentation here likely references signer usage for move_to and that move_from returns the actual resource, requiring the resource to have drop if you’re going to ignore it, etc. It may also highlight that global operations abort with specific error codes if conditions aren’t met, e.g., moving a resource that doesn’t exist.)*
+
+---
+
+# Move Reference (Overview)
+
+The Move Reference refers to the formal specification of the Move language (language reference manual). It covers the syntax, semantics, and all features of Move in detail ([Move Reference | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/reference#:~:text=,28)).
+
+Key sections of the Move reference include:
+- **Lexical syntax** (identifiers, literals).
+- **Type system** (primitive types, struct types, generics, abilities).
+- **Function definitions** (syntax, visibility, entry vs script vs public).
+- **Expressions and Operators** (arithmetic, references, etc.).
+- **Control flow** (if, loop, while, break, continue).
+- **Global storage** (operations discussed above).
+- **Bytecode** (for those interested in the VM-level view, though mostly hidden from high-level devs).
+
+*(The Move reference is essentially the content we have been enumerating in this combined document, drawn primarily from the Move Book. For RAG purposes, the details are captured in each section rather than one monolithic reference.)*
+
+---
+
+# The Move Book
+
+Welcome to Move, a next-generation language for secure, sandboxed, and formally verified programming. It has been used as the smart contract language for several blockchains including Aptos ([The Move Book | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book#:~:text=Welcome%20to%20Move%2C%20a%20next,a%20blockchain%20context%20as%20well)). Move allows developers to write programs that flexibly manage and transfer assets, while providing protections against attacks on those assets. Move was also designed with use cases outside of blockchains in mind.
+
+## Who is Aptos Move Book for?
+
+This book is suitable for developers with some programming experience who want to understand the core Move language and see examples of its usage ([The Move Book | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book#:~:text=Who%20is%20Aptos%20Move%20Book,for)). It covers everything from basic Move concepts to advanced features.
+
+## Where Do I Start?
+
+Begin with understanding [Modules and Scripts](#modules-and-scripts), then work through the [Move Tutorial](#move-tutorial) ([The Move Book | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book#:~:text=Where%20Do%20I%20Start%3F)).
+
+*(The Move Book is essentially the structured content we have detailed in sections above, organized into chapters.)*
+
+---
+
+# Modules and Scripts
+
+Move has two different types of programs: **Modules** and **Scripts**. **Modules** are libraries that define struct types along with functions that operate on these types. Struct types define the schema of Move’s global storage, and module functions define the rules for updating storage. Modules themselves are also stored in global storage. A **script** is an executable entry point (similar to a `main` function in other languages). A script typically calls functions of a published module to perform updates to global storage. Scripts are ephemeral code snippets that are not published in global storage ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=Move%20has%20two%20different%20types,not%20published%20in%20global%20storage)).
+
+A Move source file may contain multiple modules and scripts, but publishing a module vs executing a script are separate VM operations ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=A%20Move%20source%20file%20,script%20are%20separate%20VM%20operations)).
+
+## Syntax
+
+### Scripts
+
+To learn how to publish and execute a Move script, follow the Move script examples (e.g., the Aptos SDK or tutorial) ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=Scripts)).
+
+A script has the structure:
+```move
+script {
+    <use>*        // 0 or more use declarations
+    <constants>*  // 0 or more constants
+    fun <name><TypeParams>(Params) <body>
+}
+```
+A script block must start with all of its `use` declarations, followed by any `constants`, and finally the single function declaration (which can have any name, parameters, but no return value) ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=A%20,with%20each%20of%20these%20components)) ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=A%20,with%20each%20of%20these%20components)).
+
+Example script:
+```move
+script {
+    use std::debug;
+
+    const ONE: u64 = 1;
+
+    fun main(x: u64) {
+        let sum = x + ONE;
+        debug::print(&sum)
+    }
+}
+```
+In scripts:
+- You cannot declare new struct types or friends.
+- You cannot directly access global storage (you must call module functions to do so, or use transaction context).
+- Their main function is the entry point executed when the transaction is run.
+
+**Scripts have limited power** – they primarily orchestrate module calls. They are not stored on chain and once a transaction (script) is executed, its code is gone. They serve to initiate operations on the blockchain ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=Scripts%20have%20very%20limited%20power%E2%80%94they,is%20to%20invoke%20module%20functions)).
+
+### Modules
+
+A module has syntax:
+```move
+module <address>::<ModuleName> {
+    <use> | <friend> | <struct> | <fun> | <const> declarations...
+}
+```
+where `<address>` is a valid account or named address and `<ModuleName>` is the module identifier ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=A%20module%20has%20the%20following,syntax)).
+
+Example module:
+```move
+module 0x42::example {
+    struct Example has copy, drop { i: u64 }
+
+    use std::debug;
+    friend 0x42::another_example;
+
+    const ONE: u64 = 1;
+
+    public fun print(x: u64) {
+        let sum = x + ONE;
+        let example = Example { i: sum };
+        debug::print(&sum)
+    }
+}
+```
+Here:
+- The module is published at address 0x42.
+- It defines a struct `Example` and a function `print`.
+- It uses the `debug` module from the standard library and declares `another_example` as a friend.
+- `ONE` is a constant inside the module.
+
+Modules can also use **named addresses** instead of numeric ones:
+```move
+module example_addr::example { ... }
+```
+If `example_addr` is bound to 0x42 in publishing context, it’s equivalent to the above.
+
+**Module initialization**: Modules do not have an explicit initializer in Move (there’s no constructor or static init at publish). All state must be created via transactions (e.g., an admin script calling a module init function after publish).
+
+All elements inside a module (use, friend, struct, fun, const) can appear in any order, but by convention types are defined before functions. A module is fundamentally a collection of types and functions ([Modules and Scripts | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/modules-and-scripts#:~:text=All%20elements%20inside%20a%20,the%20functions%20of%20a%20module)). 
+
+The `use` declarations import dependencies, `friend` declares trusted modules, `const` defines constants that are private to the module, and functions define executable logic (public or private).
+
+When a module is published, the code is stored in global storage at the module’s address. The module’s functions can then be invoked by transactions or other modules (if `public`). Module storage (global storage) is populated by executing entry functions or scripts that call into the module to create resources.
+
+*(This section covers effectively an overview of what we detailed in various specific sections like functions, etc., giving a cohesive picture of modules vs scripts. The Move Book goes into more detail in each subsequent chapter.)*
+
+---
+
+# Move Tutorial
+
+*The Move Tutorial section in the Aptos docs likely points to an external or embedded tutorial covering a hands-on introduction to Move. The Aptos docs themselves say:* 
+
+“Please refer to the Move Core Language Tutorial.” ([Move Tutorial | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/move-tutorial#:~:text=Move%20Tutorial))
+
+This suggests that the full tutorial content is in a separate resource (like the Move GitHub or a blog), and the Aptos docs just redirect there. The tutorial would cover building a simple Move module step by step, writing scripts to interact with it, etc., similar to the Diem/Move tutorial.
+
+*(For RAG purposes, this section doesn’t contain content beyond that referral. Developers should follow the Move Core Tutorial for a guided, example-driven learning path.)*
+
+---
+
+# Integers
+
+Move supports six unsigned integer types: `u8`, `u16`, `u32`, `u64`, `u128`, and `u256`. Values of these types range from 0 up to a maximum (2^n - 1 for an n-bit integer) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Move%20supports%20six%20unsigned%20integer,the%20size%20of%20the%20type)):
+
+Type | Range 
+---|--- 
+`u8` | 0 to 2^8 - 1 (0 to 255) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Type%20Value%20Range%20Unsigned%208,1))  
+`u16` | 0 to 2^16 - 1 (0 to 65,535)  
+`u32` | 0 to 2^32 - 1 (~4.29e9)  
+`u64` | 0 to 2^64 - 1 (~1.84e19)  
+`u128` | 0 to 2^128 - 1 (~3.4e38)  
+`u256` | 0 to 2^256 - 1 (~1.16e77)  
+
+## Literals
+
+Integer literals can be decimal (e.g., `112`) or hexadecimal (prefixed with `0x`, e.g., `0xFF`). You can optionally suffix a literal with the type (e.g., `112u8`). If no suffix, the compiler infers the type or defaults to `u64` if it cannot infer ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Literal%20values%20for%20these%20types,u64)).
+
+Underscores can be used in numeric literals for readability (e.g., `1_000_000`), including inside hex after `0x` (e.g., `0xAB_CD_12_34`) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Number%20literals%20can%20be%20separated,0xAB_CD_12_35)).
+
+If a literal is too large for the specified (or inferred) type, the compiler reports an error ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=%28e.g.%2C)).
+
+### Examples
+
+```move
+script {
+    fun example() {
+        // literals with explicit type annotations
+        let explicit_u8 = 1u8;
+        let explicit_u16 = 1u16;
+        let explicit_u32 = 1u32;
+        let explicit_u64 = 2u64;
+        let explicit_u128 = 3u128;
+        let explicit_u256 = 1u256;
+        let explicit_u64_underscored = 154_322_973u64;
+
+        // literals with simple inference
+        let simple_u8: u8 = 1;
+        let simple_u16: u16 = 1;
+        let simple_u32: u32 = 1;
+        let simple_u64: u64 = 2;
+        let simple_u128: u128 = 3;
+        let simple_u256: u256 = 1;
+
+        // literals with more complex inference
+        let complex_u8 = 1;              // inferred as u8 later
+        // right-hand side of shift must be u8
+        let _unused = 10 << complex_u8;  // complex_u8 inferred u8
+
+        let x: u8 = 38;
+        let complex_u8b = 2;            // inferred as u8 (because of context below)
+        // arguments to `+` must have same type
+        let _unused2 = x + complex_u8b;  // both are u8
+
+        let complex_u128 = 133_876;                 // inferred as u128 (later usage)
+        function_that_takes_u128(complex_u128);     // context infers complex_u128 as u128
+
+        // hex literals
+        let hex_u8: u8 = 0x1;
+        let hex_u16: u16 = 0x1BAE;
+        let hex_u32: u32 = 0xDEAD80;
+        let hex_u64: u64 = 0xCAFE;
+        let hex_u128: u128 = 0xDEADBEEF;
+        let hex_u256: u256 = 0x1123_456A_BCDE_F;
+    }
+}
+``` ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Examples)) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=let%20explicit_u128%20%3D%203u128%3B%20let,1u256%3B%20let%20explicit_u64_underscored%20%3D%20154_322_973u64)) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=let%20simple_u128%3A%20u128%20%3D%203%3B,let%20simple_u256%3A%20u256%20%3D%201)) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=let%20complex_u8%20%3D%202%3B%20%2F%2F,unused%20%3D%20x%20%2B%20complex_u8))
+
+In the above:
+- `complex_u8` is inferred as `u8` because it’s used in a context (the shift and later addition) that require `u8`.
+- Hex examples show different notations; note `hex_u256` uses underscores within the hex string.
+
+## Operations
+
+### Arithmetic
+
+All integer types support the same set of **checked** arithmetic operations. Both operands must be of the same type (no implicit upcasting) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Each%20of%20these%20types%20supports,size%20before%20performing%20the%20operation)). If an operation’s result would overflow or underflow the range of the type, the operation aborts (Move does not silently wrap on overflow) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=All%20arithmetic%20operations%20abort%20instead,zero)). Division by zero also aborts.
+
+Supported arithmetic operators (with abort conditions) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Syntax%20Operation%20Aborts%20If%20,0)):
+- `+` (addition) – aborts if result > max.
+- `-` (subtraction) – aborts if result < 0 (i.e., if subtracting yields a negative number).
+- `*` (multiplication) – aborts if result > max.
+- `%` (modulo) – aborts if divisor is 0.
+- `/` (division) – aborts if divisor is 0.
+
+### Bitwise
+
+Integer types support bitwise operations treating numbers as sequences of bits ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Bitwise)). These do **not** abort (they always succeed):
+- `&` (bitwise AND)  
+- `|` (bitwise OR)  
+- `^` (bitwise XOR)  
+
+Each operates pairwise on bits of the operands of the same type ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Syntax%20Operation%20Description%20,or%20for%20each%20bit%20pairwise)).
+
+### Bit Shifts
+
+Shift operations:
+- `<<` (left shift) 
+- `>>` (right shift)
+
+The right-hand operand (shift amount) **must be `u8`**, even if the left operand is a larger integer ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Similar%20to%20the%20bitwise%20operations%2C,the%20number%20you%20are%20shifting)). A shift aborts if the shift amount is ≥ the bit size of the left operand’s type ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Bit%20shifts%20abort%20if%20the,respectively)) (e.g., shifting a `u8` by 8 or more aborts).
+
+### Comparisons
+
+Only integer types support `<, >, <=, >=` comparisons ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Comparisons)). Both values must be same type (cast if needed) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Integer%20types%20are%20the%20only,cast%20one%20of%20them%20first)). Comparisons do not abort; they return a `bool`.
+
+Operators:
+- `<, >, <=, >=` as usual meaning (numerical comparison).
+
+### Equality
+
+All integer types, like all types with the `drop` ability, support `==` (equal) and `!=` (not equal) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Equality)). Both operands must be same type. No abort conditions (returns bool).
+
+*(Equality for integers is deep value equality as expected.)*
+
+### Casting
+
+Integers can be **cast** to other integer types explicitly using the `as` operator ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Syntax%20Operation%20Aborts%20if%20,T)). For example, `(x as u8)` casts `x` to `u8`. Casts do not truncate or wrap: if the value cannot fit in the target type, the cast aborts ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=specified%20type)).
+
+Syntax: `(e as T)` where `e` is an integer expression and `T` is one of the integer types ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Syntax%20Operation%20Aborts%20if%20,T)).
+
+Examples of casts:
+- `(255u8 as u64)` yields 255 as u64 (always safe upcast).
+- `(500u64 as u8)` aborts (500 exceeds u8 max 255).
+- `let a: u16 = 10; let b = a as u8;` aborts if `a > 255`.
+
+Since Move 2.0, casts no longer require parentheses around the expression being cast in certain positions (e.g., you can do `function(x as u64)` directly) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Notice%20that%20since%20Language%20Version,is%20a%20valid%20expression)).
+
+### Ownership (for Integers)
+
+Integers are scalar values with `copy` and `drop` abilities (implicitly). This means:
+- You can copy integer values freely (they’re small and not resources) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=implicitly%20copyable%2C%20meaning%20they%20can,explicit%20instruction%20such%20as%20copy)).
+- Dropping an integer (letting it go out of scope without using it) is fine.
+
+They can be stored in structs, passed in/out of functions, etc., without restrictions.
+
+---
+
+# Bool
+
+`bool` is Move’s primitive type for boolean values `true` and `false` ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=Bool)).
+
+## Literals
+
+There are only two literals: `true` and `false` ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=Literals)).
+
+## Operations
+
+### Logical
+
+Bool supports three logical operations ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=Logical)):
+
+Operator | Description | Equivalent expression  
+---|---|---  
+`&&` | short-circuiting logical AND | `p && q` is like `if (p) q else false` ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=))  
+`||` | short-circuiting logical OR  | `p || q` is like `if (p) true else q` ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=))  
+`!`  | logical NOT (negation)       | `!p` is like `if (p) false else true` ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=))  
+
+Short-circuiting means:
+- In `p && q`, `q` is not evaluated if `p` is false (result false immediately).
+- In `p || q`, `q` is not evaluated if `p` is true (result true immediately).
+
+### Control Flow
+
+Bool values are used in control-flow constructs:
+- `if (bool) { ... } else { ... }`
+- `while (bool) { ... }`
+- The condition of a loop or an `if` must be a bool.
+- Also in the `assert!` macro: `assert!(condition, error_code)` uses a bool to decide whether to abort ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=Control%20Flow)).
+
+## Ownership
+
+Booleans, like other scalars, are implicitly copyable and droppable ([Bool | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/bool#:~:text=Ownership)). You can freely assign and pass bools; they have `copy` and `drop` abilities.
+
+---
+
+# Address
+
+`address` is a built-in type (256-bit identifier) used to represent locations (accounts) in global storage ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=%60address%60%20is%20a%20built,Modules%20%20and%20%2025)). At a given address, two things can be stored: **Modules** and **Resources** ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=%60address%60%20is%20a%20built,Modules%20%20and%20%2025)).
+
+Characteristics:
+- `address` is effectively an opaque 32-byte value (not an integer; you cannot do arithmetic on addresses) ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=Although%20an%20,up%20to%20support%20static%20verification)).
+- You cannot create an `address` from a number or modify an address; addresses are either literals in code or values passed in (e.g., via transaction sender or references) ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=Although%20an%20,up%20to%20support%20static%20verification)).
+
+You use addresses mainly to publish modules under them and to identify where resources live.
+
+## Addresses and Their Syntax
+
+Addresses come in two flavors:
+- **Named addresses** – e.g., `Std` or `MyAddr` – which are placeholders in code that are bound to concrete values in the Move.toml or at publishing time.
+- **Numeric (literal) addresses** – e.g., `0xC0FFEE` – which can be provided as address literals in code ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=Addresses%20and%20Their%20Syntax)).
+
+When writing addresses in code:
+- In an **expression context** (like assigning to a variable or passing to a function), prefix with `@`: e.g., `@0x1`, `@Account`.
+- In a **module declaration or use** (non-expression context), no `@`: e.g., `module 0x1::M {}`, `use Account::SomeMod;` ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=used%3A)).
+
+Think of `@` as an operator that turns an address literal or name into an address *value* ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=,named_address_identifier)).
+
+## Named Addresses
+
+Named addresses allow using an identifier for an address, which gets substituted with a real address at compile or publish time ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=Named%20Addresses)). For example, one can declare in Move.toml `MyAddr = "0x42"` and then use `MyAddr` in modules.
+
+Named addresses don’t exist at runtime; the compiler replaces them with actual addresses ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=Named%20addresses%20only%20exist%20at,section%20on%20Modules%20and%20Scripts)). This means you must use the name consistently. E.g., `use MyAddr::MyModule;` is not interchangeable with `use 0x42::MyModule` even if MyAddr = 0x42, during source processing ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=Named%20addresses%20only%20exist%20at,section%20on%20Modules%20and%20Scripts)).
+
+### Examples
+
+```move
+script {
+  fun example() {
+      let a1: address = @0x1;   // shorthand for 0x...01 (64 hex digits total for 0x1)
+      let a2: address = @0x42;  // shorthand for ...42
+      let a3: address = @0xDEADBEEF; // expands to the 32-byte address 0x...DEADBEEF
+      let a4: address = @0x000...00A; // full 32-byte literal
+      let a5: address = @Std;   // if Std is a named address (e.g., 0x1)
+      let a6: address = @66;    // decimal 66 as hex = 0x42
+      let a7: address = @0x42;  // hex 0x42 as address (same as a2)
+  }
+}
+module 66::some_module {
+    use 0x1::other_module;
+    use Std::vector;
+    ...
+}
+module Std::other_module { ... }
+``` ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=script%20,0x00000000000000000000000000000000000000000000000000000000DEADBEEF%20let%20a4%3A%20address)) ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=let%20a5%3A%20address%20%3D%20%40std%3B,)) ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=module%20std%3A%3Aother_module%20,to%20declare%20a%20module))
+
+In the above:
+- `@0x1` expands to the 32-byte representation of 1 (0x000...001).
+- The module declared under `66::some_module` is using a numerical address `66` (which is 0x42 in hex), demonstrating that outside expression contexts (module definition), no `@` is used ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=module%2066%3A%3Asome_module%20,)).
+- The `use Std::vector;` uses a named address `Std` (which likely is bound to 0x1 for the standard library) ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=module%2066%3A%3Asome_module%20,)).
+
+## Global Storage Operations (for address)
+
+The main purpose of an address is to interact with global storage. The operations:
+- `move_to<T>(&signer, T)` places a resource at the signer's address.
+- `move_from<T>(addr): T` removes a resource from an address (requires `signer` of that address in practice to be in a transaction).
+- `borrow_global<T>(addr): &T` / `borrow_global_mut<T>(addr): &mut T` to borrow resources.
+- These all take an address (explicitly or via signer) to locate the data.
+
+`address` values are used in these operations to specify where resources live ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=Global%20Storage%20Operations)). The only global op not taking an address is `move_to`, because it uses the signer reference’s address implicitly ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=,operations)).
+
+## Ownership
+
+Addresses, being copyable scalars, have `copy` and `drop`. You can freely copy an `address` value (assign it to multiple locals, etc.) ([Address | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/address#:~:text=As%20with%20the%20other%20scalar,explicit%20instruction%20such%20as%20copy)). They are used as keys for resources but not themselves stored as resources typically (they can be stored inside structs with no issue though, since `address` has store).
+
+*(A note: The address of a **`signer`** can be obtained with `signer::address_of(&s) -> address` as shown in the Signer section.)*
+
+---
+
+# Vector (Move Primitive)
+
+`vector<T>` is the only primitive generic collection type in Move. A `vector<T>` is a homogeneous growable sequence of elements of type T ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60vector,pushing%2Fpopping%20values%20off%20the%20%E2%80%9Cend%E2%80%9D)).
+
+- You can push to or pop from the end of a vector.
+- `vector<T>` can hold any type `T` (with the caveat that if T requires certain abilities, the vector will too).
+
+## Literals
+
+### General `vector` Literals
+
+You can create vectors with literal syntax:
+- `vector[]` creates an empty vector of some type (to be inferred or explicitly given) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Vectors%20of%20any%20type%20can,literals)).
+- `vector[e1, ..., en]` creates a vector of length n with the given element expressions ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Vectors%20of%20any%20type%20can,literals)).
+
+Type inference will deduce the `T` from context or elements. You can also explicitly annotate, e.g., `vector<u8>[1, 2, 3]` for a `vector<u8>` ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=In%20these%20cases%2C%20the%20type,type%20can%20be%20specified%20explicitly)).
+
+Example:
+```move
+script {
+  fun example() {
+      (vector[]: vector<bool>);                     // empty bool vector
+      (vector[0u8, 1u8, 2u8]: vector<u8>);          // u8 vector [0,1,2]
+      (vector<u128>[]: vector<u128>);               // empty u128 vector
+      (vector<address>[@0x42, @0x100]: vector<address>); // address vector [0x42, 0x100]
+  }
+}
+``` ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=))
+
+### `vector<u8>` (Byte String) Literals
+
+`vector<u8>` is commonly used for byte arrays (e.g., cryptographic bytes). Move provides special syntax:
+- **Byte string**: `b"Hello"` -> a `vector<u8>` of ASCII bytes ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=)). Supports escape sequences (`\n`, `\r`, `\t`, `\\`, `\0`, and `\xHH` for arbitrary byte) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Byte%20strings%20are%20quoted%20string,Hello%21%5Cn)).
+- **Hex string**: `x"48656C6C6F"` -> a `vector<u8>` with those hex bytes ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=)). Every two hex digits become one byte.
+
+Example:
+```move
+assert!(b"" == x"", 0);
+assert!(b"Hello!\n" == x"48656C6C6F210A", 1);
+assert!(b"\x48\x65\x6C\x6C\x6F\x21\x0A" == x"48656C6C6F210A", 2);
+assert!(b"\"Hello\t world!\"\n \r \\Null=\0" ==
+        x"2248656C6C6F09776F726C6421220A200D205C4E756C6C3D00", 3);
+``` ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=script%20,3)) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=assert%21%28b,3%20%29%3B%20%7D))
+
+This shows empty string, ASCII string, hex escapes, and a combined example, all comparing byte string and equivalent hex string forms yielding the same vector.
+
+## Operations
+
+Vectors are primarily manipulated through the **standard library module** `0x1::vector` (which is brought into scope via `use std::vector`). Key operations include:
+- `vector::empty<T>() -> vector<T>`: create empty vector ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Function%20Description%20Aborts%3F%20%60vector%3A%3Aempty,Never)).
+- `vector::length(&vector<T>) -> u64`: get length ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60vector%3A%3Asingleton,Never)).
+- `vector::push_back(&mut vector<T>, T)`: append element ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60Never%20%60vector%3A%3Apush_back,is%20empty)).
+- `vector::pop_back(&mut vector<T>) -> T`: remove last element (abort if empty) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60Never%20%60vector%3A%3Apush_back,is%20empty)).
+- `vector::borrow(&vector<T>, i: u64) -> &T`: borrow element by index (abort if out of bounds) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=element%20in%20,Return%20a%20mutable)).
+- `vector::borrow_mut(&mut vector<T>, i: u64) -> &mut T`: mutable borrow by index (abort if OOB) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=element%20in%20,Return%20a%20mutable)).
+- `vector::contains(&vector<T>, &T) -> bool`: check if contains an element (requires T has equality) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=as%20they%20occurred%20in%20,Swaps%20the%20elements%20at%20the)).
+- `vector::swap(&mut vector<T>, i, j)`: swap two indices (abort if OOB) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60vector%3A%3Acontains,is%20out%20of%20bounds)).
+- `vector::append(&mut vector<T>, other: vector<T>)`: extend self by other (empties other) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60vector%3A%3Aappend,Never)).
+- `vector::reverse(&mut vector<T>)`: in-place reverse ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=the%20vector%20,is%20out%20of%20bounds)).
+- ...and more like `swap_remove`, `insert`, `remove`, `trim`, etc., as listed ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60vector%3A%3Ainsert,is)) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60vector%3A%3Aswap_remove,return%20the%20evicted%20elements%20in)).
+
+For example:
+```move
+use std::vector;
+fun example() {
+    let v = vector::empty<u64>();
+    vector::push_back(&mut v, 5);
+    vector::push_back(&mut v, 6);
+    assert!(*vector::borrow(&v, 0) == 5, 42);
+    assert!(*vector::borrow(&v, 1) == 6, 42);
+    assert!(vector::pop_back(&mut v) == 6, 42);
+    assert!(vector::pop_back(&mut v) == 5, 42);
+}
+``` ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=script%20)) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=fun%20example%28%29%20,mut%20v%2C%206))
+
+This pushes two numbers and then pops them, asserting LIFO behavior.
+
+## Index Notation (Since Move 2.0)
+
+Instead of writing `vector::borrow(&v, i)`, Move 2.0 introduced **index syntax**:
+- `v[i]` is sugar for `*vector::borrow(&v, i)` (immutable read) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Indexing%20Syntax%20Vector%20Operation%20%60%26v,i%5D.field%60%60%26vector%3A%3Aborrow%28%26v%2C%20i%29.field)).
+- `&v[i]` sugar for `vector::borrow(&v, i)` (immutable reference).
+- `&mut v[i]` sugar for `vector::borrow_mut(&mut v, i)` (mutable reference).
+- `v[i] = x` sugar for `*vector::borrow_mut(&mut v, i) = x` (write through ref) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Indexing%20Syntax%20Vector%20Operation%20%60%26v,field%20%3D%20x)).
+- Similarly `v[i].field` is sugar for `vector::borrow(&v,i).field` etc. ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=%60%26v,field%20%3D%20x)).
+
+Example using index notation (bubble sort):
+```move
+fun bubble_sort(v: vector<u64>) {
+    let n = vector::length(&v);
+    let mut i = 0;
+    while (i < n) {
+        let mut j = 0;
+        while (j < n - i - 1) {
+            if (v[j] > v[j+1]) {
+                let t = v[j];
+                v[j] = v[j+1];
+                v[j+1] = t;
+            };
+            j = j + 1;
+        };
+        i = i + 1;
+    };
+}
+``` ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=As%20an%20example%2C%20here%20is,for%20vectors%20using%20index%20notation)) ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=if%20%28v%5Bj%5D%20,i%20%2B%201%3B))
+
+This uses `v[j]` and `v[j+1]` to get or set elements, which is easier to read.
+
+## Destroying and Copying Vectors
+
+Behavior depends on element type’s abilities:
+- If elements do not have `drop`, the vector cannot be implicitly dropped; you must manually destroy it using `vector::destroy_empty(vector)` once it’s empty to clean it up ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Destroying%20and%20copying%20vectors)).
+- If elements do not have `copy`, you cannot copy the vector (which is fine, since vectors themselves usually don’t have copy if T doesn’t).
+- A `vector<T>` has the `copy` ability if and only if T has `copy`, and `drop` if and only if T has `drop` ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=Similarly%2C%20vectors%20cannot%20be%20copied,copy)).
+- To drop a non-empty vector is abort (safe-guard); you must pop or remove all elements or use destroy_empty which aborts if not empty ([Vector | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/vector#:~:text=implicitly%20discarded%20like%20,vector%3A%3Adestroy_empty)).
+
+Copying a vector (with `let v2 = v1`) is allowed only if T: copy. Otherwise, you can only move it.
+
+Vectors cannot be stored inside structs unless T has `store` (because vector<T> has store if T has store). But since T must have store to be in global storage anyway, typically storing vectors of resources is allowed if the resource’s type has key (and thus store).
+
+*(This is advanced detail, but the main idea: abilities propagate through vectors, and you must manage their lifecycle with awareness of contained resources.)*
+
+---
+
+# Signer
+
+`signer` is a built-in Move resource type that represents an authorization to act on behalf of an address ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=%60signer%60%20is%20a%20built,the%20native%20implementation%20as%20being)). You can think of a signer as a capability containing an address:
+```move
+// Conceptual (not actual code)
+module 0x1::signer {
+    struct signer has drop { address: address }
+}
+``` ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=particular%20,the%20native%20implementation%20as%20being))
+
+A `signer` value signifies the transaction sender or another account that has signed the transaction, provided by the Move VM. It is analogous to a Unix user ID token, in that it’s only created by the VM based on an external signature or authority ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=)).
+
+## Comparison to `address`
+
+A Move program can freely create any `address` literal (as seen with `@`), but it **cannot** create a `signer` except via transaction context ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=Comparison%20to%20)) ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=However%2C%20,pass%20them%20into%20the%20script)). The VM automatically creates signer arguments for script entry functions that require them.
+
+For example:
+```move
+script {
+    use std::signer;
+    fun main(s: signer) {
+        assert!(signer::address_of(&s) == @0x42, 0);
+    }
+}
+```
+If this script is sent by account 0x42, the VM will create a `signer` for 0x42 and pass it in as `s`. The `assert!` will succeed; if sent by any other address, it aborts (code 0) ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=or%20instructions%E2%80%94only%20by%20the%20Move,pass%20them%20into%20the%20script)).
+
+Key points:
+- Only the VM (when executing a script/entry function) can produce a `signer` (from a transaction’s authenticated signer list).
+- A script/entry fun can have multiple signers, but they must come first in the parameter list (all `signer`s then other args) ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=A%20Move%20script%20can%20have,arguments%20must%20come%20first)). This allows multi-signer transactions (e.g., requiring two signatures) to be represented in one script call ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=)).
+
+## `signer` Operators (Functions)
+
+The standard library module `std::signer` provides:
+- `signer::address_of(&signer): address` – returns the address inside the signer ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=)).
+- `signer::borrow_address(&signer): &address` – returns an immutable reference to the signer's address ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=)).
+
+Also, the global storage operator `move_to<T>(&signer, T)` uses a `signer`: it allows publishing resource `T` under `signer`’s address. This requirement ensures only an authenticated user (signer) can publish a resource under their address ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=wrapped%20by%20this%20)).
+
+## Ownership
+
+`signer` has the `drop` ability but not `copy` or `store`. This means:
+- You cannot copy a signer (makes sense: you can’t duplicate authority).
+- You cannot store a signer inside a struct (no `store` ability). Signers only live during transaction execution.
+- You can pass a signer by value (move it) to other functions, but typically you just borrow it to use its address.
+
+You also cannot *create* a signer in Move code (no literal or constructor). The only way to get one is as a parameter to an entry function, provided by the Aptos VM when a transaction is submitted by that account.
+
+Signers are often just used to call `signer::address_of` or to pass into framework functions like creating accounts or publishing modules.
+
+*(In summary, `signer` is a special resource that the VM manages; it ensures secure access control for resource publishing and other account-specific actions.)*
+
+---
+
+# References
+
+Move has two types of references: immutable `&T` and mutable `&mut T`. An immutable reference allows read-only access; a mutable reference allows modification of the underlying value. Move’s type system enforces an ownership discipline to prevent reference aliasing errors (like Rust’s borrow checker, but with some differences) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Move%20has%20two%20types%20of,discipline%20that%20prevents%20reference%20errors)).
+
+## Reference Operators
+
+Operators to create and manipulate references ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Reference%20Operators)):
+- `&e` gives an `&T` if `e: T` (and `T` is not already a reference). Creates an immutable reference to `e` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Syntax%20Type%20Description%20,e)).
+- `&mut e` gives `&mut T` if `e: T`. Creates a mutable reference to `e`.
+- `&e.f` and `&mut e.f` – borrow a field of a struct (nested borrow) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=reference%20to%20,into%20an%20immutable%20reference)). You can do `&obj.field` whether `obj` is a value or an `&mut` reference to a struct (in the latter case, it extends the reference).
+- `freeze(r)` where `r: &mut T` yields an `&T` (immutable) from a mutable reference ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=,into%20an%20immutable%20reference)).
+
+Example:
+```move
+script {
+  struct S { f: u64 }
+  fun example() {
+      let s = S { f: 10 };
+      let f_ref1: &u64 = &s.f;        // directly borrow field f
+      let s_ref: &S = &s;
+      let f_ref2: &u64 = &s_ref.f;   // extend the reference to borrow f
+  }
+}
+```
+Both `f_ref1` and `f_ref2` are valid and refer to the same value. You can borrow through multiple struct layers as long as they are in the same module (cannot borrow a field of a struct from another module via reference without an accessor function) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=module%200x42%3A%3Aexample%20,c%20%3A%20u64)).
+
+Note: **References to references** are not allowed in Move:
+```move
+let x = 7;
+let y: &u64 = &x;
+let z: &&u64 = &y; // invalid - cannot have & &u64
+``` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Finally%2C%20note%20that%20references%20to,references%20are%20not%20allowed))
+
+## Reading and Writing through References
+
+- To **read** through a reference, use the dereference operator `*`: if `r: &T` or `&mut T`, then `*r: T` (produces a copy of the value) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Reading%20and%20Writing%20Through%20References)).
+- To **write** through a mutable reference, use `*r = value` where `r: &mut T` and `value: T` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Both%20mutable%20and%20immutable%20references,copy%20of%20the%20referenced%20value)).
+
+For `*r` to be allowed (reading), `T` must have the `copy` ability, because it produces a new copy of the value ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=)). If `T` has no `copy` (like a resource), you cannot do `*r` (that would attempt an illegal copy of a resource). The type system will enforce this (you can only borrow resources, not dereference them into values).
+
+For `*r = value` (writing), `T` must have the `drop` ability, because the old value is dropped when replaced ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Dually%3A%20in%20order%20for%20a,the%20destruction%20of%20resource%20values)). If `T` has no drop (like `Coin` resource), you cannot assign through a reference as it would drop the original implicitly.
+
+Example illegal scenarios:
+```move
+struct Coin has key {}        // no copy, no drop
+fun copy_resource_via_ref_bad(c: Coin) {
+    let c_ref = &c;
+    let counterfeit: Coin = *c_ref;  // Error: Coin has no copy, cannot read through ref
+}
+fun destroy_resource_via_ref_bad(mut coin: Coin, new_coin: Coin) {
+    let r = &mut coin;
+    *r = new_coin;  // Error: Coin has no drop, cannot write through ref (old coin would be destroyed)
+}
+``` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=module%200x42%3A%3Acoin%20,Note%20does%20not%20have%20copy)) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=module%200x42%3A%3Acoin%20,Note%20does%20not%20have%20drop))
+
+The first tries to copy a resource via reference; the second tries to overwrite a resource via reference (which would drop the original).
+
+## `freeze` Inference
+
+Move will automatically insert `freeze()` where needed to convert `&mut T` to `&T` if context requires ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=)) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=module%200x42%3A%3Aexample%20,x)). For example:
+```move
+fun takes_immut(x: &u64) { }
+fun takes_mut(x: &mut u64) { }
+fun demo() {
+    let x = 0;
+    takes_immut(&x);        // ok, &x is &u64
+    takes_immut(&mut x);    // auto freeze: &mut x becomes &x
+    takes_mut(&mut x);      // ok
+    assert!(&x == &mut x, 42);  // &mut x auto frozen for comparison
+}
+``` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=module%200x42%3A%3Aexample%20,x)) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=fun%20expression_examples%28%29%20,mut%20x%29%3B%20%2F%2F%20no%20inference))
+
+In assignments, similarly:
+```move
+let imm_ref: &u64 = &x;
+imm_ref = &x;       // ok
+imm_ref = &mut y;   // auto-freeze &mut y to &y
+``` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=fun%20assignment_examples%28%29%20,let%20imm_ref%3A%20%26u64%20%3D%20%26x))
+
+So Move treats `&mut T` as a subtype of `&T` (the type system allows it) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=The%20only%20other%20types%20currently,that%20has%20subtyping%20are%20tuples)). This *subtyping* is reflected in error messages: if you pass an `&T` where `&mut T` was needed, or vice versa, you get a subtype error.
+
+### Subtyping (References and Tuples)
+
+As said, `&mut T` can be used where `&T` is expected, but not the reverse ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=The%20only%20other%20types%20currently,that%20has%20subtyping%20are%20tuples)) ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=The%20only%20other%20types%20currently,that%20has%20subtyping%20are%20tuples)). The error messages will say "`&T` is not a subtype of `&mut T`" in such cases.
+
+Example:
+```move
+fun read_and_assign(store: &mut u64, new_val: &u64) { *store = *new_val }
+fun test() {
+    let x: &u64 = &0;
+    let y: &mut u64 = &mut 1;
+    read_and_assign(y, x);   // valid (y is &mut u64, x is &u64)
+    read_and_assign(x, y);   // invalid (x is &u64 where &mut u64 expected for first param)
+}
+``` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=%C2%B7%208%20%E2%94%82%20%20,subtype%20of%3A%20%27%26mut%20u64%27%20%E2%94%82))
+
+The error would indicate `&u64` is not a subtype of `&mut u64` for that call.
+
+## Ownership and Reference Restrictions
+
+- You **can** have multiple copies of the same reference (unlike Rust). E.g., 
+  ```move
+  let r1 = &mut s;
+  let r2 = r1;        // r1 moved to r2, essentially two names for same reference
+  let r3 = &mut s.f;  // extends r1 (and r2) to a field
+  let r4 = r1;        // even after extension, can still move the reference
+  ``` ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=Both%20mutable%20and%20immutable%20references,extensions%20of%20the%20same%20reference)).
+  This is allowed: Move’s approach ensures uniqueness at point of write rather than forbidding aliasing entirely. If you try to use r1 after moving it, the compiler errors (because r1 was moved).
+- The rule is that before a mutation through a `&mut` occurs, there must be no other active references to that same location. Move enforces this by static analysis (it’s less strict than Rust but still prevents data races).
+- **References cannot be stored in structs or persisted in global storage** ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=References%20Cannot%20Be%20Stored)). They are ephemeral. This is a crucial rule: you cannot have a struct like `struct Foo { x: &u64 }`. And you cannot put a reference in a resource or global storage. They only live on the stack.
+
+The reason: references aren’t serializable to bytes (and Move’s storage persistence requires serializing values). Also, Move’s borrow analysis is only within a transaction, not across transactions ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=stored%20inside%20of%20structs)).
+
+So when a transaction ends, all references are gone. They cannot be carried over.
+
+*(The references section essentially taught the borrow rules: you can alias &mut in Move (difference from Rust), but you cannot have a `&mut` and any other & or &mut to the same location alive at the exact same program point where a mutation happens. The Move bytecode verifier checks for reference safety transitionally. The end bit of the doc notes how one could imagine storing references if the type system was expanded, but currently it’s not allowed ([References | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/references#:~:text=written%20to%20global%20storage%2C%20and,thus%20they%20must%20be%20serializable)).)*
+
+---
+
+# Tuples and Unit
+
+Move does not fully support tuples as first-class values like in some languages, but it has tuple *expressions* to facilitate multiple return values ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=Move%20does%20not%20fully%20support,be%20used%20to%20instantiate%20generics)). These tuples exist only at compile time; at bytecode level, multiple return values are just multiple stack values.
+
+Similarly, **unit** `()` is treated as an empty tuple (tuple of arity 0) in Move. It’s used because Move is expression-based and every function returns something; if you don’t specify, it returns unit.
+
+Tuples in Move:
+- Can appear on the right-hand side of assignments or returns.
+- Cannot be assigned to local variables as a single entity (they must be immediately destructured if you want to use them).
+- Cannot be stored in structs or passed around as a whole (again, they are not real runtime values) ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=Move%20does%20not%20fully%20support,be%20used%20to%20instantiate%20generics)) ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=the%20bytecode,be%20used%20to%20instantiate%20generics)).
+- No 1-tuple type; `(e)` is just `e` with parentheses for grouping ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=Tuples%20are%20created%20by%20a,of%20expressions%20inside%20of%20parentheses)).
+
+The primary use is multiple return values:
+```move
+fun return_two(): (u8, bool) {
+    (42, false)
+}
+```
+Here `(42, false)` is a tuple expression returning two values.
+
+Unit `()` is the return type of functions that don’t return anything explicitly. It’s also the value of an empty block expression:
+- If a function has no `returns` clause, it returns `()`.
+- An empty block `{}` or a sequence of statements ending with no expression yields `()`.
+
+The doc gives examples:
+```move
+fun returns_unit_1() { }
+fun returns_unit_2(): () { }
+fun returns_unit_3(): () { () }
+fun returns_3_values(): (u64, bool, address) { (0, false, @0x42) }
+fun returns_4_values(x: &u64): (&u64, u8, u128, vector<u8>) {
+    (x, 0, 1, b"foobar")
+}
+``` ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=module%200x42%3A%3Aexample%20,of%20these%20functions%20are%20equivalent)) ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=fun%20returns_unit_3%28%29%3A%20%28%29%20,))
+
+All three `returns_unit` functions are equivalent – they all effectively return `()` ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=module%200x42%3A%3Aexample%20,of%20these%20functions%20are%20equivalent)).
+
+## Operations on Tuples
+
+The only operation is **destructuring** (splitting them into parts) ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=The%20only%20operation%20that%20can,on%20tuples%20currently%20is%20destructuring)).
+
+### Destructuring
+
+You can destructure tuples in `let` bindings or assignment:
+```move
+let () = (); // unit destructured
+let (x, y): (u8, u64) = (0, 1);
+let (a, b, c, d) = (@0x0, 0, false, b"");
+...
+(x, y) = if (cond) (1, 2) else (3, 4);
+(a, b, c, d) = (@0x1, 1, true, b"1");
+``` ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=fun%20examples%28cond%3A%20bool%29%20,0x0%2C%200%2C%20false%2C%20b))
+
+You can also destructure from function returns:
+```move
+let () = returns_unit();
+let (x, y) = returns_2_values();
+let (a, b, c, d) = returns_4_values(&0);
+``` ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=fun%20examples_with_function_calls%28%29%20,0))
+
+Destructuring essentially parallel-assigns each component.
+
+If you mismatch arity or types, that’s a compile error.
+
+## Subtyping
+
+Tuples have subtyping relation *with respect to references in corresponding positions*. Specifically, if you have a tuple of references, a tuple type `(X, Y)` is a subtype of `(U, V)` if each component is subtype (this usually matters with &mut vs &). The doc gave:
+```move
+// (&u64, &mut u64) is subtype of (&u64, &u64) because &mut u64 <: &u64
+let (a, b): (&u64, &u64) = (x, y); // x: &u64, y: &mut u64
+// (&mut u64, &mut u64) is subtype of (&u64, &u64) for same reason (each &mut -> &)
+let (c, d): (&u64, &u64) = (y, y);
+// (&u64, &mut u64) NOT subtype of (&mut u64, &mut u64) because &u64 is not <: &mut u64
+let (e, f): (&mut u64, &mut u64) = (x, y); // error
+``` ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=let%20y%3A%20%26mut%20u64%20%3D,mut%201)) ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=%2F%2F%20error%21%20,x%2C%20y%29%3B))
+
+So tuple subtyping is basically elementwise subtyping, which mostly comes into play with reference types as described.
+
+## Ownership
+
+Because tuples don’t exist at runtime as values:
+- You cannot move a tuple into a variable (the compiler will force destructuring).
+- You cannot copy them (there’s no need since they aren’t first-class).
+- Currently, you *must* destructure immediately. (The doc hints this might change: “cannot be stored into local variables *currently*... likely will come soon” ([Tuples and Unit | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/tuples#:~:text=Ownership)).)
+
+Thus, you can only move (not copy) a tuple, but that move is typically into multiple variables (destructured). You also cannot have a function parameter of tuple type or a struct field of tuple type.
+
+Think of `()` as having one value: `()`. It’s copyable and droppable (trivially), but you rarely use it except in type signatures. 
+
+---
+
+# Equality (== and !=)
+
+*(We covered equality for values under relevant sections like integers and bool. This section likely generalizes it.)*
+
+Move supports `==` and `!=` for any types that have the *`drop`* ability (most types except resources) ([Integers | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/integers#:~:text=Equality)). This includes numbers, bools, addresses, vectors (if their element type supports equality), structs if their fields support equality, etc.
+
+Equality is deep and structural:
+- Two integers equal if same value.
+- Two bools equal if both true or both false.
+- Two addresses equal if same 32-byte address.
+- Two vectors equal if length equal and every element pair equal (requires element equality).
+- Two structs equal if all corresponding fields equal (requires struct has drop and each field comparable).
+
+`==` returns `true/false`; `!=` is just the negation.
+
+For resource types (no drop ability), you cannot use `==`/`!=` at all; you must design custom logic or treat them as uniquely different always. The Move prover might allow specification of equality for resources in specifications, but in bytecode you can’t compare them.
+
+*(Equality section likely refers to how references cannot be directly compared except by converting to addresses or something for certain pointer equality, but generally you don't compare references in Move as values. And note: in Move, there’s no concept of reference identity being compared; `==` on references would compare what they point to via dereference if allowed, but since references lack drop, I think you can’t do `==` on references at all. You must dereference to compare values if copyable.)*
+
+---
+
+# Abort and Assert
+
+Move uses an `abort` statement to exit a function with an error code (of type `u64`). The `assert!` macro provides a convenient way to abort if a condition is false.
+
+**Abort**: You can `abort <error_code>;` to explicitly abort a transaction/script with a particular error. The calling environment will see that as a failure with that code. Aptos framework defines many standard error codes.
+
+**assert!**: Syntax `assert!(condition, code)`:
+- If `condition` is true, nothing happens (continues execution).
+- If `condition` is false, the function aborts with the given `code` (a u64) ([Signer | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/signer#:~:text=or%20instructions%E2%80%94only%20by%20the%20Move,pass%20them%20into%20the%20script)) (or sometimes a constant that maps to a code).
+
+Use assert for input validation, invariants, etc., instead of writing manual if-abort.
+
+Example:
+```move
+assert!(balance >= amount, 100); // abort with 100 if balance < amount
+```
+
+In Aptos, abort codes are often composed: e.g., `error::not_found(ENO_MESSAGE)` returned from framework means abort with a code that indicates a missing resource (with some standardized structure). But from a Move perspective, any u64 can be used.
+
+*(Documentation likely enumerates guidelines: e.g., use unique error codes to pinpoint failure reasons, possibly mention the range 0-999 for Move VM, >= 1000 for user-defined, as some chains do. Aptos might have an error categorization in their code.)*
+
+---
+
+# Conditionals
+
+Move’s conditional is the standard `if/else`:
+```move
+if (cond) {
+    // true branch
+} else {
+    // false branch (optional)
+}
+```
+The condition must be a `bool`. If expressions are allowed (the whole if can yield a value if both branches yield a value of the same type).
+
+Unlike some languages, there’s no direct `else if` syntax, but you can nest if inside else.
+
+Also, Move's `if` is an expression: you can do 
+```move
+let x = if (a > b) 1 else 2;
+```
+so `x` will be 1 or 2 depending on the condition.
+
+**Assert vs If**: Use `if` for branching logic, `assert!` for enforcing conditions (which abort on failure, rather than branching).
+
+---
+
+# While, For, and Loop
+
+Move currently (as of Move 1.0 / Aptos) supports `while` loops and an infinite loop construct:
+- `while (cond) { body }` – repeats body as long as cond is true, evaluating cond before each iteration.
+- `loop { body }` – infinite loop (no built-in `for` or `break/continue` in Move 1.0).
+- Aptos extended Move with `break` and `continue` and perhaps a `for` construct? Standard Move did not originally have `for` or `loop` with break, but the Move 2.0 release notes mention loop labels and break/continue to outer loops ([Move 2 Release Notes | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/move-2#:~:text=,See%20reference%20doc%20here)).
+
+Actually, Move 1.5 (Diem 1.5) introduced `loop`, `break`, `continue`. The Aptos Move likely has:
+```move
+label 'LOOP: loop {
+    ... 
+    if (cond) break;
+    continue;
+}
+```
+But from the Move Book:
+- They discuss **Loop labels** which allow breaking out of outer loops from nested loops ([Move 2 Release Notes | Aptos Docs (en)](https://aptos.dev/en/build/smart-contracts/book/move-2#:~:text=,here%20for%20the%20supported%20operations)) (like `'outer: while (...) { ... break 'outer; ... }`).
+- The code snippet in release notes shows using labeled break.
+
+So:
+- `while (cond) { }` and 
+- `loop { }` (with optional break).
+
+`for` is not directly in Move, but one can simulate a for by while and an index, or with the new index-based iteration on vectors:
+Aptos might have a syntax sugar for `for x in vector { }` but likely not; it's usually done manually.
+
+*(This section in Move Book would detail loop syntax and emphasize that `continue` jumps to next iteration and `break` exits the loop, and mention that these are new in Move 2.0 so older Move code didn’t have them.)*
+
+---
+
+# Functions
+
+Move functions are declared with:
+```move
+public(friend) fun name<TypeParams>(params): RetType acquires ResourceType {
+    ... 
+}
+```
+They can have various modifiers:
+- `public`, `public(friend)`, `public(script)` etc., controlling visibility.
+- If inside a module: default is module-private, `public` makes it callable by any module, `public(friend)` only by friends, `public(script)` indicates it’s an entry function for transactions.
+- They can specify type parameters with constraints (`fun foo<T: store>(x: T) {}`).
+- They can specify an `acquires` list of resource types they may `move_from` or `borrow_global` (this is a safety check; a function can only directly access global resources of types it declares in its acquires clause).
+- Return types can be tuples (multiple returns).
+
+Functions can be marked `entry` in Aptos (for script/entry functions in modules to allow calling them directly via transactions, an Aptos-specific concept introduced after Diem).
+
+There’s also `native fun` for functions implemented in Rust outside Move (like hash functions or BCS serialization).
+
+The Move Book likely covers:
+- How functions with `friend` or `script` visibilities work.
+- The meaning of acquires (ensures anyone calling must have ability to access that resource).
+- That functions execute atomically and either return or abort.
+- How return and abort interact (once abort happens, no return; abort does not need to be declared in the type).
+
+Example:
+```move
+public fun transfer<CoinType>(from: &signer, to: address, amount: u64) acquires CoinType {
+    let coin = withdraw<CoinType>(from, amount);
+    deposit<CoinType>(to, coin);
+}
+```
+This function acquires `CoinType` (meaning it will do global storage ops on `CoinType` resource). It’s public, so any module can call it. 
+
+*(The docs likely emphasize writing small, single-responsibility functions, using abort for error handling, and how `return exp;` can be used to return a value early, etc. Also that there is no overloading: function names are unique within a module, or overloaded only by type parameters in some cases.)*
+
+---
+
+# Error Codes
+
+Aptos defines many error codes for various failure conditions. These are represented as `u64` values on abort.
+
+Error codes are often broken into categories:
+- 0 – reserved for general errors.
+- 1..999 – VM or system errors (like out of gas, etc.).
+- 1000+ – user-defined errors (e.g., in Aptos framework modules).
+
+The Aptos documentation includes a registry of error codes:
+For example:
+- **ECONFLICT** (some code) might indicate a resource already exists when trying to create.
+- **ENO_* (not found)** might be used when something is missing.
+
+Each module in the framework often defines its own error constants, e.g., in Coin module:
+```move
+const EINSUFFICIENT_BALANCE: u64 = 1;
+const EACCOUNT_NOT_REGISTERED: u64 = 2;
+...
+abort EINSUFFICIENT_BALANCE; // if balance too low
+```
+The **Aptos Error Codes** section likely lists error code values to meanings across the framework.
+
+For RAG, understanding that error codes map to specific failure reasons helps interpret aborts in transactions. For instance, if a transaction aborts with code 3 in the AptosToken module, one could look up code 3 in that context.
+
+*(Given this is a text output, we might not list all codes due to length, but just note their existence. The actual docs would have a table or listing of codes per module with descriptions.)*
+
+---
+
+# Scripts (Advanced Move)
+
+*(This section corresponds to [Building with Move Scripts](#scripts) and subsequent content on writing, compiling, running scripts, which we integrated above under Modules and Scripts and the CLI usage. Possibly redundant to earlier sections, but might contain more details on transaction scripts vs script functions in modules.)*
+
+In Aptos:
+- **Script** (legacy) – an arbitrary transaction script (not packaged in a module). Aptos still supports sending compiled script bytecode in a transaction.
+- **Entry functions** – public entry functions in modules that can be directly invoked by transactions (preferred way in Aptos). These are declared with `entry` modifier in module (or `public(script)` in pure Move terms).
+
+The "Building with Move Scripts" doc likely elaborates on writing script code versus making an entry function:
+  - **Writing Move Scripts**: how to write a standalone script (with `script { ... }`) and test it.
+  - **Compiling Move Scripts**: using CLI to compile a script (which outputs a `.mv` bytecode).
+  - **Running Move Scripts**: either via CLI or in tests, how to run them on chain.
+  - **Move Scripts Tutorial**: probably a guided example (like a script to transfer coins).
+
+With the advent of entry functions, script usage is less common on Aptos mainnet (they encourage deploying modules and calling entry functions). But for learning and quick prototypes, scripts are still valuable.
+
+*(The sub-pages [Writing Move Scripts](#writing-move-scripts), [Compiling Move Scripts](#compiling-move-scripts), [Running Move Scripts](#running-move-scripts), [Move Scripts Tutorial](#move-scripts-tutorial) presumably detail these topics, which we've touched on. Given our document length, we consider them covered by the above context, but one could dive deeper if needed.)*
+
+---
+
+# Move Prover
+
+The Move Prover is a formal verification tool for Move code. It allows you to write specifications (preconditions, postconditions, invariants) and then statically prove that your Move functions satisfy them or do not violate certain properties.
+
+- **Move Prover User Guide**: documentation on how to write specifications (the spec language includes `requires`, `ensures`, `invariant`, `aborts_if`, etc.), how to run the prover, interpret results, and common strategies for proof.
+- **Move Prover Supporting Resources**: likely additional examples, standard library specs, etc.
+
+Using the Prover involves adding spec blocks to your Move modules:
+```move
+module 0x1::MyModule {
+    struct Coin has key { value: u64 }
+
+    spec struct Coin {
+        invariant value >= 0;
+    }
+
+    public fun transfer(to: address, amount: u64) acquires Coin {
+        // implementation
+    }
+
+    spec fun transfer {
+        requires exists<Coin>(@sender);
+        requires exists<Coin>(to);
+        requires amount <= global<Coin>(@sender).value;
+        ensures global<Coin>(@sender).value == old(global<Coin>(@sender).value) - amount;
+        ensures global<Coin>(to).value == old(global<Coin>(to).value) + amount;
+    }
+}
+```
+The prover would try to prove these postconditions given the implementation.
+
+The Aptos docs likely encourage using the prover for critical contracts to mathematically ensure invariants (like no double-spend, resource conservation, etc.).
+
+*(Prover docs would be extensive, but outside the runtime aspects of Move. For RAG, one might include that the Prover exists and where to find more information, given it's internal documentation on the aptos.dev site we have references to.)*
