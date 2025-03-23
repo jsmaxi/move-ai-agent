@@ -56,42 +56,38 @@ const RAGBotDialog: React.FC<RAGBotDialogProps> = ({ open, onOpenChange }) => {
     }
   }, [isLoading]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!prompt.trim() || isLoading) return;
 
     setMessages((prev) => [...prev, { sender: "user", text: prompt }]);
-
     setIsLoading(true);
 
-    setTimeout(() => {
-      let botResponse = "";
+    let botResponse = "";
 
-      if (promptType === "aptos") {
-        if (prompt.toLowerCase().includes("what is aptos")) {
-          botResponse =
-            "Aptos is a Layer 1 blockchain that was created by former Meta (Facebook) employees who worked on the Diem blockchain project. It uses the Move programming language and offers high throughput and low latency transactions.";
-        } else if (prompt.toLowerCase().includes("move language")) {
-          botResponse =
-            "Move is a programming language initially developed at Facebook for the Libra blockchain. It's designed with safety and security as primary goals, and provides resource types with semantics inspired by linear logic, which means that resources can be moved but not copied.";
-        } else {
-          botResponse = `Based on the Aptos documentation, ${prompt} relates to the Aptos blockchain's architecture which provides high throughput, low latency, and a secure execution environment using the Move language.`;
-        }
-      } else {
-        if (prompt.toLowerCase().includes("what is move agent kit")) {
-          botResponse =
-            "Move Agent Kit is a framework for building autonomous agents that can interact with Move-based blockchains like Aptos and Sui. It allows developers to create bots that can monitor, analyze, and respond to on-chain events.";
-        } else if (prompt.toLowerCase().includes("how to monitor")) {
-          botResponse =
-            'To monitor events with Move Agent Kit, you can use the agent.on() method to subscribe to specific events. For example: agent.on("tokenTransfer", (event) => { /* handle event */ });';
-        } else {
-          botResponse = `The Move Agent Kit documentation says that for "${prompt}", you would typically implement an agent that listens to specific events and then executes logic in response to those events.`;
-        }
-      }
+    const query = prompt.trim();
 
-      setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
-      setIsLoading(false);
-      setPrompt("");
-    }, 1500);
+    const response = await fetch("/api/llmrag_aptos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("received answer");
+      console.log(data.output);
+      botResponse = data.output;
+    } else {
+      console.log("Error:", data.message);
+      botResponse = data.error;
+    }
+
+    setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
+    setIsLoading(false);
+    setPrompt("");
   };
 
   return (
@@ -105,7 +101,7 @@ const RAGBotDialog: React.FC<RAGBotDialogProps> = ({ open, onOpenChange }) => {
             <span>Documentation Assistant</span>
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            Ask questions about Aptos or Move Agent Kit documentation
+            Ask questions about Aptos or Move Agent Kit
           </DialogDescription>
         </DialogHeader>
 
@@ -208,6 +204,7 @@ const RAGBotDialog: React.FC<RAGBotDialogProps> = ({ open, onOpenChange }) => {
 
         <div className="flex relative px-6 pb-6 pt-2">
           <div className="w-full relative">
+            <p className="text-gray-500">{isLoading ? "Thinking..." : ""}</p>
             <Textarea
               ref={textareaRef}
               value={prompt}
