@@ -4,6 +4,7 @@ import Prism from "prismjs";
 export const LANGUAGES = {
   move: "move",
   javascript: "javascript",
+  typescript: "typescript",
   toml: "toml",
 } as const;
 
