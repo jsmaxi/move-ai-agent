@@ -22,7 +22,7 @@ export default async function handler(
     const moveAgentDocsPath = path.join(
       process.cwd(),
       "data",
-      "move_ai_agent.txt"
+      "aptos_smart_contract.txt"
     );
     const moveAgentDocs = fs.readFileSync(moveAgentDocsPath, "utf-8");
 
@@ -37,15 +37,18 @@ export default async function handler(
       Context:
       ${moveAgentDocs}
 
-      Task:
-      ${txt}
+      Query:
+      ${query}
 
-      Generate Langchain Js based agent code based on the context and task.You are an Langchain Js and LangGraph js expert.
+      Generate Aptos smart contract code based on the provided context and query. Ensure the code is compatible with the Aptos blockchain and follows best practices.Return both, contract.move smart contract code and Move.toml manifest code. 
+      Avoid any additional text, details, suggestions or instructions.
+      Avoid unresolved addresses in Move.toml manifest.
       Make sure that output is properly escaped JSON string, adhering to this format:
         {
-            \"agent\": \"agent code\",
+            \"contract\": \"move contract code\",
+            \"manifest\": \"toml manifest code\"
         }
-      `;
+      `
 
     const response = await model.invoke(prompt);
     console.log("Response length.", response?.content?.length);
