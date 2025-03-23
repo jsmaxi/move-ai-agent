@@ -81,6 +81,9 @@ interface PromptInputProps {
     templateId: string,
     promptType: "contract" | "agent"
   ) => void;
+  promptType: "contract" | "agent";
+  prompt: string;
+  setPrompt: (prompt: string) => void;
 }
 
 const PromptInput: React.FC<PromptInputProps> = ({
@@ -88,19 +91,17 @@ const PromptInput: React.FC<PromptInputProps> = ({
   isGenerating,
   onPromptTypeChange,
   onTemplateSelect,
+  promptType,
+  prompt,
+  setPrompt,
 }) => {
-  const [prompt, setPrompt] = useState<string>("");
   const [context, setContext] = useState<string>("");
-  const [promptType, setPromptType] = useState<"contract" | "agent">(
-    "contract"
-  );
   const [contextFile, setContextFile] = useState<File | null>(null);
   const [showTemplates, setShowTemplates] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePromptTypeChange = (value: string) => {
     const type = value as "contract" | "agent";
-    setPromptType(type);
     onPromptTypeChange(type);
     setShowTemplates(false); // Hide templates when switching tabs
   };

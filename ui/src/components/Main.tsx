@@ -23,15 +23,11 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRagBotOpen, setIsRagBotOpen] = useState(false);
   const [isActionInProgress, setIsActionInProgress] = useState(false);
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [prompt, setPrompt] = useState<string>("");
   const [promptType, setPromptType] = useState<"contract" | "agent">(
     "contract"
   );
-
-  useEffect(() => {
-    // setGeneratedFiles(
-    //   promptType === "contract" ? DEMO_CONTRACT_FILES : DEMO_AGENT_FILES
-    // );
-  }, [promptType]);
 
   const addLog = (message: string, type: LogEntry["type"] = "info") => {
     const newLog: LogEntry = {
@@ -250,6 +246,15 @@ const Index = () => {
       "info"
     );
 
+    const item: HistoryItem = {
+      id: uuidv4(),
+      timestamp: new Date(),
+      prompt: prompt,
+      type: type,
+    };
+
+    setHistoryItems([...historyItems, item]);
+
     try {
       // await new Promise((resolve) => setTimeout(resolve, 2000));
       if (type === "contract") {
@@ -324,21 +329,25 @@ const Index = () => {
 
   const handleHistoryItemClick = (item: HistoryItem) => {
     setPromptType(item.type);
+    setPrompt(item.prompt);
 
-    const templates =
-      item.type === "contract" ? CONTRACT_TEMPLATES : AGENT_TEMPLATES;
+    // const templates =
+    //   item.type === "contract" ? CONTRACT_TEMPLATES : AGENT_TEMPLATES;
 
-    const templateIds = Object.keys(templates);
-    if (templateIds.length > 0) {
-      const firstTemplate = templates[templateIds[0]];
-      setGeneratedFiles(firstTemplate);
-    }
+    // const templateIds = Object.keys(templates);
+    // if (templateIds.length > 0) {
+    //   const firstTemplate = templates[templateIds[0]];
+    //   setGeneratedFiles(firstTemplate);
+    // }
 
     addLog(`Loaded ${item.type} prompt: ${item.prompt}`, "info");
   };
 
   return (
-    <MainLayout onHistoryItemClick={handleHistoryItemClick}>
+    <MainLayout
+      onHistoryItemClick={handleHistoryItemClick}
+      historyItems={historyItems}
+    >
       <div className="space-y-6">
         <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 auto-rows-auto">
           <div className="h-auto lg:col-span-2">
@@ -347,6 +356,9 @@ const Index = () => {
               isGenerating={isGenerating}
               onPromptTypeChange={handlePromptTypeChange}
               onTemplateSelect={handleTemplateSelect}
+              promptType={promptType}
+              prompt={prompt}
+              setPrompt={setPrompt}
             />
             <br></br>
             <section>
