@@ -269,7 +269,7 @@ const Index = () => {
         const query = prompt;
         const ctx = context;
 
-        const response = await fetch("/api/_aptos", {
+        const response = await fetch("/api/gencode_aptos", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
