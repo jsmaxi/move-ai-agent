@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import PromptInput from "@/components/lab/PromptInput";
 import CodeDisplay from "@/components/lab/CodeDisplay";
@@ -14,9 +14,8 @@ import { AGENT_TEMPLATES, CONTRACT_TEMPLATES } from "@/lib/templates";
 import { GeneratedCode, GeneratedKit } from "@/types/generatedCode";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { pkg } from "@/types/pkg";
-
-// const DEMO_CONTRACT_FILES: CodeFile[] = CONTRACT_TEMPLATES["fungible-token"];
-// const DEMO_AGENT_FILES: CodeFile[] = AGENT_TEMPLATES["transfer-monitor"];
+import { Transaction } from "@/types/transaction";
+import TransactionList from "./lab/TransactionList";
 
 const Index = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -25,8 +24,9 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRagBotOpen, setIsRagBotOpen] = useState(false);
   const [isActionInProgress, setIsActionInProgress] = useState(false);
-  const [balance, setBalance] = useState<number>(10); // Initial balance for testing
+  const [balance, setBalance] = useState<number>(10); // Initial balance for testing on devnet
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [prompt, setPrompt] = useState<string>("");
   const [promptType, setPromptType] = useState<"contract" | "agent">(
     "contract"
@@ -187,6 +187,29 @@ const Index = () => {
           addLog(data.output, "warning");
           addLog("Deploy executed", "success");
           setBalance(balance - cost);
+          const txRegex = /"transaction_hash": "(0x[a-fA-F0-9]+)"/;
+          const txMatch = data.output.match(txRegex);
+          const txHash = txMatch ? txMatch[1] : null;
+          console.log("Transaction hash:", txHash);
+          let success = false;
+          try {
+            const vmStatusRegex = /"vm_status":\s*"([^"]*)"/i;
+            const vmStatusMatch = data.output.match(vmStatusRegex);
+            if (vmStatusMatch) {
+              const vmStatus = vmStatusMatch[1];
+              const containsSuccess = /success/i.test(vmStatus);
+              success = containsSuccess;
+            }
+          } catch (e) {
+            console.log("Unable to determine tx status");
+          }
+          const newTx: Transaction = {
+            id: uuidv4(),
+            hash: txHash,
+            date: new Date(),
+            status: success ? "success" : "failed",
+          };
+          setTransactions((prevTxs) => [newTx, ...prevTxs].slice(0, 10));
         } else {
           console.log("Error:", data.message);
           addLog(data.message, "error");
@@ -416,10 +439,14 @@ const Index = () => {
           </div>
         </section>
 
+        <section>
+          <TransactionList transactions={transactions} />
+        </section>
+
         <section className="flex justify-center gap-4 mt-8">
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() =>
               window.open(
                 "https://github.com/jsmaxi/move-ai-agent/issues/new",
@@ -431,7 +458,7 @@ const Index = () => {
           </Button>
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() =>
               window.open("https://github.com/jsmaxi/move-ai-agent", "_blank")
             }

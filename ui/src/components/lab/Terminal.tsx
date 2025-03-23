@@ -53,7 +53,7 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
       <div className="flex items-center justify-between p-2 border-b border-lab-border">
         <div className="flex items-center">
           <TerminalIcon className="h-4 w-4 mr-2 text-lab-purple" />
-          <h3 className="text-sm font-medium">Logs</h3>
+          <h3 className="text-lg font-medium">Logs</h3>
           <span className="text-sm text-gray-400 ml-1">({logs.length})</span>
         </div>
         <div className="flex items-center gap-1">
