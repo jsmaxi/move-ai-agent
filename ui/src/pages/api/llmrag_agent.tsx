@@ -36,7 +36,9 @@ export default async function handler(
       Task:
       ${query}
 
-      Generate Aptos smart contract code based on the provided context. Ensure the code is compatible with the Aptos blockchain and follows best practices.
+      You are an expert in Aptos blockchain and the Move AI agent kit. 
+      Please answer the following question thoroughly and professionally, referencing the Context passed earlier, do not make up any information, and avoid using any external resources.
+      if you do not know anything, please say you do not know. Keep your response under 500 characters unless specifically requested more details.
     `;
 
     const response = await model.invoke(prompt);
