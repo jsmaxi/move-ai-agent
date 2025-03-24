@@ -1,4 +1,4 @@
-![alt text](image.png)
+![alt text](image-1.png)
 
 # 🧪 Aptos PlayLab: AI-Powered IDE for Move Smart Contracts and more
 
