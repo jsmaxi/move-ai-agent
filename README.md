@@ -1,6 +1,6 @@
 ![alt text](image.png)
 
-# 🧪 Aptos PlayLab: AI-Powered IDE for Move Smart Contracts
+# 🧪 Aptos PlayLab: AI-Powered IDE for Move Smart Contracts and more
 
 UI: https://move-ai-agent-production.up.railway.app/
 
