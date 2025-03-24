@@ -1,6 +1,6 @@
 ![alt text](image-1.png)
 
-# 🧪 Aptos PlayLab: AI-Powered IDE for Move Smart Contracts and more
+# 🧪 Aptos PlayLab: AI-Powered IDE for Move Smart Contracts
 
 UI: https://move-ai-agent-production.up.railway.app/
 
@@ -22,6 +22,20 @@ This project is designed to streamline development and push the boundaries of au
 - ⚙️ **Compile and deploy generated smart contracts** to the Aptos network
 - 🧾 **Run the Move Prover** for formal verification of smart contracts
 - 🔐 **Basic AI-assisted smart contract security audit** (early-stage)
+
+## 🔮 What’s Next
+
+Aptos PlayLab is still early and full of potential. Here’s what we’re planning next:
+
+1. **Integrate LangGraph for Memory**  
+   Right now, our AI workflows are stateless and built on LangChain. We’re moving toward **LangGraph-based agents** that can maintain persistent memory across steps and sessions — critical for deeper, more contextual reasoning.
+
+2. **Optimize RAG Architectures for Code Generation**  
+   We’ve been brute-forcing large context windows for retrieval-augmented generation (RAG), which works but isn’t efficient. Next, we’ll experiment with **chunking strategies, hybrid retrieval, and agentic step-by-step workflows** for better results with less compute.
+
+3. **Add MCP (Multi-Context Provider) Servers**  
+   We plan to build a shared context backend that can power both the **web-based IDE** and **local dev environments like Cursor**. This will enable a seamless, AI-native dev experience no matter where you code.
+
 
 ## Quick Start - Run it locally
 
